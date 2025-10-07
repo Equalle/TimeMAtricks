@@ -111,7 +111,7 @@ local function sanitize_text(text)
     decimals = decimals:gsub("%.", "")              -- remove any further dots
     decimals = decimals:gsub("[^%d]", ""):sub(1, 2) -- keep only digits, max 2
     if decimals == "" and text:sub(-1) == "." then
-      -- user just tyüed the dfot; allow transient
+      -- user just typed the dot; allow transient
       return firstDigit .. "."
     end
     return firstDigit .. "." .. decimals
@@ -124,7 +124,6 @@ end
 -- UI STATE MANAGEMENT
 -- Unified save function for both UI and settings state
 local function save_state()
-  Printf("Saved")
   local ov = GetDisplayByIndex(1).ScreenOverlay
 
   -- Save UI fields
@@ -324,10 +323,6 @@ local function get_ui_item_index(objname, subdir)
   if not dir then return false end
   for i = 1, dir:Count() do
     if dir:Ptr(i).Name == objname then
-      -- Printf("Found valid UI item: %s child %d", objname, i)
-      if objname == UI_MENU_NAME then
-        CloseAllOverlays()
-      end
       return i
     end
   end
@@ -784,7 +779,6 @@ local function fade_adjust(direction, caller)
         more.Text = "Fade More"
         more.Font = "Regular18"
       end
-      -- Printf(updated)
     end
   end
 end
@@ -838,14 +832,14 @@ local function create_menu()
   ui.SuppressOverlayAutoclose = "Yes"
   ui.AutoClose = "No"
   ui.CloseOnEscape = "Yes"
-  
+
   local path, filename = resolve_xml_file("ui")
   Printf("Import from " .. tostring(path) .. tostring(filename))
   if not path then
     ErrPrintf("UI XML file not found")
     return
   end
-  
+
   if not ui:Import(path, filename) then
     ErrPrintf("Failed to import UI XML from %s%s", tostring(path), tostring(filename))
     return
@@ -954,24 +948,24 @@ local function create_menu()
 end
 
 local function create_CMDlineIcon()
-  local cmdbar = GetDisplayByIndex(1).CmdLineSection
-  local lastCols = tonumber(cmdbar:Get("Columns"))
-  local cols = lastCols + 1
-  cmdbar.Columns = cols
+  local cmdbar               = GetDisplayByIndex(1).CmdLineSection
+  local lastCols             = tonumber(cmdbar:Get("Columns"))
+  local cols                 = lastCols + 1
+  cmdbar.Columns             = cols
   cmdbar[2][cols].SizePolicy = "Fixed"
-  cmdbar[2][cols].Size = 50
+  cmdbar[2][cols].Size       = 50
 
-  Icon = cmdbar:Append('Button')
-  Icon.Name = UI_CMD_ICON_NAME
-  Icon.Anchors = { left = cols - 2 }
-  Icon.W = 49
-  Icon.PluginComponent = myHandle
-  Icon.Clicked = 'cmdbar_clicked'
-  Icon.Icon = icons.matricks
-  Icon.IconColor = colors.icon.inactive
-  Icon.Tooltip = "TimeMAtricks Plugin"
+  Icon                       = cmdbar:Append('Button')
+  Icon.Name                  = UI_CMD_ICON_NAME
+  Icon.Anchors               = { left = cols - 2 }
+  Icon.W                     = 49
+  Icon.PluginComponent       = myHandle
+  Icon.Clicked               = 'cmdbar_clicked'
+  Icon.Icon                  = icons.matricks
+  Icon.IconColor             = colors.icon.inactive
+  Icon.Tooltip               = "TimeMAtricks Plugin"
 
-  Tri  = cmdbar:FindRecursive("RightTriangle")
+  Tri                        = cmdbar:FindRecursive("RightTriangle")
   if Tri then
     Tri.Anchors = { left = cols - 1 }
   end
@@ -986,7 +980,7 @@ local function delete_CMDlineIcon()
     cmdbar.Columns = lastCols - 1
     Icon = nil
 
-    local tripos  = Tri:Get("No")
+    local tripos = Tri:Get("No")
     if Tri then
       Tri.Anchors = { left = tripos - 3 }
     end
@@ -1550,26 +1544,6 @@ signalTable.close = function(caller)
       menu.Visible = "Yes"
     end
   end
---[[   local overlay = GetDisplayByIndex(1).ScreenOverlay
-  local ov = overlay:FindRecursive(UI_MENU_NAME)
-  local ov2 = overlay:FindRecursive("Settings Menu")
-  if not caller then return end
-  if caller 
-  if caller.Name == "CloseBtn" then
-    if ov == caller:Parent():Parent() then
-      overlay:Remove(tonumber(get_ui_item_index(ov.Name, "ScreenOverlay")))
-    elseif ov2 == caller:Parent():Parent() then
-      overlay:Remove(tonumber(get_ui_item_index(ov2.Name, "ScreenOverlay")))
-      ov.Visible = "Yes"
-    end
-  else
-    if ov == caller:Parent():Parent():Parent() then
-      overlay:Remove(tonumber(get_ui_item_index(ov.Name, "ScreenOverlay")))
-    elseif ov2 == caller:Parent():Parent():Parent() then
-      overlay:Remove(tonumber(get_ui_item_index(ov2.Name, "ScreenOverlay")))
-      ov.Visible = "Yes"
-    end
-  end ]]
 end
 
 signalTable.apply = function(caller)
@@ -1676,7 +1650,7 @@ signalTable.reset_overallrate = function(caller)
   local ov = GetDisplayByIndex(1).ScreenOverlay
   local rate = ov:FindRecursive("OverallScaleValue")
   rate.Text = 1
-  -- save_state()
+  save_state()
 end
 
 signalTable.rate_mod = function(caller)
@@ -1697,7 +1671,7 @@ signalTable.rate_mod = function(caller)
       rate.Text = tostring(newValue)
     end
   end
-  -- save_state()
+  save_state()
 end
 
 signalTable.fade_adjust = function(caller)
@@ -1743,8 +1717,6 @@ end
 -- MAIN LOOP FUNCTIONS
 local function plugin_loop()
   pluginAlive = true
-  -- CloseAllOverlays()
-  -- create_menu()
   if pluginRunning then
     local mxPool = DataPool(1).Matricks
     local mstr = MasterPool()
@@ -1767,8 +1739,6 @@ local function plugin_loop()
       ft = get_global("TM_FadeToggle", "0") or 0,
       fv = get_global("TM_FadeValue", "0.5") or 0.5,
     }
-
-    -- Printf(v.ft)
 
     if (v.mv ~= nil and v.mv ~= "") and ((tonumber(v.mt) == 1) or (tonumber(v.ms) == 1)) then
       local m
@@ -1835,7 +1805,13 @@ end
 local function plugin_kill()
   pluginAlive = false
   signalTable.plugin_off()
-  CloseAllOverlays()
+  local ov = GetDisplayByIndex(1).ScreenOverlay
+  local menu = ov:FindRecursive(UI_MENU_NAME)
+  if menu then
+    FindBestFocus(menu)
+    Keyboard(1, "press", "Escape")
+    Keyboard(1, "release", "Escape")
+  end
   delete_CMDlineIcon()
   save_state()
   local temp = GetPath("temp", false)
@@ -1853,8 +1829,6 @@ end
 
 -- MAIN ENTRY POINT
 local function main()
-  -- require 'gma3_debug'()
-  -- debuggee.print("log", "done")
   if not pluginAlive or nil then
     if is_valid_ui_item(UI_CMD_ICON_NAME, "CmdLineSection") then
       pluginAlive = true
@@ -1868,6 +1842,9 @@ local function main()
       end
     end
     signalTable.cmdbar_clicked()
+    if get_global("TM_Matricks1Value") == nil then
+      Confirm("First Launch", "Press the Settings button at the top\nto configure where the MAtricks should be stored", nil, false)
+    end
     Timer(plugin_loop, 0, 0, plugin_kill)
   else
     signalTable.cmdbar_clicked()
