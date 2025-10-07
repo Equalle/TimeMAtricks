@@ -878,8 +878,8 @@ local function create_menu()
     { "TimingMaster",         "master_swap",     1 },
     { "SpeedMaster",          "master_swap",     0 },
     { "Matricks1Button",      "matricks_toggle", 1 },
-    { "Matricks2Button",      "matricks_toggle", 1 },
-    { "Matricks3Button",      "matricks_toggle", 1 },
+    { "Matricks2Button",      "matricks_toggle", 0 },
+    { "Matricks3Button",      "matricks_toggle", 0 },
     { "MatricksPrefixButton", "matricks_toggle", 0 },
   }
   for _, c in ipairs(checks) do
