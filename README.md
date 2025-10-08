@@ -63,7 +63,7 @@ Overall Scale:
 Half-time (HT) and double-time (DT) buttons  
 Reset to 1× button  
 
-Settings Window  
+### Settings Window  
 MAtricks Pool Start: Starting number for auto-created MAtricks  
 Refresh Rate: Plugin loop update frequency (seconds)  
 
@@ -84,7 +84,7 @@ Rate Examples
 1.0: Normal speed  
 2.0: Double speed (2× faster)  
 
-Technical Details
+## Technical Details
 
 For BETA use the plugin automatically creates a "TimeMAtricks Reset" macro that clears all global variables for clean uninstallation.
 
