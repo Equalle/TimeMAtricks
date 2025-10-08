@@ -124,7 +124,7 @@ end
 -- UI STATE MANAGEMENT
 -- Unified save function for both UI and settings state
 local function save_state()
-  local ov = GetDisplayByIndex(1).ScreenOverlay
+  local ov = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_MENU_NAME)
 
   -- Save UI fields
   local ui_fields = {
@@ -742,7 +742,7 @@ end
 
 -- FADE ADJUSTMENT
 local function fade_adjust(direction, caller)
-  local ov = GetDisplayByIndex(1).ScreenOverlay
+  local ov = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_MENU_NAME)
   local sl = ov:FindRecursive("FadeAmount")
   local less = ov:FindRecursive("FadeLess")
   local more = ov:FindRecursive("FadeMore")
@@ -859,7 +859,7 @@ local function create_menu()
     { "Apply",       "apply" },
   }
   for _, b in ipairs(buttons) do
-    if not add_ui_element(b[1], overlay, "button", { clicked = b[2] }) then
+    if not add_ui_element(b[1], ui, "button", { clicked = b[2] }) then
       ErrPrintf("error at %s", b)
     end
   end
@@ -869,7 +869,7 @@ local function create_menu()
     { "FadeMore", "fade_hold" },
   }
   for _, h in ipairs(holds) do
-    if not add_ui_element(h[1], overlay, "hold", { hold = h[2] }) then
+    if not add_ui_element(h[1], ui, "hold", { hold = h[2] }) then
       ErrPrintf("error at %s", h)
     end
   end
@@ -883,7 +883,7 @@ local function create_menu()
     { "MatricksPrefixButton", "matricks_toggle", 0 },
   }
   for _, c in ipairs(checks) do
-    if not add_ui_element(c[1], overlay, "checkbox", { clicked = c[2], state = c[3] }) then
+    if not add_ui_element(c[1], ui, "checkbox", { clicked = c[2], state = c[3] }) then
       ErrPrintf("error at %s", c)
     end
   end
@@ -897,7 +897,7 @@ local function create_menu()
     --{ "RefreshRateValue",    "text", "1.5" },
   }
   for _, t in ipairs(texts) do
-    if not add_ui_element(t[1], overlay, "textbox", { content = t[3] }) then
+    if not add_ui_element(t[1], ui, "textbox", { content = t[3] }) then
       ErrPrintf("error at %s", t)
     end
   end
@@ -909,7 +909,7 @@ local function create_menu()
   }
 
   for _, r in ipairs(rates) do
-    if not add_ui_element(r[1], overlay, "button", { clicked = r[2] }) then
+    if not add_ui_element(r[1], ui, "button", { clicked = r[2] }) then
       ErrPrintf("error at %s", r)
     end
   end
@@ -920,7 +920,7 @@ local function create_menu()
   }
 
   for _, p in ipairs(plugininfo) do
-    local el = overlay:FindRecursive(p[1])
+    local el = ui:FindRecursive(p[1])
     if el then
       el.Text = p[2] or ""
       if p[3] then
@@ -930,20 +930,20 @@ local function create_menu()
   end
 
   -- now load saved globals so they override the defaults set above
-  load_state(overlay)
+  load_state(ui)
   save_state()
   coroutine.yield(0.1) -- slight delay to ensure UI is ready
   if overlay:FindRecursive("MasterValue").Content == "" then
-    FindBestFocus(overlay:FindRecursive("MasterValue"))
+    FindBestFocus(ui:FindRecursive("MasterValue"))
   else
-    FindBestFocus(overlay:FindRecursive("Matricks1Value"))
+    FindBestFocus(ui:FindRecursive("Matricks1Value"))
   end
 
 
-  local less = overlay:FindRecursive("FadeLess")
+  local less = ui:FindRecursive("FadeLess")
   less.BackColor = colors.background.fade
 
-  local more = overlay:FindRecursive("FadeMore")
+  local more = ui:FindRecursive("FadeMore")
   more.BackColor = colors.background.delay
 end
 
@@ -1355,17 +1355,18 @@ signalTable.open_settings = function(caller)
     end
   end
 
-  load_state(overlay)
+  load_state(setting)
   save_state()
   coroutine.yield(0.1) -- slight delay to ensure UI is ready
-  FindBestFocus(overlay:FindRecursive("MatricksStartIndex"))
+  FindBestFocus(setting:FindRecursive("MatricksStartIndex"))
 end
 
 signalTable.plugin_off = function(caller)
   pluginRunning = false
-  local on = GetDisplayByIndex(1).ScreenOverlay:FindRecursive("PluginOn")
-  local off = GetDisplayByIndex(1).ScreenOverlay:FindRecursive("PluginOff")
-  local titleicon = GetDisplayByIndex(1).ScreenOverlay:FindRecursive("TitleButton")
+  local ov = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_MENU_NAME)
+  local on = ov:FindRecursive("PluginOn")
+  local off = ov:FindRecursive("PluginOff")
+  local titleicon = ov:FindRecursive("TitleButton")
   local cmdicon = GetDisplayByIndex(1).CmdLineSection:FindRecursive(UI_CMD_ICON_NAME)
   if not on or not off then return end
   on.BackColor, off.BackColor, on.TextColor, off.TextColor = colors.button.default, colors.button.clear,
@@ -1376,9 +1377,10 @@ end
 
 signalTable.plugin_on = function(caller)
   pluginRunning = true
-  local off = GetDisplayByIndex(1).ScreenOverlay:FindRecursive("PluginOff")
-  local on = GetDisplayByIndex(1).ScreenOverlay:FindRecursive("PluginOn")
-  local titleicon = GetDisplayByIndex(1).ScreenOverlay:FindRecursive("TitleButton")
+  local ov = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_MENU_NAME)
+  local off = ov:FindRecursive("PluginOff")
+  local on = ov:FindRecursive("PluginOn")
+  local titleicon = ov:FindRecursive("TitleButton")
   local cmdicon = GetDisplayByIndex(1).CmdLineSection:FindRecursive(UI_CMD_ICON_NAME)
   if not on or not off then return end
   off.BackColor, on.BackColor, off.TextColor, on.TextColor = colors.button.default, colors.button.please,
@@ -1388,7 +1390,7 @@ signalTable.plugin_on = function(caller)
 end
 
 signalTable.master_swap = function(caller)
-  local ov = GetDisplayByIndex(1).ScreenOverlay
+  local ov = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_MENU_NAME)
   local timing, speed, master = ov:FindRecursive("TimingMaster"), ov:FindRecursive("SpeedMaster"),
       ov:FindRecursive("MasterValue")
   if master.Content == "" then
@@ -1417,7 +1419,7 @@ signalTable.matricks_toggle = function(caller)
     MatricksPrefixButton = { "MatricksPrefixValue" },
   }
   local related = mapping[caller.Name] or {}
-  local ov = GetDisplayByIndex(1).ScreenOverlay
+  local ov = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_MENU_NAME)
   local newState = (caller:Get("State") == 1) and 0 or 1
   caller:Set("State", newState)
 
@@ -1485,7 +1487,7 @@ signalTable.matricks_toggle = function(caller)
 end
 
 local function update_fade_buttons()
-  local ov = GetDisplayByIndex(1).ScreenOverlay
+  local ov = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_MENU_NAME)
   local fadeLess = ov:FindRecursive("FadeLess")
   local fadeMore = ov:FindRecursive("FadeMore")
   local fadeAmount = ov:FindRecursive("FadeAmount")
@@ -1596,7 +1598,7 @@ signalTable.LineEditSelectAll = function(caller)
   if not caller then return end
   caller:SelectAll()
 
-  local ov = GetDisplayByIndex(1).ScreenOverlay
+  local ov = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_MENU_NAME)
   if not ov then return end
 
   local fieldNames = {
@@ -1664,14 +1666,14 @@ signalTable.NextFocus = function()
 end
 
 signalTable.reset_overallrate = function(caller)
-  local ov = GetDisplayByIndex(1).ScreenOverlay
+  local ov = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_MENU_NAME)
   local rate = ov:FindRecursive("OverallScaleValue")
   rate.Text = 1
   save_state()
 end
 
 signalTable.rate_mod = function(caller)
-  local ov = GetDisplayByIndex(1).ScreenOverlay
+  local ov = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_MENU_NAME)
   local rate = ov:FindRecursive("OverallScaleValue")
   if caller.Name == "HT" and tonumber(rate:Get("Text")) > 0.125 then
     local newValue = tonumber(rate.Text or "1") * 0.5
@@ -1698,7 +1700,7 @@ signalTable.fade_adjust = function(caller)
   elseif caller.Name == "FadeMore" then
     direction = 1
     -- If FadeLess is disabled, enable it when clicking FadeMore
-    local ov = GetDisplayByIndex(1).ScreenOverlay
+    local ov = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_MENU_NAME)
     local fadeLess = ov:FindRecursive("FadeLess")
     if fadeLess:Get("Enabled", Enums.Roles.Default) == "No" then
       fadeLess:Set("Enabled", "Yes")
@@ -1714,7 +1716,7 @@ signalTable.fade_adjust = function(caller)
 end
 
 signalTable.fade_hold = function(caller)
-  local ov = GetDisplayByIndex(1).ScreenOverlay
+  local ov = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_MENU_NAME)
   local less = ov:FindRecursive("FadeLess")
   local en = less:Get("Enabled", Enums.Roles.Default)
   if en == "Yes" then
