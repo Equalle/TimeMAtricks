@@ -93,17 +93,17 @@ Common Issues
 MAtricks not found: Verify MAtricks names match exactly (case-sensitive)
 
 ## Performance Tips
-Use refresh rates of 0.5-1 seconds for smooth operation. Higher values sync less so MAtricks are not always at correct time. Lower values might spam the System Monitor and 
-Choose unused pool numbers to avoid scattered MAtricks in your pool
+Use refresh rates of 0.5-1 seconds for smooth operation. Higher values sync less so MAtricks are not always at correct time. Lower values might spam the System Monitor and should not be necessary.  
+Choose unused pool numbers to avoid scattered MAtricks in your pool  
 
 ## Version History
-BETA 0.9.3 (Current)
+BETA 0.9.3 (Current)  
 
 ## Requirements
-GrandMA3 software (version 2.3+)
+GrandMA3 software (version 2.3+)  
 
 ## Support
-For issues, feature requests, or contributions, please visit the GitHub repository.
+For issues, feature requests, or contributions, please visit the GitHub repository.  
 
 License
-This plugin is provided as-is for the GrandMA3 community. Use at your own discretion in production environments.
+This plugin is provided as-is for the GrandMA3 community. Use at your own discretion in production environments.  
