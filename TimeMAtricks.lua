@@ -974,16 +974,32 @@ end
 local function delete_CMDlineIcon()
   if TMIcon then
     Printf(tostring(TMIcon.Name) .. " removed")
-    local iconpos = TMIcon:Get("No")
     local cmdbar = GetDisplayByIndex(1).CmdLineSection
-    cmdbar:Remove(iconpos)
-    local lastCols = tonumber(cmdbar:Get("Columns"))
-    cmdbar.Columns = lastCols - 1
+    local iconPosition = TMIcon.Anchors.left or 0  -- Get the actual position
+    
+    -- Remove the icon
+    cmdbar:Remove(TMIcon:Get("No"))
     TMIcon = nil
-
-    local tripos = cmdbar:Count()
+    
+    -- Decrease column count
+    local currentCols = tonumber(cmdbar:Get("Columns"))
+    cmdbar.Columns = currentCols - 1
+    
+    -- Shift all items that were to the right of the removed icon
+    for i = 1, cmdbar:Count() do
+      local item = cmdbar:Ptr(i)
+      if item and item.Anchors and item.Anchors.left then
+        local itemPosition = item.Anchors.left
+        if itemPosition > iconPosition then
+          item.Anchors = { left = itemPosition - 1 }
+        end
+      end
+    end
+    
+    -- The triangle should now be at the last position
+    local Tri = cmdbar:FindRecursive("RightTriangle")
     if Tri then
-      Tri.Anchors = { left = lastCols - 2 }
+      Tri.Anchors = { left = currentCols - 2 }  -- New last column (0-based)
     end
   end
 end
