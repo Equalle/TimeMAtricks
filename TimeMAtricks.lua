@@ -915,7 +915,7 @@ local function create_menu()
   end
 
   local plugininfo = {
-    { "TitleButton", "TimeMatricks",              "object_matricks" },
+    { "TitleButton", PLUGIN_NAME, icons.matricks },
     { "Version",     "Version " .. PLUGIN_VERSION },
   }
 
@@ -973,7 +973,6 @@ end
 
 local function delete_CMDlineIcon()
   if TMIcon then
-    Printf(tostring(TMIcon.Name) .. " removed")
     local cmdbar = GetDisplayByIndex(1).CmdLineSection
     local iconPosition = TMIcon.Anchors.left or 0  -- Get the actual position
     
