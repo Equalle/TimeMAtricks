@@ -101,6 +101,15 @@ Choose unused pool numbers to avoid scattered MAtricks in your pool
 ## Version History
 BETA 0.9.3 (Current)  
 
+## Known Issues
+When launching MATool's Recipe Tools plugin while TimeMAtricks is running, it fucks with the commandbar icons.  
+
+Quickfix:  
+-Off both Plugins  
+-ReloadUI (commandline)
+-Start Recipe Tools first
+-Then start TimeMAtricks again
+
 ## Requirements
 GrandMA3 software (version 2.3+)  
 

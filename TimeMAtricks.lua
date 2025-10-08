@@ -955,15 +955,15 @@ local function create_CMDlineIcon()
   cmdbar[2][cols].SizePolicy = "Fixed"
   cmdbar[2][cols].Size       = 50
 
-  Icon                       = cmdbar:Append('Button')
-  Icon.Name                  = UI_CMD_ICON_NAME
-  Icon.Anchors               = { left = cols - 2 }
-  Icon.W                     = 49
-  Icon.PluginComponent       = myHandle
-  Icon.Clicked               = 'cmdbar_clicked'
-  Icon.Icon                  = icons.matricks
-  Icon.IconColor             = colors.icon.inactive
-  Icon.Tooltip               = "TimeMAtricks Plugin"
+  TMIcon                       = cmdbar:Append('Button')
+  TMIcon.Name                  = UI_CMD_ICON_NAME
+  TMIcon.Anchors               = { left = cols - 2 }
+  TMIcon.W                     = 49
+  TMIcon.PluginComponent       = myHandle
+  TMIcon.Clicked               = 'cmdbar_clicked'
+  TMIcon.Icon                  = icons.matricks
+  TMIcon.IconColor             = colors.icon.inactive
+  TMIcon.Tooltip               = "TimeMAtricks Plugin"
 
   Tri                        = cmdbar:FindRecursive("RightTriangle")
   if Tri then
@@ -972,17 +972,18 @@ local function create_CMDlineIcon()
 end
 
 local function delete_CMDlineIcon()
-  if Icon then
-    local iconpos = Icon:Get("No")
+  if TMIcon then
+    Printf(tostring(TMIcon.Name) .. " removed")
+    local iconpos = TMIcon:Get("No")
     local cmdbar = GetDisplayByIndex(1).CmdLineSection
     cmdbar:Remove(iconpos)
     local lastCols = tonumber(cmdbar:Get("Columns"))
     cmdbar.Columns = lastCols - 1
-    Icon = nil
+    TMIcon = nil
 
-    local tripos = Tri:Get("No")
+    local tripos = cmdbar:Count()
     if Tri then
-      Tri.Anchors = { left = tripos - 3 }
+      Tri.Anchors = { left = lastCols - 2 }
     end
   end
 end
@@ -1796,7 +1797,6 @@ local function plugin_loop()
         if v.m3t == 1 then apply_triplet(v.m3v, tonumber(v.m3r) or 1.0) end
       end
     end
-  else
   end
   local refreshrate = tonumber(get_global("TM_RefreshRateValue", "1")) or 1
   coroutine.yield(refreshrate)
@@ -1815,8 +1815,8 @@ local function plugin_kill()
   delete_CMDlineIcon()
   save_state()
   local temp = GetPath("temp", false)
-  local uixml = temp .. "/UI.xml"
-  local settingsxml = temp .. "/UI_Settings.xml"
+  local uixml = temp .. "/TimeMAtricks_UI.xml"
+  local settingsxml = temp .. "/TimeMAtricks_Settings_UI.xml"
   if FileExists(uixml) then
     os.remove(uixml)
     Printf("Removed " .. uixml)
