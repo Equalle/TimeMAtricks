@@ -35,7 +35,8 @@ For each named MAtricks, the plugin creates 3 variations:
 
 YourName 1  
 YourName 2  
-YourName 3  
+YourName 3
+
 
 #### Timing Calculation  
 Timing Master: Direct time values (0-10 seconds)  
@@ -45,6 +46,7 @@ Overall Scale: Global scaling factor (0.125× to 8×)
 Fade Split: Configurable fade/delay ratio  
 
 ## Interface Guide
+  <img width="679" height="867" alt="app_gma3_cCcvua7KPO" src="https://github.com/user-attachments/assets/dbd40ced-c871-4e46-8400-3e044a8350d8" />
 ### Main Window  
 Plugin On/Off: Enable/disable the plugin loop  
 Master Section:  
