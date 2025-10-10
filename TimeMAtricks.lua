@@ -690,7 +690,7 @@ local UI_XML_SETTINGS = [[
 -- xmlType: "ui" or "settings"
 local function resolve_xml_file(xmlType)
   local base = GetPath("temp") or ""
-  -- local base = '/Users/juriseiffert/Library/Mobile Documents/com~apple~CloudDocs/Lua Plugins/GMA3/TimeMAtricks'
+  -- local base = '/Users/juriseiffert/Documents/GrandMA3 Plugins/TimeMAtricks'
   -- local base = 'C:\\Users\\Juri\\iCloudDrive\\Lua Plugins\\GMA3\\TimeMAtricks'
   local dir = base .. "/"
   local filename, content
@@ -706,7 +706,7 @@ local function resolve_xml_file(xmlType)
     return nil, nil
   end
 
-  local slash = GetPathSeparator()
+  local slash = "/"
   local full = dir .. slash .. filename
   if not FileExists(full) then
     local ok = write_text_file(full, content)

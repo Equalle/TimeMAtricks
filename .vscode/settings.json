@@ -8,6 +8,25 @@
     "Lua.diagnostics.globals": [
         "activateDebuggee",
         "debuggee",
-        "gma3_helpers"
+        "gma3_helpers",
+        "GetVar",
+        "GlobalVars",
+        "SetVar",
+        "GetDisplayByIndex",
+        "Enums",
+        "Version",
+        "ErrPrintf",
+        "GetPathSeparator",
+        "FileExists",
+        "Printf",
+        "GetPath",
+        "FindBestFocus",
+        "DataPool",
+        "GetTopOverlay",
+        "Confirm",
+        "Keyboard",
+        "FindNextFocus",
+        "MasterPool",
+        "Timer"
     ]
 }
