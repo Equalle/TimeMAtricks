@@ -1660,10 +1660,6 @@ signalTable.ExecuteOnEnter = function(caller, dummy, keyCode)
   end
 end
 
-signalTable.NextFocus = function()
-  FindNextFocus()
-end
-
 signalTable.reset_overallrate = function(caller)
   local ov = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_MENU_NAME)
   local rate = ov:FindRecursive("OverallScaleValue")

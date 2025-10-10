@@ -1,3 +1,5 @@
 # Ignore specific files
-UsefulCMD.txt
-gma3_debug.lua
+gma3_debug*
+UsefulCMD*
+# Ignore all .log files
+*.log
