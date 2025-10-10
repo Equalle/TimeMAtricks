@@ -99,7 +99,7 @@
 				</ItemCollectColumns>
 				<Button Name="TimingMaster" Text="Timing Master" Tooltip="Sets the master to timing" Anchors="0,0" BackColor="Button.Background" Texture="corner5" HasHover="1" Focus="Never" />
 				<Button Name="SpeedMaster" Text="Speed Master" Tooltip="Sets the master to speed" Anchors="1,0" BackColor="Button.Background" Texture="corner10" HasHover="1" Focus="Never" />
-				<LineEdit Name="MasterValue" Message="Object number" Tooltip="Enter desired master object number you want the plugin to listen to" Anchors="2,0" Padding="0,0,10,0" Icon="master" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner15" KeyboardIconAlignmentH="Left" Focus="InitialFocus" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeSelect" DoubleClicked=":LineEditSelectAll" KeyDown=":ExecuteOnEnter" Filter="0123456789" OnWrongChar=":ShowWarning"/>
+				<LineEdit Name="MasterValue" Message="Object number" Tooltip="Enter desired master object number you want the plugin to listen to" Anchors="2,0" Padding="0,0,10,0" Icon="master" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner15" KeyboardIconAlignmentH="Left" Focus="InitialFocus" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeSelect" DoubleClicked=":LineEditSelectAll" KeyDown=":ExecuteOnEnter" Filter="0123456789" OnWrongChar=":ShowWarning" TextChanged=":sanitize" MaxTextLength="2"/>
 			</UILayoutGrid>
 
 			<!-- Matricks Titlebar -->

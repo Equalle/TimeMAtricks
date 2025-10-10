@@ -125,7 +125,6 @@ end
 -- Unified save function for both UI and settings state
 local function save_state()
   local ov = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_MENU_NAME)
-
   -- Save UI fields
   local ui_fields = {
     "MasterValue", "Matricks1Value", "Matricks1Rate",
@@ -915,7 +914,7 @@ local function create_menu()
   end
 
   local plugininfo = {
-    { "TitleButton", PLUGIN_NAME, icons.matricks },
+    { "TitleButton", PLUGIN_NAME,                 icons.matricks },
     { "Version",     "Version " .. PLUGIN_VERSION },
   }
 
@@ -955,15 +954,15 @@ local function create_CMDlineIcon()
   cmdbar[2][cols].SizePolicy = "Fixed"
   cmdbar[2][cols].Size       = 50
 
-  TMIcon                       = cmdbar:Append('Button')
-  TMIcon.Name                  = UI_CMD_ICON_NAME
-  TMIcon.Anchors               = { left = cols - 2 }
-  TMIcon.W                     = 49
-  TMIcon.PluginComponent       = myHandle
-  TMIcon.Clicked               = 'cmdbar_clicked'
-  TMIcon.Icon                  = icons.matricks
-  TMIcon.IconColor             = colors.icon.inactive
-  TMIcon.Tooltip               = "TimeMAtricks Plugin"
+  TMIcon                     = cmdbar:Append('Button')
+  TMIcon.Name                = UI_CMD_ICON_NAME
+  TMIcon.Anchors             = { left = cols - 2 }
+  TMIcon.W                   = 49
+  TMIcon.PluginComponent     = myHandle
+  TMIcon.Clicked             = 'cmdbar_clicked'
+  TMIcon.Icon                = icons.matricks
+  TMIcon.IconColor           = colors.icon.inactive
+  TMIcon.Tooltip             = "TimeMAtricks Plugin"
 
   Tri                        = cmdbar:FindRecursive("RightTriangle")
   if Tri then
@@ -974,16 +973,16 @@ end
 local function delete_CMDlineIcon()
   if TMIcon then
     local cmdbar = GetDisplayByIndex(1).CmdLineSection
-    local iconPosition = TMIcon.Anchors.left or 0  -- Get the actual position
-    
+    local iconPosition = TMIcon.Anchors.left or 0 -- Get the actual position
+
     -- Remove the icon
     cmdbar:Remove(TMIcon:Get("No"))
     TMIcon = nil
-    
+
     -- Decrease column count
     local currentCols = tonumber(cmdbar:Get("Columns"))
     cmdbar.Columns = currentCols - 1
-    
+
     -- Shift all items that were to the right of the removed icon
     for i = 1, cmdbar:Count() do
       local item = cmdbar:Ptr(i)
@@ -994,11 +993,11 @@ local function delete_CMDlineIcon()
         end
       end
     end
-    
+
     -- The triangle should now be at the last position
     local Tri = cmdbar:FindRecursive("RightTriangle")
     if Tri then
-      Tri.Anchors = { left = currentCols - 2 }  -- New last column (0-based)
+      Tri.Anchors = { left = currentCols - 2 } -- New last column (0-based)
     end
   end
 end
@@ -1363,15 +1362,19 @@ end
 signalTable.plugin_off = function(caller)
   pluginRunning = false
   local ov = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_MENU_NAME)
-  local on = ov:FindRecursive("PluginOn")
-  local off = ov:FindRecursive("PluginOff")
-  local titleicon = ov:FindRecursive("TitleButton")
+  if ov then
+    local on = ov:FindRecursive("PluginOn")
+    local off = ov:FindRecursive("PluginOff")
+    local titleicon = ov:FindRecursive("TitleButton")
+    if not on or not off then return end
+    on.BackColor, off.BackColor, on.TextColor, off.TextColor = colors.button.default, colors.button.clear,
+        colors.text.white, colors.icon.active
+    titleicon.IconColor = "Button.Icon"
+  end
   local cmdicon = GetDisplayByIndex(1).CmdLineSection:FindRecursive(UI_CMD_ICON_NAME)
-  if not on or not off then return end
-  on.BackColor, off.BackColor, on.TextColor, off.TextColor = colors.button.default, colors.button.clear,
-      colors.text.white, colors.icon.active
-  titleicon.IconColor = "Button.Icon"
-  cmdicon.IconColor = "Button.Icon"
+  if cmdicon then
+    cmdicon.IconColor = "Button.Icon"
+  end
 end
 
 signalTable.plugin_on = function(caller)
@@ -1397,6 +1400,7 @@ signalTable.master_swap = function(caller)
     timing.State = isTiming and 1 or 0
     speed.State = isTiming and 0 or 1
     master.Content = ""
+    save_state()
     return
   end
   if caller.State ~= 1 then
@@ -1405,7 +1409,7 @@ signalTable.master_swap = function(caller)
       timing.State = isTiming and 1 or 0
       speed.State = isTiming and 0 or 1
       master.Content = ""
-      -- save_state()
+      save_state()
     end
   end
 end
@@ -1547,9 +1551,8 @@ signalTable.ShowWarning2 = function(caller, status, creator)
 end
 
 signalTable.close = function(caller)
-  save_state()
+  -- save_state()
   if caller and caller.Name == "Close" then
-    Printf(caller.Name)
     Keyboard(1, "press", "Escape")
     Keyboard(1, "release", "Escape")
     local ov = GetDisplayByIndex(1).ScreenOverlay
@@ -1582,13 +1585,46 @@ end
 
 signalTable.sanitize = function(caller)
   local before = caller.Content or ""
-  local after = sanitize_text(before)
+  local after = before
+
+  if caller.Name == "MasterValue" then
+    after = after:gsub("[^%d]", "")
+
+    if after ~= "" then
+      local num = tonumber(after)
+      local after = tonumber(after)
+      if num then
+        if get_global("TM_TimingMaster") == 1 then
+          if num < 1 then
+            after = 1
+          elseif num > 50 then
+            after = 50
+          end
+        elseif get_global("TM_SpeedMaster", "0") == 1 then
+          if num < 1 then
+            after = 1
+          elseif num > 16 then
+            after = 16
+          end
+        end
+      end
+    end
+  else
+    after = sanitize_text(before)
+  end
+
   if before ~= after then
     caller.Content = after
     if caller.HasFocus then
       Keyboard(1, "press", "End")
       Keyboard(1, "release", "End")
-      signalTable.ShowWarning(caller, "Allowed format: x.xx")
+      if caller.Name == "MasterValue" and get_global("TM_SpeedMaster") == 1 then
+        signalTable.ShowWarning(caller, "Speed Master: 1-16")
+      elseif caller.Name == "MasterValue" and get_global("TM_TimingMaster") == 1 then
+        signalTable.ShowWarning(caller, "TimingMaster: 1-50")
+      else
+        signalTable.ShowWarning(caller, "Allowed format: x.xx")
+      end
     end
   end
 end
@@ -1826,7 +1862,7 @@ local function plugin_kill()
     Keyboard(1, "release", "Escape")
   end
   delete_CMDlineIcon()
-  save_state()
+  -- save_state()
   local temp = GetPath("temp", false)
   local uixml = temp .. "/TimeMAtricks_UI.xml"
   local settingsxml = temp .. "/TimeMAtricks_Settings_UI.xml"
@@ -1855,8 +1891,14 @@ local function main()
       end
     end
     signalTable.cmdbar_clicked()
-    if get_global("TM_Matricks1Value") == nil then
-      Confirm("First Launch", "Press the Settings button at the top\nto configure where the MAtricks should be stored", nil, false)
+    local mv = get_global("TM_MasterValue")
+    local m1v = get_global("TM_Matricks1Value")
+    local m2v = get_global("TM_Matricks2Value")
+    local m3v = get_global("TM_Matricks3Value")
+    if mv == nil and m1v == nil and m2v == nil and m3v == nil then
+      Confirm("First Launch", "Press the Settings button at the top\nto configure where the MAtricks should be stored",
+        nil, false)
+    else
     end
     Timer(plugin_loop, 0, 0, plugin_kill)
   else
