@@ -11,7 +11,7 @@ local pluginError = nil
 
 -- CONSTANTS
 local PLUGIN_NAME = 'TimeMAtricks'
-local PLUGIN_VERSION = 'BETA 0.9.3'
+local PLUGIN_VERSION = 'BETA 0.9.4'
 local UI_CMD_ICON_NAME = PLUGIN_NAME .. 'Icon'
 local UI_MENU_NAME = PLUGIN_NAME .. ' Menu'
 local UI_SETTINGS_NAME = 'Settings Menu'
@@ -349,7 +349,7 @@ end
 local UI_XML_CONTENT = [[
 <?xml version="1.0" encoding="UTF-8"?>
 <GMA3 DataVersion="0.9.0.1">
-	<BaseInput Name="TimeMAtricks Menu" H="0" W="700" AlignmentH="Center" AlignmentV="Center" Focus="InitialFocus" CanCoexistWithModal="Yes" BlockClickThru="Yes" SuppressOverlayAutoClose="Yes" HideFocusFrame="Yes" CloseOnEscape="No">
+	<BaseInput Name="TimeMAtricks Menu" H="0" W="700" AlignmentH="Center" AlignmentV="Center" Focus="InitialFocus" CanCoexistWithModal="Yes" BlockClickThru="Yes" SuppressOverlayAutoClose="Yes" HideFocusFrame="Yes" CloseOnEscape="Yes">
 		<TitleBar Name="TitleBar" Anchors="0,0" HideFocusFrame="Yes">
 			<ItemCollectRows>
 				<Item SizePolicy="Fixed" Size="50" />
@@ -361,7 +361,7 @@ local UI_XML_CONTENT = [[
 			</ItemCollectColumns>
 			<TitleButton Name="TitleButton" Text="" Anchors="0,0" Texture="corner1" Icon="object_matricks" IconColor="Button.Icon" />
 			<Button Name="SettingsBtn" Tooltip="Open the Timematricks Settings" Anchors="1,0" Texture="corner0" Clicked=":open_settings" Icon="hardkey_setup" Focus="Never" />
-			<Button Name="CloseBtn" Tooltip="Close the Timematricks Settings" Anchors="2,0" Texture="corner2" Icon="close" Focus="Never" />
+			<CloseButton Name="CloseBtn" Tooltip="Close the Timematricks Settings" Anchors="2,0" Texture="corner2" />
 			<WarningInfoButton Name="WarningButton" Anchors="0,0,2,0" Font="Regular32" BackColor="Global.AlertText" />
 		</TitleBar>
 
@@ -448,7 +448,7 @@ local UI_XML_CONTENT = [[
 				</ItemCollectColumns>
 				<Button Name="TimingMaster" Text="Timing Master" Tooltip="Sets the master to timing" Anchors="0,0" BackColor="Button.Background" Texture="corner5" HasHover="1" Focus="Never" />
 				<Button Name="SpeedMaster" Text="Speed Master" Tooltip="Sets the master to speed" Anchors="1,0" BackColor="Button.Background" Texture="corner10" HasHover="1" Focus="Never" />
-				<LineEdit Name="MasterValue" Message="Object number" Tooltip="Enter desired master object number you want the plugin to listen to" Anchors="2,0" Padding="0,0,10,0" Icon="master" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner15" KeyboardIconAlignmentH="Left" Focus="InitialFocus" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeSelect" DoubleClicked=":LineEditSelectAll" KeyDown=":ExecuteOnEnter" Filter="0123456789" OnWrongChar=":ShowWarning"/>
+				<LineEdit Name="MasterValue" Message="Object number" Tooltip="Enter desired master object number you want the plugin to listen to" Anchors="2,0" Padding="0,0,10,0" Icon="master" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner15" KeyboardIconAlignmentH="Left" Focus="InitialFocus" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeSelect" DoubleClicked=":LineEditSelectAll" KeyDown=":ExecuteOnEnter" Filter="0123456789" OnWrongChar=":ShowWarning" TextChanged=":sanitize" MaxTextLength="2"/>
 			</UILayoutGrid>
 
 			<!-- Matricks Titlebar -->
@@ -584,11 +584,11 @@ local UI_XML_CONTENT = [[
 				</ItemCollectRows>
 				<ItemCollectColumns>
 					<Item SizePolicy="Stretch" />
-					<Item SizePolicy="Stretch" />
+					<!-- <Item SizePolicy="Stretch" /> -->
 				</ItemCollectColumns>
-				<Button Name="Apply" Text="Apply" Tooltip="Apply settings (autosave on close)" Anchors="0,0" Margin="0,0,0,5" BackColor="Button.Background" Texture="corner5" Focus="WantsFocus" KeyDown=":ExecuteOnEnter" HideFocusFrame="No" />
-				<Button Name="Close" Text="Close" Tooltip="Close the Timematricks Settings" Anchors="1,0" Margin="0,0,0,5" BackColor="Button.Background" Texture="corner10" Focus="WantsFocus" KeyDown=":ExecuteOnEnter" HideFocusFrame="No" />
-				<WarningInfoButton Name="WarningButton2" Anchors="0,0,0,0" Font="Regular32" BackColor="Global.SelectedInverted" />
+				<Button Name="Apply" Text="Apply" Tooltip="Apply settings (autosave on close)" Anchors="0,0" Margin="0,0,0,5" BackColor="Button.Background" Texture="corner15" Focus="Never" KeyDown=":ExecuteOnEnter" HideFocusFrame="No" />
+				<!-- <Button Name="Close" Text="Close" Tooltip="Close the Timematricks Settings" Anchors="1,0" Margin="0,0,0,5" BackColor="Button.Background" Texture="corner10" Focus="WantsFocus" KeyDown=":ExecuteOnEnter" HideFocusFrame="No" /> -->
+				<WarningInfoButton Name="WarningButton2" Anchors="0,0,0,0" Font="Regular32" BackColor="Global.SelectedInverted" Texture="corner15"/>
 			</UILayoutGrid>
 		</DialogFrame>
 	</BaseInput>
@@ -600,7 +600,7 @@ local UI_XML_SETTINGS = [[
 <GMA3 DataVersion="0.9.0.1">
 	<BaseInput Name="Settings Menu" H="0" W="700" AlignmentH="Center" AlignmentV="Center"
 		Focus="InitialFocus" CanCoexistWithModal="Yes" BlockClickThru="Yes"
-		SuppressOverlayAutoClose="Yes" HideFocusFrame="Yes" CloseOnEscape="No">
+		SuppressOverlayAutoClose="Yes" HideFocusFrame="Yes" CloseOnEscape="Yes">
 		<TitleBar Name="TitleBar" Anchors="0,0" HideFocusFrame="Yes">
 			<ItemCollectRows>
 				<Item SizePolicy="Fixed" Size="50" />
@@ -611,8 +611,8 @@ local UI_XML_SETTINGS = [[
 			</ItemCollectColumns>
 			<TitleButton Name="TitleButton" Text="TimeMAtricks Settings" Anchors="0,0" Texture="corner1"
 				Icon="object_matricks" IconColor="Button.Icon" />
-			<Button Name="CloseBtn" Tooltip="Close the Timematricks Settings" Anchors="1,0"
-				Texture="corner2" Icon="close" Focus="Never"/>
+			<CloseButton Name="CloseBtn" Tooltip="Close the Timematricks Settings" Anchors="1,0"
+				Texture="corner2" Icon="close"/>
 			<WarningInfoButton Name="WarningButton" Anchors="0,0,1,0" Font="Regular32"
 				BackColor="Global.AlertText" />
 		</TitleBar>
@@ -672,10 +672,10 @@ local UI_XML_SETTINGS = [[
 				</ItemCollectColumns>
 				<Button Name="Apply" Text="Apply" Tooltip="Apply settings (autosave on close)"
 					Anchors="0,0" Margin="0,0,0,5" BackColor="Button.Background" Texture="corner5"
-					Focus="WantsFocus" KeyDown=":ExecuteOnEnter" HideFocusFrame="No" />
+					Focus="WantsFocus" KeyDown=":ExecuteOnEnter" HideFocusFrame="No" Focus="Never"/>
 				<Button Name="Close" Text="Close" Tooltip="Close the Timematricks Settings"
 					Anchors="1,0" Margin="0,0,0,5" BackColor="Button.Background" Texture="corner10"
-					Focus="WantsFocus" KeyDown=":ExecuteOnEnter" HideFocusFrame="No" />
+					Focus="WantsFocus" KeyDown=":ExecuteOnEnter" HideFocusFrame="No" Focus="Never"/>
 				<WarningInfoButton Name="WarningButton2" Anchors="0,0,0,0" Font="Regular32"
 					BackColor="Global.SelectedInverted" />
 			</UILayoutGrid>
@@ -689,9 +689,9 @@ local UI_XML_SETTINGS = [[
 -- Generic function to resolve XML files
 -- xmlType: "ui" or "settings"
 local function resolve_xml_file(xmlType)
-  -- local base = GetPath("temp") or ""
+  local base = GetPath("temp") or ""
   -- local base = '/Users/juriseiffert/Library/Mobile Documents/com~apple~CloudDocs/Lua Plugins/GMA3/TimeMAtricks'
-  local base = 'C:\\Users\\Juri\\iCloudDrive\\Lua Plugins\\GMA3\\TimeMAtricks'
+  -- local base = 'C:\\Users\\Juri\\iCloudDrive\\Lua Plugins\\GMA3\\TimeMAtricks'
   local dir = base .. "/"
   local filename, content
 
@@ -1816,7 +1816,6 @@ local function plugin_loop()
           local usePrefix = (tonumber(v.mpt) == 1) and (v.mpv ~= "")
           local prefix = usePrefix and v.mpv or ""
           local d = normed * rate
-          -- Printf(d)
 
           -- Split d into fade and delay
           local fade, delay
@@ -1825,9 +1824,7 @@ local function plugin_loop()
             delay = d
           else
             fade = d * tonumber(v.fv)
-            -- Printf(fade)
             delay = d * (1 - tonumber(v.fv))
-            -- Printf(delay)
           end
 
           for k = 1, 3 do
