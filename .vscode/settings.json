@@ -27,6 +27,7 @@
         "Keyboard",
         "FindNextFocus",
         "MasterPool",
-        "Timer"
+        "Timer",
+        "MessageBox"
     ]
 }

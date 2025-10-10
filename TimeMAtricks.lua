@@ -689,8 +689,8 @@ local UI_XML_SETTINGS = [[
 -- Generic function to resolve XML files
 -- xmlType: "ui" or "settings"
 local function resolve_xml_file(xmlType)
-  local base = GetPath("temp") or ""
-  -- local base = '/Users/juriseiffert/Documents/GrandMA3 Plugins/TimeMAtricks'
+  -- local base = GetPath("temp") or ""
+  local base = '/Users/juriseiffert/Documents/GrandMA3 Plugins/TimeMAtricks'
   -- local base = 'C:\\Users\\Juri\\iCloudDrive\\Lua Plugins\\GMA3\\TimeMAtricks'
   local dir = base .. "/"
   local filename, content
@@ -1048,7 +1048,8 @@ local function create_panic_macro()
     "TM_FadeLessFont",
     "TM_FadeMoreText",
     "TM_FadeMoreFont",
-    "TM_OverallScaleValue"
+    "TM_OverallScaleValue",
+    "TM_FirstStart"
   }
 
   for i, varName in ipairs(globalVars) do
@@ -1888,15 +1889,27 @@ local function main()
       end
     end
     signalTable.cmdbar_clicked()
-    local mv = get_global("TM_MasterValue")
-    local m1v = get_global("TM_Matricks1Value")
-    local m2v = get_global("TM_Matricks2Value")
-    local m3v = get_global("TM_Matricks3Value")
-    if mv == nil and m1v == nil and m2v == nil and m3v == nil then
-      Confirm("First Launch", "Press the Settings button at the top\nto configure where the MAtricks should be stored",
-        nil, false)
-    else
+    local frststrt = get_global("TM_FirstStart", nil)
+    if not frststrt then
+      local messageBoxSettings = {
+        title = "First Launch",
+        message = "Press the Settings button at the top to configure the starting MAtricks pool number.",
+        commands = { { value = 1, name = "Ok" } },
+        icon = "QuestionMarkIcon",
+        timeout = 10000,
+        backColor = "Window.Plugins",
+      }
+      MessageBox(messageBoxSettings)
+      --[[ Confirm("First Launch", "Press the Settings button at the top\nto configure where the MAtricks should be stored",
+        nil, false) ]]
+      local menu = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_MENU_NAME)
+      local setbtn = menu:FindRecursive("SettingsBtn")
+      if setbtn then
+        FindNextFocus(true)
+        FindNextFocus(true)
+      end
     end
+    set_global("TM_FirstStart", true)
     Timer(plugin_loop, 0, 0, plugin_kill)
   else
     signalTable.cmdbar_clicked()
