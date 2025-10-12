@@ -1,3 +1,4 @@
+---@diagnostic disable: redundant-parameter
 -- ---------------------------------------------------------------------------
 -- MODULE: ui
 -- PURPOSE: UI creation and management functions

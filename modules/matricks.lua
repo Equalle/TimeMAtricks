@@ -1,3 +1,4 @@
+---@diagnostic disable: redundant-parameter
 -- ---------------------------------------------------------------------------
 -- MODULE: matricks
 -- PURPOSE: MAtricks business logic - creation, validation, management

@@ -1,3 +1,4 @@
+---@diagnostic disable: redundant-parameter
 -- ---------------------------------------------------------------------------
 -- MODULE: state
 -- PURPOSE: Save and load plugin state from global variables

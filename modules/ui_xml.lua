@@ -1,3 +1,4 @@
+---@diagnostic disable: redundant-parameter
 -- ---------------------------------------------------------------------------
 -- MODULE: ui_xml
 -- PURPOSE: XML template storage for UI layouts
@@ -137,7 +138,7 @@ M.UI_XML_CONTENT = [[
 					<Item SizePolicy="Fixed" Size="130" />
 				</ItemCollectColumns>
 				<CheckBox Name="Matricks1Button" Text="MAtricks 1" Tooltip="Toggles MAtricks 1" Anchors="0,0" Texture="corner1" BackColor="Button.Background" HasHover="1" Focus="Never" />
-				<LineEdit Name="Matricks1Value" Message="Object name" Tooltip="Enter the name or object number for MAtricks 1" Anchors="1,0" Padding="0,0,10,0" Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner0" KeyboardIconAlignmentH="Left" Focus="WantsFocus" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeSelect" DoubleClicked=":LineEditSelectAll" KeyDown=":ExecuteOnEnter" Filter=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZÜÖÄßüöä1234567890!§%/()=?`´°+#'-_:&lt;&gt;«∑€®†Ω¨⁄øπ•å‚∂ƒ©ªº∆@œæ≤¥≈ç√∫µ∞……––'±¡"¶¢[]≠¿'•'""#£ﬁ˜·¯˙˚'Æ—÷˛ŒÆ°»„‰¸˝ˇÁÛØ∏ÅÍ™ÏÌÓıˆﬂ‡ÙÇ◊‹›˘" OnWrongChar=":ShowWarning" />
+				<LineEdit Name="Matricks1Value" Message="Object name" Tooltip="Enter the name or object number for MAtricks 1" Anchors="1,0" Padding="0,0,10,0" Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner0" KeyboardIconAlignmentH="Left" Focus="WantsFocus" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeSelect" DoubleClicked=":LineEditSelectAll" KeyDown=":ExecuteOnEnter" Filter=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZÜÖÄßüöä1234567890!§%/()=?`´°+#'-_:&lt;&gt;«∑€®†Ω¨⁄øπ•å‚∂ƒ©ªº∆@œæ≤¥≈ç√∫µ∞……––‘±¡“¶¢[]≠¿'•‘””#£ﬁ˜·¯˙˚’Æ—÷˛ŒÆ°»„‰¸˝ˇÁÛØ∏ÅÍ™ÏÌÓıˆﬂ‡ÙÇ◊‹›˘" OnWrongChar=":ShowWarning" />
 				<LineEdit Name="Matricks1Rate" Message="rate" Tooltip="Enter the rate for MAtricks 1" Anchors="2,0" Padding="0,0,5,0" Icon="object_xkeys" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner0" KeyboardIconAlignmentH="Left" Focus="CanHaveFocus" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeSelect" Filter="0123456789.," TextChanged=":sanitize" DoubleClicked=":LineEditSelectAll" KeyDown=":ExecuteOnEnter" VKPluginName="TextInputNumOnly" OnWrongChar=":ShowWarning" />
 			</UILayoutGrid>
 
@@ -152,7 +153,7 @@ M.UI_XML_CONTENT = [[
 					<Item SizePolicy="Fixed" Size="130" />
 				</ItemCollectColumns>
 				<CheckBox Name="Matricks2Button" Text="MAtricks 2" Tooltip="Toggles MAtricks 2" Anchors="0,0" Texture="corner0" BackColor="Button.Background" HasHover="1" Focus="Never" />
-				<LineEdit Name="Matricks2Value" Message="Object name" Tooltip="Enter the name or object number for MAtricks 2" Anchors="1,0" Padding="0,0,10,0" Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner0" KeyboardIconAlignmentH="Left" Focus="WantsFocus" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeSelect" DoubleClicked=":LineEditSelectAll" KeyDown=":ExecuteOnEnter" Filter=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZÜÖÄßüöä1234567890!§%/()=?`´°+#'-_:&lt;&gt;«∑€®†Ω¨⁄øπ•å‚∂ƒ©ªº∆@œæ≤¥≈ç√∫µ∞……––'±¡"¶¢[]≠¿'•'""#£ﬁ˜·¯˙˚'Æ—÷˛ŒÆ°»„‰¸˝ˇÁÛØ∏ÅÍ™ÏÌÓıˆﬂ‡ÙÇ◊‹›˘" OnWrongChar=":ShowWarning" />
+				<LineEdit Name="Matricks2Value" Message="Object name" Tooltip="Enter the name or object number for MAtricks 2" Anchors="1,0" Padding="0,0,10,0" Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner0" KeyboardIconAlignmentH="Left" Focus="WantsFocus" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeSelect" DoubleClicked=":LineEditSelectAll" KeyDown=":ExecuteOnEnter" Filter=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZÜÖÄßüöä1234567890!§%/()=?`´°+#'-_:&lt;&gt;«∑€®†Ω¨⁄øπ•å‚∂ƒ©ªº∆@œæ≤¥≈ç√∫µ∞……––‘±¡“¶¢[]≠¿'•‘””#£ﬁ˜·¯˙˚’Æ—÷˛ŒÆ°»„‰¸˝ˇÁÛØ∏ÅÍ™ÏÌÓıˆﬂ‡ÙÇ◊‹›˘" OnWrongChar=":ShowWarning" />
 				<LineEdit Name="Matricks2Rate" Message="rate" Tooltip="Enter the rate for MAtricks 2" Anchors="2,0" Padding="0,0,5,0" Icon="object_xkeys" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner0" KeyboardIconAlignmentH="Left" Focus="CanHaveFocus" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeSelect" Filter="0123456789.," TextChanged=":sanitize" DoubleClicked=":LineEditSelectAll" KeyDown=":ExecuteOnEnter" VKPluginName="TextInputNumOnly" OnWrongChar=":ShowWarning" />
 			</UILayoutGrid>
 
@@ -167,7 +168,7 @@ M.UI_XML_CONTENT = [[
 					<Item SizePolicy="Fixed" Size="130" />
 				</ItemCollectColumns>
 				<CheckBox Name="Matricks3Button" Text="MAtricks 3" Tooltip="Toggles MAtricks 3" Anchors="0,0" Texture="corner0" BackColor="Button.Background" HasHover="1" Focus="Never" />
-				<LineEdit Name="Matricks3Value" Message="Object name" Tooltip="Enter the name or object number for MAtricks 3" Anchors="1,0" Padding="0,0,10,0" Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner0" KeyboardIconAlignmentH="Left" Focus="WantsFocus" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeSelect" DoubleClicked=":LineEditSelectAll" KeyDown=":ExecuteOnEnter" Filter=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZÜÖÄßüöä1234567890!§%/()=?`´°+#'-_:&lt;&gt;«∑€®†Ω¨⁄øπ•å‚∂ƒ©ªº∆@œæ≤¥≈ç√∫µ∞……––'±¡"¶¢[]≠¿'•'""#£ﬁ˜·¯˙˚'Æ—÷˛ŒÆ°»„‰¸˝ˇÁÛØ∏ÅÍ™ÏÌÓıˆﬂ‡ÙÇ◊‹›˘" OnWrongChar=":ShowWarning" />
+				<LineEdit Name="Matricks3Value" Message="Object name" Tooltip="Enter the name or object number for MAtricks 3" Anchors="1,0" Padding="0,0,10,0" Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner0" KeyboardIconAlignmentH="Left" Focus="WantsFocus" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeSelect" DoubleClicked=":LineEditSelectAll" KeyDown=":ExecuteOnEnter" Filter=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZÜÖÄßüöä1234567890!§%/()=?`´°+#'-_:&lt;&gt;«∑€®†Ω¨⁄øπ•å‚∂ƒ©ªº∆@œæ≤¥≈ç√∫µ∞……––‘±¡“¶¢[]≠¿'•‘””#£ﬁ˜·¯˙˚’Æ—÷˛ŒÆ°»„‰¸˝ˇÁÛØ∏ÅÍ™ÏÌÓıˆﬂ‡ÙÇ◊‹›˘" OnWrongChar=":ShowWarning" />
 				<LineEdit Name="Matricks3Rate" Message="rate" Tooltip="Enter the rate for MAtricks 3" Anchors="2,0" Padding="0,0,5,0" Icon="object_xkeys" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner0" KeyboardIconAlignmentH="Left" Focus="CanHaveFocus" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeSelect" TextChanged=":sanitize" DoubleClicked=":LineEditSelectAll" KeyDown=":ExecuteOnEnter" Filter="0123456789.," VKPluginName="TextInputNumOnly" OnWrongChar=":ShowWarning" />
 			</UILayoutGrid>
 
@@ -181,7 +182,7 @@ M.UI_XML_CONTENT = [[
 					<Item SizePolicy="Stretch" />
 				</ItemCollectColumns>
 				<CheckBox Name="MatricksPrefixButton" Text="MAtricks Prefix" Tooltip="Toggles MAtricks Prefix" Anchors="0,0" Texture="corner4" BackColor="Button.Background" HasHover="1" Focus="Never" />
-				<LineEdit Name="MatricksPrefixValue" Message="Name prefix" Tooltip="Enter the name or object number for MAtricks Prefix" Anchors="1,0" Padding="0,0,10,0" Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner8" KeyboardIconAlignmentH="Left" Focus="WantsFocus" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeSelect" DoubleClicked=":LineEditSelectAll" KeyDown=":ExecuteOnEnter" Filter=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZÜÖÄßüöä1234567890!§%/()=?`´°+#'-_:&lt;&gt;«∑€®†Ω¨⁄øπ•å‚∂ƒ©ªº∆@œæ≤¥≈ç√∫µ∞……––'±¡"¶¢[]≠¿'•'""#£ﬁ˜·¯˙˚'Æ—÷˛ŒÆ°»„‰¸˝ˇÁÛØ∏ÅÍ™ÏÌÓıˆﬂ‡ÙÇ◊‹›˘" OnWrongChar=":ShowWarning" />
+				<LineEdit Name="MatricksPrefixValue" Message="Name prefix" Tooltip="Enter the name or object number for MAtricks Prefix" Anchors="1,0" Padding="0,0,10,0" Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner8" KeyboardIconAlignmentH="Left" Focus="WantsFocus" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeSelect" DoubleClicked=":LineEditSelectAll" KeyDown=":ExecuteOnEnter" Filter=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZÜÖÄßüöä1234567890!§%/()=?`´°+#'-_:&lt;&gt;«∑€®†Ω¨⁄øπ•å‚∂ƒ©ªº∆@œæ≤¥≈ç√∫µ∞……––‘±¡“¶¢[]≠¿'•‘””#£ﬁ˜·¯˙˚’Æ—÷˛ŒÆ°»„‰¸˝ˇÁÛØ∏ÅÍ™ÏÌÓıˆﬂ‡ÙÇ◊‹›˘" OnWrongChar=":ShowWarning" />
 			</UILayoutGrid>
 
 			<!-- Fade Titlebar -->
@@ -333,10 +334,10 @@ M.UI_XML_SETTINGS = [[
 				</ItemCollectColumns>
 				<Button Name="Apply" Text="Apply" Tooltip="Apply settings (autosave on close)"
 					Anchors="0,0" Margin="0,0,0,5" BackColor="Button.Background" Texture="corner5"
-					Focus="WantsFocus" KeyDown=":ExecuteOnEnter" HideFocusFrame="No" Focus="Never"/>
+					KeyDown=":ExecuteOnEnter" HideFocusFrame="No" Focus="Never"/>
 				<Button Name="Close" Text="Close" Tooltip="Close the Timematricks Settings"
 					Anchors="1,0" Margin="0,0,0,5" BackColor="Button.Background" Texture="corner10"
-					Focus="WantsFocus" KeyDown=":ExecuteOnEnter" HideFocusFrame="No" Focus="Never"/>
+					KeyDown=":ExecuteOnEnter" HideFocusFrame="No" Focus="Never"/>
 				<WarningInfoButton Name="WarningButton2" Anchors="0,0,0,0" Font="Regular32"
 					BackColor="Global.SelectedInverted" />
 			</UILayoutGrid>

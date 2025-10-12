@@ -1,3 +1,4 @@
+---@diagnostic disable: redundant-parameter
 -- ---------------------------------------------------------------------------
 -- MODULE: helpers
 -- PURPOSE: Utility functions - globals, text processing, math, MA3 API
