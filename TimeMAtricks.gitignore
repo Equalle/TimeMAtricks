@@ -1,5 +1,0 @@
-# Ignore specific files
-gma3_debug*
-UsefulCMD*
-# Ignore all .log files
-*.log
