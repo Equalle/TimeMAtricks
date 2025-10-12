@@ -28,6 +28,7 @@
         "FindNextFocus",
         "MasterPool",
         "Timer",
-        "MessageBox"
+        "MessageBox",
+        "Echo"
     ]
 }
