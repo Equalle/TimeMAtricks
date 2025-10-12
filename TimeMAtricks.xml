@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GMA3 DataVersion="0.9.4">
-	<Plugin Index="1" Name="TimeMAtricks BETA" Path="" Author="Juri">
-    <ComponentLua Index="1" FileName="TimeMAtricks.lua"/>
+<GMA3 DataVersion="2.3.0.4">
+	<Plugin Index="1" Name="TimeMAtricks BETA" Path="" Version="0.9.4" Author="Juri">
+        <ComponentLua Index="1" FileName="TimeMAtricks.lua"/>
     </Plugin>
 </GMA3>
