@@ -158,17 +158,6 @@ local function save_state()
     if el then set_global("TM_" .. name, el.State or 0) end
   end
 
-  -- Save settings fields
-  local matricks_start = ov:FindRecursive("MatricksStartIndex")
-  if matricks_start then
-    set_global("TM_MatricksStartIndex", matricks_start.Content or "")
-  end
-
-  local refresh_rate = ov:FindRecursive("RefreshRateValue")
-  if refresh_rate then
-    set_global("TM_RefreshRateValue", refresh_rate.Content or "1")
-  end
-
   local fade = {
     "FadeAmount"
   }
@@ -200,6 +189,21 @@ local function save_state()
       end
     end
   end
+
+  -- Save settings fields
+  local ov = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_SETTINGS_NAME)
+  if ov then
+    local matricks_start = ov:FindRecursive("MatricksStartIndex")
+    Printf(tostring(matricks_start))
+    if matricks_start then
+      set_global("TM_MatricksStartIndex", matricks_start.Content or "")
+    end
+
+    local refresh_rate = ov:FindRecursive("RefreshRateValue")
+    if refresh_rate then
+      set_global("TM_RefreshRateValue", refresh_rate.Content or "1")
+    end
+  end
 end
 
 -- Unified load function for both UI and settings state
@@ -221,7 +225,8 @@ local function load_state(overlay)
     "Matricks1Value", "Matricks1Rate",
     "Matricks2Value", "Matricks2Rate",
     "Matricks3Value", "Matricks3Rate",
-    "MatricksPrefixValue", "OverallScaleValue"
+    "MatricksPrefixValue", "OverallScaleValue",
+    "MatricksStartIndex", "RefreshRateValue"
   }
 
   for _, name in ipairs(ui_fields) do
@@ -1876,6 +1881,7 @@ end
 
 -- MAIN ENTRY POINT
 local function main()
+  Printf("FileTest")
   if not pluginAlive or nil then
     if is_valid_ui_item(UI_CMD_ICON_NAME, "CmdLineSection") then
       pluginAlive = true
