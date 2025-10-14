@@ -11,7 +11,7 @@ local pluginError = nil
 
 -- CONSTANTS
 local PLUGIN_NAME = 'TimeMAtricks'
-local PLUGIN_VERSION = 'BETA 0.9.4'
+local PLUGIN_VERSION = 'BETA 0.9.4.1'
 local UI_CMD_ICON_NAME = PLUGIN_NAME .. 'Icon'
 local UI_MENU_NAME = PLUGIN_NAME .. ' Menu'
 local UI_SETTINGS_NAME = 'Settings Menu'
@@ -353,7 +353,7 @@ end
 
 local UI_XML_CONTENT = [[
 <?xml version="1.0" encoding="UTF-8"?>
-<GMA3 DataVersion="0.9.0.1">
+<GMA3 DataVersion="0.9.4.1">
 	<BaseInput Name="TimeMAtricks Menu" H="0" W="700" AlignmentH="Center" AlignmentV="Center" Focus="InitialFocus" CanCoexistWithModal="Yes" BlockClickThru="Yes" SuppressOverlayAutoClose="Yes" HideFocusFrame="Yes" CloseOnEscape="Yes">
 		<TitleBar Name="TitleBar" Anchors="0,0" HideFocusFrame="Yes">
 			<ItemCollectRows>
@@ -677,10 +677,10 @@ local UI_XML_SETTINGS = [[
 				</ItemCollectColumns>
 				<Button Name="Apply" Text="Apply" Tooltip="Apply settings (autosave on close)"
 					Anchors="0,0" Margin="0,0,0,5" BackColor="Button.Background" Texture="corner5"
-					Focus="WantsFocus" KeyDown=":ExecuteOnEnter" HideFocusFrame="No" Focus="Never"/>
+					Focus="WantsFocus" KeyDown=":ExecuteOnEnter" HideFocusFrame="No"/>
 				<Button Name="Close" Text="Close" Tooltip="Close the Timematricks Settings"
 					Anchors="1,0" Margin="0,0,0,5" BackColor="Button.Background" Texture="corner10"
-					Focus="WantsFocus" KeyDown=":ExecuteOnEnter" HideFocusFrame="No" Focus="Never"/>
+					Focus="WantsFocus" KeyDown=":ExecuteOnEnter" HideFocusFrame="No"/>
 				<WarningInfoButton Name="WarningButton2" Anchors="0,0,0,0" Font="Regular32"
 					BackColor="Global.SelectedInverted" />
 			</UILayoutGrid>
@@ -1881,7 +1881,6 @@ end
 
 -- MAIN ENTRY POINT
 local function main()
-  Printf("FileTest")
   if not pluginAlive or nil then
     if is_valid_ui_item(UI_CMD_ICON_NAME, "CmdLineSection") then
       pluginAlive = true
