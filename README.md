@@ -21,26 +21,18 @@ Import the plugin in GrandMA3 via the Plugin Pool
 ### Start the plugin
 Launch: Click the TimeMAtricks icon in the command line  
 Configure Storage: Press "Settings" and set the MAtricks pool start number  
-Set Master: Enter a master number and select "Timing Master" or "Speed Master"  
+Set Master: select "Timing Master" or "Speed Master" and enter a master number   
 
 #### Add MAtricks:  
 Toggle "MAtricks 1" on  
 Enter a name (e.g., "in, out and long")  
-Set rate (0.25 = quarter speed, 1 = normal, 2 = double speed)  
+Set rate (0.25 = 1/4th of the Timing Master speed, or 1/4 beat of the SpeedMaster BPM)  
 Start Plugin: Click "Plugin On"  
 Control: Move your master fader to see the effects respond in real-time  
-How It Works  
-MAtricks Triplets  
-For each named MAtricks, the plugin creates 3 variations:  
-
-YourName 1  
-YourName 2  
-YourName 3
-
 
 #### Timing Calculation  
 Timing Master: Direct time values (0-10 seconds)  
-Speed Master: BPM to quarter note conversion  
+Speed Master: BPM to 1/4 note conversion  
 Rate Multipliers: Individual rates per MAtricks (0.01x - 9.99x)  
 Overall Scale: Global scaling factor (0.125× to 8×)  
 Fade Split: Configurable fade/delay ratio  
@@ -48,43 +40,35 @@ Fade Split: Configurable fade/delay ratio
 ## Interface Guide
   <img width="679" height="867" alt="app_gma3_cCcvua7KPO" src="https://github.com/user-attachments/assets/dbd40ced-c871-4e46-8400-3e044a8350d8" />
 ### Main Window  
-Plugin On/Off: Enable/disable the plugin loop  
+Plugin On/Off:  
+enable/disable the plugin loop. 
+
 Master Section:  
-Master number input  
-Timing/Speed master toggle buttons  
+Select Timing- or SpeedMaster  
+Input Master ID
 
 MAtricks Section:  
 3 toggleable MAtricks with name and rate inputs  
 Prefix toggle for organized naming  
-Fade Control:  
 
-Visual slider for fade amount  
-Hold buttons to disable fading  
-
-Overall Scale:  
-Half-time (HT) and double-time (DT) buttons  
-Reset to 1× button  
+Enable the prefix system to organize MAtricks with a common prefix:  
+Prefix: "tm_"  
+MAtricks Name: "in"  
+Creates: "tm_in 1", "tm_in 2" and "tm_in 3"  
 
 ### Settings Window  
 MAtricks Pool Start: Starting number for auto-created MAtricks  
 Refresh Rate: Plugin loop update frequency (seconds)  
 
-Enable the prefix system to organize MAtricks with a common prefix:  
-Prefix: "tm_"  
-MAtricks Name: "in"  
-Creates: "tm_in 1", "tm_in 2", "tm_in 3"  
-Fade Amount Control  
 
-The fade slider controls the split between fade and delay:  
-Left (Fade Less): More delay, less fade  
-Right (Fade More): More fade, less delay  
-Hold to Toggle: Long-press to disable fading entirely  
+Fade Control:  
+Visual slider for fade amount (press left or right to change)  
+Hold button to disable fading  
 
-Rate Examples  
-0.25: Quarter speed (4× slower)  
-0.5: Half speed (2× slower)  
-1.0: Normal speed  
-2.0: Double speed (2× faster)  
+Overall Scale:  
+Half-time (HT) and double-time (DT) buttons  
+Reset to 1× button  
+
 
 ## Technical Details
 
@@ -99,16 +83,19 @@ Use refresh rates of 0.5-1 seconds for smooth operation. Higher values sync less
 Choose unused pool numbers to avoid scattered MAtricks in your pool  
 
 ## Version History
-BETA 0.9.3 (Current)  
+BETA 0.9.4.1 (Current)
+BETA 0.9.3  
 
 ## Known Issues
 When launching MATool's Recipe Tools plugin while TimeMAtricks is running, it fucks with the commandbar icons.  
 
 Quickfix:  
 -Off both Plugins  
--ReloadUI (commandline)
--Start Recipe Tools first
--Then start TimeMAtricks again
+-ReloadUI (commandline)  
+-Start Recipe Tools first  
+-Then start TimeMAtricks again  
+
+When resizing the onpc window or changing the display scale option, the viewbutton toggle (rightarrow last icon in the commandline) will break.  
 
 ## Requirements
 GrandMA3 software (version 2.3+)  
