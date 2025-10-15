@@ -194,7 +194,6 @@ local function save_state()
   local ov = GetDisplayByIndex(1).ScreenOverlay:FindRecursive(UI_SETTINGS_NAME)
   if ov then
     local matricks_start = ov:FindRecursive("MatricksStartIndex")
-    Printf(tostring(matricks_start))
     if matricks_start then
       set_global("TM_MatricksStartIndex", matricks_start.Content or "")
     end

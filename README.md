@@ -38,7 +38,8 @@ Overall Scale: Global scaling factor (0.125× to 8×)
 Fade Split: Configurable fade/delay ratio  
 
 ## Interface Guide
-  <img width="679" height="867" alt="app_gma3_cCcvua7KPO" src="https://github.com/user-attachments/assets/dbd40ced-c871-4e46-8400-3e044a8350d8" />
+  <img width="679" height="867" alt="app_gma3_cCcvua7KPO" src="https://github.com/user-attachments/assets/dbd40ced-c871-4e46-8400-3e044a8350d8" />  
+
 ### Main Window  
 Plugin On/Off:  
 enable/disable the plugin loop. 
@@ -71,7 +72,6 @@ Reset to 1× button
 
 
 ## Technical Details
-
 For BETA use the plugin automatically creates a "TimeMAtricks Reset" macro that clears all global variables for clean uninstallation.
 
 Troubleshooting
@@ -79,11 +79,12 @@ Common Issues
 MAtricks not found: Verify MAtricks names match exactly (case-sensitive)
 
 ## Performance Tips
-Use refresh rates of 0.5-1 seconds for smooth operation. Higher values sync less so MAtricks are not always at correct time. Lower values might spam the System Monitor and should not be necessary.  
+Use refresh rates of 0.5-1 seconds for smooth operation. Higher values sync less so MAtricks are not always at correct time.  
+Lower values might spam the System Monitor and should not be necessary.  
 Choose unused pool numbers to avoid scattered MAtricks in your pool  
 
 ## Version History
-BETA 0.9.4.1 (Current)
+BETA 0.9.4.1 (Current)  
 BETA 0.9.3  
 
 ## Known Issues
