@@ -52,33 +52,6 @@ C.corners = {
   all = 'corner15',
 }
 
-C.Global_Vars = {
-  "TM_MasterValue",
-  "TM_TimingMaster",
-  "TM_SpeedMaster",
-  "TM_Matricks1Value",
-  "TM_Matricks2Value",
-  "TM_Matricks3Value",
-  "TM_Matricks1Rate",
-  "TM_Matricks2Rate",
-  "TM_Matricks3Rate",
-  "TM_Matricks1Button",
-  "TM_Matricks2Button",
-  "TM_Matricks3Button",
-  "TM_MatricksPrefixValue",
-  "TM_MatricksPrefixButton",
-  "TM_MatricksStartIndex",
-  "TM_RefreshRateValue",
-  "TM_FadeValue",
-  "TM_FadeToggle",
-  "TM_FadeLessText",
-  "TM_FadeLessFont",
-  "TM_FadeMoreText",
-  "TM_FadeMoreFont",
-  "TM_OverallScaleValue",
-  "TM_FirstStart"
-}
-
 function C.echo(message)
   Echo("CONSTANTS READY!")
 end

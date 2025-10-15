@@ -16,6 +16,29 @@ function GMA.get_globalV(var)
   return GetVar(GlobalVars(), var)
 end
 
+GMA.GVars = {
+  GMA.get_globalV("TM_mvalue"),
+  GMA.get_globalV("TM_timing"),
+  GMA.get_globalV("TM_speed"),
+  GMA.get_globalV("TM_mx1name"),
+  GMA.get_globalV("TM_mx2name"),
+  GMA.get_globalV("TM_mx3name"),
+  GMA.get_globalV("TM_mx1rate"),
+  GMA.get_globalV("TM_mx2rate"),
+  GMA.get_globalV("TM_mx3rate"),
+  GMA.get_globalV("TM_mx1"),
+  GMA.get_globalV("TM_mx2"),
+  GMA.get_globalV("TM_mx3"),
+  GMA.get_globalV("TM_prefixname"),
+  GMA.get_globalV("TM_prefix"),
+  GMA.get_globalV("TM_mxstart"),
+  GMA.get_globalV("TM_refresh"),
+  GMA.get_globalV("TM_fadeamount"),
+  GMA.get_globalV("TM_fade"),
+  GMA.get_globalV("TM_ovrate"),
+  GMA.get_globalV("TM_firststart")
+}
+
 function GMA.set_userV(var, value)
   return SetVar(UserVars(), var, value)
 end
@@ -36,7 +59,7 @@ function GMA.reset_macro()
   macro.Name = "TimeMAtricks Reset"
   macro.Note = "Resets all TimeMAtricks settings to default values"
 
-  for _, var in ipairs(C.Global_Vars) do
+  for _, var in ipairs(C.GVars) do
     local line = macro:Append()
     if line then
       line:Set("Command", 'DeleteGlobalVariable "' .. var .. '"')

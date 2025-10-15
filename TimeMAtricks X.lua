@@ -10,18 +10,18 @@ local pluginAlive = nil
 local pluginRunning = false
 local pluginError = nil
 
-local C, GMA, UI, XML
+local GMA, C, UI, XML
 
 -- MODULE DEFINITIONS
 -- Map: variable name -> { filename, embedded code }
 local modules = {
-  C = {
-    file = "constants.lua",
-    code = [[
-]]
-  },
   GMA = {
     file = "gma.lua",
+    code = [[
+  ]]
+  },
+  C = {
+    file = "constants.lua",
     code = [[
 ]]
   },
@@ -56,8 +56,8 @@ local function import_modules()
 
   -- Table to map module names to their variable assignments
   local moduleVars = {
-    C = function(result) C = result end,
     GMA = function(result) GMA = result end,
+    C = function(result) C = result end,
     UI = function(result) UI = result end,
     XML = function(result) XML = result end,
     L = function(result) L = result end
@@ -148,7 +148,7 @@ local function main()
       end
     end
     signalTable.open_menu()
-    local firstopen = GMA.get_globalV("TM_FirstStart") or nil
+    local firstopen = GMA.GVars.firststart or nil
     if not firstopen then
       GMA.msgbox({
         title = "First Launch",
