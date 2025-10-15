@@ -3,7 +3,7 @@
 local pluginName = select(1, ...)
 local componentName = select(2, ...)
 local signalTable = select(3, ...)
-local myHandle = select(4, ...)
+MyHandle = select(4, ...)
 
 -- PLUGIN STATE
 local pluginAlive = nil
@@ -41,7 +41,7 @@ local modules = {
 local function import_modules()
   local pluginLibPath = GetPath(Enums.PathType.PluginLibrary)
   local devModulePath = 'C:\\Users\\Juri\\Desktop\\GrandMA3 Plugins\\TimeMAtricks with modules\\modules\\'
-  local devModulePath = '/Users/juriseiffert/Documents/GrandMA3Plugins/TimeMAtricks with modules/modules/'
+  -- local devModulePath = '/Users/juriseiffert/Documents/GrandMA3Plugins/TimeMAtricks with modules/modules/'
 
   -- Create plugin-specific subfolder in plugin library
   local slash = package.config:sub(1, 1) -- Get OS-specific path separator
@@ -140,7 +140,7 @@ local function main()
       pluginAlive = true
     else
       pluginAlive = false
-      UI.create_icon(myHandle)
+      UI.create_icon()
       if not DataPool(1).Macros:Find("TimeMAtricks Reset") then
         if not GMA.reset_macro() then
           ErrEcho("Failed to create reset macro")
@@ -148,7 +148,7 @@ local function main()
       end
     end
     signalTable.open_menu()
-    local firstopen = GMA.GVars.firststart or nil
+    local firstopen = GMA.get_globalV("TM_firststart") or nil
     if not firstopen then
       GMA.msgbox({
         title = "First Launch",
@@ -158,9 +158,9 @@ local function main()
         timeout = 10000,
         backColor = "Window.Plugins",
       })
-      GMA.set_globalV("TM_FirstStart", true)
+      GMA.set_globalV("TM_firststart", true)
     end
-    GMA.set_globalV("TM_FirstStart", true)
+    GMA.set_globalV("TM_firststart", true)
     Timer(loop, 0, 0, kill_plugin)
   else
     signalTable.open_menu()
@@ -170,6 +170,10 @@ end
 -- SIGNALTABLES
 signalTable.open_menu = function()
   UI.open_menu()
+end
+
+signalTable.dRate = function()
+  Echo("click")
 end
 
 return main
