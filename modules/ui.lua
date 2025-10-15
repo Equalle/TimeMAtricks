@@ -2,10 +2,52 @@
 
 UI = {}
 
+UI.PROPERTY_MAP = {
+  -- Text properties
+  Text = function(el, value) el.Text = value end,
+  Content = function(el, value) el.Content = value end,
+  Tooltip = function(el, value) el.Tooltip = value end,
+
+  -- Color properties
+  BackColor = function(el, value) el.BackColor = value end,
+  TextColor = function(el, value) el.TextColor = value end,
+  IconColor = function(el, value) el.IconColor = value end,
+
+  -- Visual properties
+  Icon = function(el, value) el.Icon = value end,
+  Font = function(el, value) el.Font = value end,
+  Visible = function(el, value) el.Visible = value end,
+  Enabled = function(el, value) el.Enabled = value end,
+
+  -- State properties
+  State = function(el, value) el.State = value end,
+
+  -- Size/Position properties
+  H = function(el, value) el.H = value end,
+  W = function(el, value) el.W = value end,
+  X = function(el, value) el.X = value end,
+  Y = function(el, value) el.Y = value end,
+
+  -- Event handlers
+  Clicked = function(el, value) el.Clicked = value end,
+  KeyDown = function(el, value) el.KeyDown = value end,
+  MouseDownHold = function(el, value) el.MouseDownHold = value end,
+
+  -- Plugin component
+  PluginComponent = function(el, value) el.PluginComponent = value end,
+}
+
 function UI.save()
 end
 
 function UI.load()
+  UI.fill_element("TitleButton", {
+    Text = C.PLUGIN_NAME,
+    Icon = C.icons.matricks,
+  })
+  UI.fill_element("Version", {
+    Text = "Version: " .. C.PLUGIN_VERSION,
+  })
 end
 
 -- Returns cmdline or screenoverlay object
@@ -52,16 +94,56 @@ function UI.create_icon(handle)
   end
 end
 
-function UI.create_menu()
-  local ui = C.screenOV:Append('BaseInput')
-  ui.SuppressOverlayAutoclose = "Yes"
-  ui.AutoClose = "No"
-  ui.CloseOnEscape = "Yes"
-  local path, file = XML.importxml("ui")
-  ui:Import(path, file)
+function UI.add_element(elementType, properties)
 end
 
-function UI.add_element(elementType, properties)
+function UI.fill_element(obj, property_or_table, value)
+  local el = C.UI:FindRecursive(obj)
+  if not el then
+    ErrEcho("Element %s not found in UI", obj)
+    return false
+  end
+
+  -- Check if property_or_table is actually a table of properties
+  if type(property_or_table) == "table" and value == nil then
+    -- Table mode: property_or_table = { Text = "Hello", Icon = "star", ... }
+    for prop, val in pairs(property_or_table) do
+      local func = UI.PROPERTY_MAP[prop]
+      if func then
+        func(el, val)
+      else
+        ErrEcho("Property %s not found in PROPERTY_MAP", prop)
+      end
+    end
+  else
+    -- Single property mode: property_or_table = "Text", value = "Hello"
+    local func = UI.PROPERTY_MAP[property_or_table]
+    if func then
+      func(el, value)
+    else
+      ErrEcho("Property %s not found in PROPERTY_MAP", property_or_table)
+    end
+  end
+  return true
+end
+
+function UI.create_menu()
+  C.UI = C.screenOV:Append('BaseInput')
+  C.UI.SuppressOverlayAutoclose = "Yes"
+  C.UI.AutoClose = "No"
+  C.UI.CloseOnEscape = "Yes"
+  local path, file = XML.importxml("ui")
+  C.UI:Import(path, file)
+end
+
+function UI.open_menu()
+  if not UI.is_valid_item(C.UI_MENU_NAME, "screenOV") then
+    UI.create_menu()
+    FindBestFocus(GetTopOverlay(1))
+  else
+    UI.fill_element(C.UI_MENU_NAME, "Visible", "YES")
+  end
+  UI.load()
 end
 
 function UI.echo(message)

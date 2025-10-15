@@ -10,7 +10,7 @@ local pluginAlive = nil
 local pluginRunning = false
 local pluginError = nil
 
-local C, GMA, SL, UI, XML
+local C, GMA, UI, XML
 
 -- MODULE DEFINITIONS
 -- Map: variable name -> { filename, embedded code }
@@ -40,7 +40,8 @@ local modules = {
 -- WRITE AND LOAD MODULES
 local function import_modules()
   local pluginLibPath = GetPath(Enums.PathType.PluginLibrary)
-  local devModulePath = "C:\\Users\\Juri\\Desktop\\GrandMA3 Plugins\\TimeMAtricks with modules\\modules\\"
+  local devModulePath = 'C:\\Users\\Juri\\Desktop\\GrandMA3 Plugins\\TimeMAtricks with modules\\modules\\'
+  local devModulePath = '/Users/juriseiffert/Documents/GrandMA3Plugins/TimeMAtricks with modules/modules/'
 
   -- Create plugin-specific subfolder in plugin library
   local slash = package.config:sub(1, 1) -- Get OS-specific path separator
@@ -124,6 +125,7 @@ local function import_modules()
 end
 
 local function loop()
+  pluginAlive = true
   coroutine.yield(1)
   -- Echo("LOOPING...")
 end
@@ -132,8 +134,8 @@ local function kill_plugin()
 end
 
 local function main()
-  import_modules()
   if not pluginAlive then
+    import_modules()
     if UI.is_valid_item(C.CMD_ICON_NAME, "cmdLN") then
       pluginAlive = true
     else
@@ -158,21 +160,16 @@ local function main()
       })
       GMA.set_globalV("TM_FirstStart", true)
     end
+    GMA.set_globalV("TM_FirstStart", true)
     Timer(loop, 0, 0, kill_plugin)
+  else
+    signalTable.open_menu()
   end
 end
 
 -- SIGNALTABLES
 signalTable.open_menu = function()
-  if not UI.is_valid_item(C.UI_MENU_NAME, "screenOV") then
-    UI.create_menu()
-    FindBestFocus(GetTopOverlay(1))
-  else
-    local menu = C.screenOV:FindRecursive(C.UI_MENU_NAME)
-    if menu then
-      menu.Visible = "YES"
-    end
-  end
+  UI.open_menu()
 end
 
 return main

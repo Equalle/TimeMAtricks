@@ -7,6 +7,7 @@ C.PLUGIN_VERSION = "Beta 0.0.0"
 C.CMD_ICON_NAME = C.PLUGIN_NAME .. "_Icon"
 C.UI_MENU_NAME = C.PLUGIN_NAME .. "_Menu"
 C.UI_SETTINGS_NAME = C.PLUGIN_NAME .. "_Settings"
+C.UI = nil
 
 
 C.colors = {
