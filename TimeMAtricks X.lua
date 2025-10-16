@@ -7,8 +7,12 @@ MyHandle = select(4, ...)
 
 -- PLUGIN STATE
 local pluginAlive = nil
-local pluginRunning = false
+PluginRunning = false
 local pluginError = nil
+
+-------------
+-- MODULES --
+-------------
 
 local GMA, C, UI, XML, S
 
@@ -130,6 +134,10 @@ local function import_modules()
   S.echo()
 end
 
+------------------------
+-- MAIN LOOP AND EXIT --
+------------------------
+---
 local function loop()
   pluginAlive = true
   coroutine.yield(1)
@@ -138,6 +146,10 @@ end
 
 local function kill_plugin()
 end
+
+---------------------
+-- MAIN ENTRYPOINT --
+---------------------
 
 local function main()
   if not pluginAlive then

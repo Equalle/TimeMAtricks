@@ -2,6 +2,10 @@
 
 UI = {}
 
+-----------------
+--- PROPERTIES --
+-----------------
+
 UI.PROPERTY_MAP = {
   -- Text properties
   Text = function(el, value) el.Text = value end,
@@ -34,6 +38,31 @@ UI.PROPERTY_MAP = {
   -- Plugin component
   PluginComponent = function(el, value) el.PluginComponent = value end,
 }
+
+---------------
+-- SAVE/LOAD --
+---------------
+
+-- Saves current UI data to variables
+function UI.save()
+end
+
+-- Loads current UI data with variable data
+function UI.load()
+  UI.edit_element("TitleButton", {
+    Text = C.PLUGIN_NAME,
+    Icon = C.icons.matricks,
+  })
+  UI.edit_element("Version", {
+    Text = "Version: " .. C.PLUGIN_VERSION,
+  })
+
+  C.CMD_ICON.Icon = C.icons.matricks
+end
+
+---------------
+--- HELPERS ---
+---------------
 
 -- Recursively assign PluginComponent to all interactive elements
 function UI.assign_plugin_components(menu)
@@ -107,22 +136,6 @@ function UI.assign_plugin_components(menu)
 
   process_element(menu)
   return count
-end -- Saves current UI data to variables
-
-function UI.save()
-end
-
--- Loads current UI data with variable data
-function UI.load()
-  UI.edit_element("TitleButton", {
-    Text = C.PLUGIN_NAME,
-    Icon = C.icons.matricks,
-  })
-  UI.edit_element("Version", {
-    Text = "Version: " .. C.PLUGIN_VERSION,
-  })
-
-  C.CMD_ICON.Icon = C.icons.matricks
 end
 
 -- Returns cmdline or screenoverlay object
@@ -132,6 +145,8 @@ local function get_dir(dir)
       (dir == "screenOV" and GetDisplayByIndex(1).ScreenOverlay)
 end
 
+-- dirname = cmdLN or screenOV
+-- Returns if the entered object exists in the specified Menu
 function UI.is_valid_item(obj, dirname)
   local dir = get_dir(dirname)
   if not dir then
@@ -145,61 +160,10 @@ function UI.is_valid_item(obj, dirname)
   return found ~= nil
 end
 
-function UI.create_icon()
-  local lastCols = tonumber(C.cmdLN.Columns)
-  local cols = lastCols + 1
-  C.cmdLN.Columns = cols
-
-  C.CMD_ICON = C.cmdLN:Append("Button")
-  C.CMD_ICON.Name = C.CMD_ICON_NAME
-  C.CMD_ICON.Anchors = { left = cols - 2 }
-  C.CMD_ICON.W = 49
-  C.CMD_ICON.H = "100%"
-  C.CMD_ICON.PluginComponent = MyHandle
-  C.CMD_ICON.Clicked = 'open_menu'
-  C.CMD_ICON.Tooltip = C.PLUGIN_NAME .. " Plugin"
-
-  Tri = C.cmdLN:FindRecursive("RightTriangle")
-  if Tri then
-    Tri.Anchors = { left = cols - 1 }
-    C.cmdLN[2][cols].SizePolicy = "Fixed"
-    C.cmdLN[2][cols].Size = 50
-  end
-end
-
-function UI.add_element(object, menu, options)
-  local el = menu:FindRecursive(object)
-  if not el then
-    ErrPrintf("Element not found: %s", tostring(object))
-    return false
-  end
-
-  -- Always set PluginComponent
-  if UI.PROPERTY_MAP.PluginComponent then
-    UI.PROPERTY_MAP.PluginComponent(el, MyHandle)
-  end
-
-  -- Apply all properties from options using the property map
-  -- Options keys should match PROPERTY_MAP keys exactly (Clicked, State, Content, Text, etc.)
-  for prop, value in pairs(options) do
-    local propFunc = UI.PROPERTY_MAP[prop]
-    if propFunc then
-      propFunc(el, value)
-    else
-      ErrPrintf("Property %s not found in PROPERTY_MAP", prop)
-    end
-  end
-
-  -- Set default enabled state if not specified
-  if options.Enabled == nil then
-    if UI.PROPERTY_MAP.Enabled then
-      UI.PROPERTY_MAP.Enabled(el, "Yes")
-    end
-  end
-
-  return true
-end
-
+-- Edits a UI element property or multiple properties
+-- obj = string name of the element to edit
+-- property_or_table = string property name or table of properties
+-- value = value to set (if property_or_table is string)
 function UI.edit_element(obj, property_or_table, value)
   local el = C.UI_MENU:FindRecursive(obj)
   if not el then
@@ -230,6 +194,33 @@ function UI.edit_element(obj, property_or_table, value)
   return true
 end
 
+---------------
+-- CREATE UI --
+---------------
+-- Creates the command line icon button
+function UI.create_icon()
+  local lastCols = tonumber(C.cmdLN.Columns)
+  local cols = lastCols + 1
+  C.cmdLN.Columns = cols
+
+  C.CMD_ICON = C.cmdLN:Append("Button")
+  C.CMD_ICON.Name = C.CMD_ICON_NAME
+  C.CMD_ICON.Anchors = { left = cols - 2 }
+  C.CMD_ICON.W = 49
+  C.CMD_ICON.H = "100%"
+  C.CMD_ICON.PluginComponent = MyHandle
+  C.CMD_ICON.Clicked = 'open_menu'
+  C.CMD_ICON.Tooltip = C.PLUGIN_NAME .. " Plugin"
+
+  Tri = C.cmdLN:FindRecursive("RightTriangle")
+  if Tri then
+    Tri.Anchors = { left = cols - 1 }
+    C.cmdLN[2][cols].SizePolicy = "Fixed"
+    C.cmdLN[2][cols].Size = 50
+  end
+end
+
+-- Creates the main plugin menu
 function UI.create_menu()
   C.UI_MENU = C.screenOV:Append('BaseInput')
   C.UI_MENU.SuppressOverlayAutoclose = "Yes"
@@ -242,8 +233,12 @@ function UI.create_menu()
 
   -- Automatically assign PluginComponent to all interactive elements
   UI.assign_plugin_components(C.UI_MENU)
+
+  coroutine.yield(0.05) -- Wait a moment for UI to build
+  FindBestFocus(C.UI_MENU)
 end
 
+-- Debug
 function UI.echo(message)
   Echo("UI READY!")
 end

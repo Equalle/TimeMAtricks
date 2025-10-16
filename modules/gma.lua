@@ -8,25 +8,43 @@ function GMA.get_version()
   return text, major, minor, streaming, ui
 end
 
+-- Sets the GrandMA3 global variable
+-- var: string name of the variable
+-- value: value to set (string, number, boolean)
+-- returns: boolean success
 function GMA.set_globalV(var, value)
   return SetVar(GlobalVars(), var, value)
 end
 
+-- Gets the GrandMA3 global variable
+-- var: string name of the variable
+-- returns: value or nil if not found
 function GMA.get_globalV(var)
   return GetVar(GlobalVars(), var)
 end
 
+-- Sets the GrandMA3 user variable
+-- var: string name of the variable
+-- value: value to set (string, number, boolean)
+-- returns: boolean success
 function GMA.set_userV(var, value)
   return SetVar(UserVars(), var, value)
 end
 
+-- Gets the GrandMA3 user variable
+-- var: string name of the variable
+-- returns: value or nil if not found
 function GMA.get_userV(var)
   return GetVar(UserVars(), var)
 end
 
-function GMA.press_key(key)
-  Keyboard(1, "press", key)
-  Keyboard(1, "release", key)
+-- Simulates a key press on the GrandMA3 keyboard
+-- key: string name of the key (e.g. "F1", "ENTER", "ESC", "LEFT", "RIGHT", "A" etc.)
+-- modifier: table with boolean fields shift, ctrl, alt, numlock (all optional, default false)
+function GMA.press_key(key, modifier)
+  modifier = modifier or { shift = false, ctrl = false, alt = false, numlock = false }
+  Keyboard(1, "press", key, modifier.shift, modifier.ctrl, modifier.alt, modifier.numlock)
+  Keyboard(1, "release", key, modifier.shift, modifier.ctrl, modifier.alt, modifier.numlock)
 end
 
 --create reset macro for beta testers
@@ -41,7 +59,7 @@ function GMA.reset_macro()
   macro.Name = "TimeMAtricks Reset"
   macro.Note = "Resets all TimeMAtricks settings to default values"
 
-  for _, var in ipairs(C.GVars) do
+  for _, var in pairs(C.GVars) do
     local line = macro:Append()
     if line then
       line:Set("Command", 'DeleteGlobalVariable "' .. var .. '"')
