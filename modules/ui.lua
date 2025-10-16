@@ -233,6 +233,7 @@ function UI.create_menu()
 
   -- Automatically assign PluginComponent to all interactive elements
   UI.assign_plugin_components(C.UI_MENU)
+  C.UI_MENU_WARNING = C.UI_MENU:FindRecursive("TitleWarningButton")
 
   coroutine.yield(0.05) -- Wait a moment for UI to build
   FindBestFocus(C.UI_MENU)

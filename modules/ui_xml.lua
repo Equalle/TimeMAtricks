@@ -69,8 +69,8 @@ XML.UI_MENU = [[
       </ItemCollectColumns>
       <TitleButton Name="TitleButton" Anchors="0,0" Texture="corner1" />
       <CloseButton Name="CloseButton" Anchors="1,0" Texture="corner2" />
-      <WarningInfoButton Name="WarningButton" Anchors="0,0,2,0" Font="Regular32"
-        BackColor="Global.AlertText" />
+      <WarningInfoButton Name="TitleWarningButton" Anchors="0,0,1,0" Font="Regular32"
+        BackColor="Global.AlertText" Texture="corner3" />
     </TitleBar>
 
     <!-- Main Content -->
@@ -131,7 +131,8 @@ XML.UI_MENU = [[
       <LineEdit Name="Master ID" Message="Obj Number" Anchors="2,0" Padding="0,0,10,0"
         Texture="corner15" Icon="master" IconAlignmentH="Right" IconAlignmentV="Center"
         TextChanged=":text_master" KeyDown=":key_down" FocusGet=":LineEditSelectAll"
-        FocusLost=":LineEditDeselect" />
+        FocusLost=":LineEditDeselect" VKPluginName="TextInputNumOnly" Filter="0123456789"
+        OnWrongChar=":show_warning" MaxTextLength="2" />
     </UILayoutGrid>
 
     <!-- Matricks Prefix -->
@@ -270,9 +271,9 @@ XML.UI_MENU = [[
         <Item SizePolicy="Stretch" />         <!-- Close -->
       </ItemCollectColumns>
 
-      <Button Name="Apply" Text="Apply" Anchors="0,0" Texture="corner5" Focus="Never"
+      <Button Name="Apply" Text="Apply" Anchors="0,0" Texture="corner5" Focus="CanHaveFocus"
         TextShadow="Yes" Font="Medium20" Clicked=":apply_changes" />
-      <Button Name="Close" Text="Close" Anchors="1,0" Texture="corner10" Focus="Never"
+      <Button Name="Close" Text="Close" Anchors="1,0" Texture="corner10" Focus="CanHaveFocus"
         TextShadow="Yes" Font="Medium20" Clicked=":close_menu" />
     </UILayoutGrid>
   </BaseInput>

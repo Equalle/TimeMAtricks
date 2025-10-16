@@ -8,13 +8,13 @@ MyHandle = select(4, ...)
 -- PLUGIN STATE
 local pluginAlive = nil
 PluginRunning = false
-local pluginError = nil
+PluginError = nil
 
 -------------
 -- MODULES --
 -------------
 
-local GMA, C, UI, XML, S
+local GMA, C, UI, XML, S, O
 
 -- MODULE DEFINITIONS
 -- Map: variable name -> { filename, embedded code }
@@ -44,6 +44,11 @@ local modules = {
     code = [[
 ]]
   },
+  O = {
+    file = "operators.lua",
+    code = [[
+]]
+  },
 }
 
 -- WRITE AND LOAD MODULES
@@ -69,7 +74,8 @@ local function import_modules()
     C = function(result) C = result end,
     UI = function(result) UI = result end,
     XML = function(result) XML = result end,
-    S = function(result) S = result end
+    S = function(result) S = result end,
+    O = function(result) O = result end
   }
 
   for moduleName, moduleData in pairs(modules) do
@@ -132,6 +138,7 @@ local function import_modules()
   UI.echo()
   XML.echo()
   S.echo()
+  O.echo()
 end
 
 ------------------------
