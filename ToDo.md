@@ -4,7 +4,8 @@
 
 -Button Click
 -LineEdit Text Change
--CheckBox Toggle
+-1 for Masters, 1 for name, 1 for rate
+-CheckBox Toggles
 
 ### Remove
 

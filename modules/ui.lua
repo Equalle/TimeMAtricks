@@ -66,8 +66,14 @@ function UI.assign_plugin_components(menu)
     if class then
       for _, interactiveClass in ipairs(UI.INTERACTIVE_CLASSES) do
         if class == interactiveClass then
-          el.PluginComponent = MyHandle
-          count = count + 1
+          -- Exclude buttons with TextColor="CheckBox.ReadOnlyText" (read-only display buttons)
+          local textColor = el.TextColor
+          if not (class == "Button" and textColor == "CheckBox.ReadOnlyText") then
+            el.PluginComponent = MyHandle
+            count = count + 1
+            local name = el.Name or "unnamed"
+            Echo("Assigned PluginComponent to %s: %s", class, name)
+          end
           break
         end
       end

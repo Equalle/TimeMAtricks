@@ -142,7 +142,7 @@ XML.UI_MENU = [[
 
         <Button Name="MstTiming" Text="Timing Master" Anchors="0,0" Texture="corner5" Focus="Never" />
         <Button Name="MstSpeed" Text="Speed Master" Anchors="1,0" Texture="corner10" Focus="Never" />
-        <LineEdit Name="Master ID" Message="Obj Number" Anchors="2,0" Padding="0,0,10,0" Texture="corner15" Icon="master" IconAlignmentH="Right" IconAlignmentV="Center" />
+        <LineEdit Name="Master ID" Message="Obj Number" Anchors="2,0" Padding="0,0,10,0" Texture="corner15" Icon="master" IconAlignmentH="Right" IconAlignmentV="Center" TextChanged=":text"/>
       </UILayoutGrid>
 
       <!-- Matricks Prefix -->
@@ -268,10 +268,11 @@ XML.UI_SETTINGS = [[
   <?xml version="1.0" encoding="UTF-8"?>
   <GMA3 DataVersion="0.9.0.1">
     <BaseInput Name="TimeMAtricks Menu" H="0" W="700" AlignmentH="Center" AlignmentV="Center" Focus="InitialFocus" CanCoexistWithModal="Yes" BlockClickThru="Yes" SuppressOverlayAutoClose="Yes" HideFocusFrame="Yes" CloseOnEscape="Yes">
-
     </BaseInput>
   </GMA3>
 ]]
+
+
 
 function XML.echo(message)
 Echo("XML READY!")

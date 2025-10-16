@@ -172,8 +172,8 @@ signalTable.open_menu = function()
   UI.open_menu()
 end
 
-signalTable.dRate = function()
-  Echo("click")
+signalTable.text = function(caller)
+  Echo(caller.Content)
 end
 
 return main
