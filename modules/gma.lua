@@ -24,6 +24,11 @@ function GMA.get_userV(var)
   return GetVar(UserVars(), var)
 end
 
+function GMA.press_key(key)
+  Keyboard(1, "press", key)
+  Keyboard(1, "release", key)
+end
+
 --create reset macro for beta testers
 function GMA.reset_macro()
   local macroPool = DataPool(1).Macros

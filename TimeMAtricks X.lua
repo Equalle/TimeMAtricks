@@ -1,8 +1,8 @@
 ---@diagnostic disable: redundant-parameter
 
-local pluginName = select(1, ...)
-local componentName = select(2, ...)
-local signalTable = select(3, ...)
+-- local pluginName = select(1, ...)
+-- local componentName = select(2, ...)
+SignalTable = select(3, ...)
 MyHandle = select(4, ...)
 
 -- PLUGIN STATE
@@ -10,7 +10,7 @@ local pluginAlive = nil
 local pluginRunning = false
 local pluginError = nil
 
-local GMA, C, UI, XML
+local GMA, C, UI, XML, S
 
 -- MODULE DEFINITIONS
 -- Map: variable name -> { filename, embedded code }
@@ -35,13 +35,18 @@ local modules = {
     code = [[
 ]]
   },
+  S = {
+    file = "signals.lua",
+    code = [[
+]]
+  },
 }
 
 -- WRITE AND LOAD MODULES
 local function import_modules()
   local pluginLibPath = GetPath(Enums.PathType.PluginLibrary)
   local devModulePath = 'C:\\Users\\Juri\\Desktop\\GrandMA3 Plugins\\TimeMAtricks with modules\\modules\\'
-  -- local devModulePath = '/Users/juriseiffert/Documents/GrandMA3Plugins/TimeMAtricks with modules/modules/'
+  local devModulePath = '/Users/juriseiffert/Documents/GrandMA3Plugins/TimeMAtricks with modules/modules/'
 
   -- Create plugin-specific subfolder in plugin library
   local slash = package.config:sub(1, 1) -- Get OS-specific path separator
@@ -60,7 +65,7 @@ local function import_modules()
     C = function(result) C = result end,
     UI = function(result) UI = result end,
     XML = function(result) XML = result end,
-    L = function(result) L = result end
+    S = function(result) S = result end
   }
 
   for moduleName, moduleData in pairs(modules) do
@@ -122,6 +127,7 @@ local function import_modules()
   GMA.echo()
   UI.echo()
   XML.echo()
+  S.echo()
 end
 
 local function loop()
@@ -147,7 +153,7 @@ local function main()
         end
       end
     end
-    signalTable.open_menu()
+    SignalTable.open_menu()
     local firstopen = GMA.get_globalV("TM_firststart") or nil
     if not firstopen then
       GMA.msgbox({
@@ -163,17 +169,8 @@ local function main()
     GMA.set_globalV("TM_firststart", true)
     Timer(loop, 0, 0, kill_plugin)
   else
-    signalTable.open_menu()
+    SignalTable.open_menu()
   end
-end
-
--- SIGNALTABLES
-signalTable.open_menu = function()
-  UI.open_menu()
-end
-
-signalTable.text = function(caller)
-  Echo(caller.Content)
 end
 
 return main

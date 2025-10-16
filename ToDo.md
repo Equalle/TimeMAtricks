@@ -3,9 +3,20 @@
 ### Add
 
 -Button Click
+    -plugin_off
+    -plugin_on
+    -set_master
+    -matricks_toggle
+    -fade_change
+    -fade_toggle
+    -rate_change
+    -apply_changes
 -LineEdit Text Change
--1 for Masters, 1 for name, 1 for rate
+    -masters: text_master, key_down
+    -name: key_down
+    -rate text_rate, key_down
 -CheckBox Toggles
+-Warning triggers
 
 ### Remove
 

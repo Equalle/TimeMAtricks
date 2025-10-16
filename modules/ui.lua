@@ -72,7 +72,7 @@ function UI.assign_plugin_components(menu)
             el.PluginComponent = MyHandle
             count = count + 1
             local name = el.Name or "unnamed"
-            Echo("Assigned PluginComponent to %s: %s", class, name)
+            -- Echo("Assigned PluginComponent to %s: %s", class, name)
           end
           break
         end
@@ -246,6 +246,9 @@ function UI.create_menu()
   local path, file = XML.importxml("ui")
   C.UI_MENU:Import(path, file)
 
+  C.UI_MENU:HookDelete(SignalTable.close_menu, C.UI_MENU)
+
+
   -- Automatically assign PluginComponent to all interactive elements
   UI.assign_plugin_components(C.UI_MENU)
 end
@@ -258,6 +261,17 @@ function UI.open_menu()
     UI.fill_element(C.UI_MENU_NAME, "Visible", "YES")
   end
   UI.load()
+end
+
+function UI.close_menu(caller)
+  UI.save()
+  if C.UI_MENU then
+    if caller and caller.Name == "Close" then
+      GMA.press_key("Escape")
+    end
+  elseif caller and caller == C.UI_SETTINGS then
+    C.UI_MENU.Visible = "Yes"
+  end
 end
 
 function UI.echo(message)
