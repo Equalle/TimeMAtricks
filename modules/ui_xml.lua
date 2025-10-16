@@ -202,11 +202,11 @@ XML.UI_MENU = [[
     <!-- Fade -->
     <UILayoutGrid Name="Fade" Anchors="0,7" Padding="10,0,10,10">
       <ItemCollectRows>
-        <Item SizePolicy="Fixed" Size="75" /> <!-- Fade -->
+        <Item SizePolicy="Fixed" Size="75" />   <!-- Fade -->
       </ItemCollectRows>
       <ItemCollectColumns>
         <Item SizePolicy="Fixed" Size="325" Name="Fade Less" />
-        <Item SizePolicy="Stretch" />         <!-- Fade More -->
+        <Item SizePolicy="Stretch" />           <!-- Fade More -->
       </ItemCollectColumns>
 
       <Button Name="FadeLess" Text="Fade Less" Anchors="0,0" Texture="corner5" Focus="Never"

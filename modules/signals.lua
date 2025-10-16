@@ -83,7 +83,7 @@ SignalTable.set_master = function(caller)
     end
 end
 
-SignalTable.toggle_matricks = function(caller)
+SignalTable.matricks_toggle = function(caller)
     -- Code to toggle matricks
     Echo(">PH<   toggle_matricks")
 end
@@ -91,6 +91,11 @@ end
 SignalTable.fade_change = function(caller)
     -- Code to change fade
     Echo(">PH<   fade_change")
+end
+
+SignalTable.fade_toggle = function(caller)
+    -- Code to toggle fade
+    Echo(">PH<   fade_toggle")
 end
 
 SignalTable.rate_change = function(caller)
@@ -101,6 +106,24 @@ end
 SignalTable.apply_changes = function(caller)
     -- Code to apply changes
     Echo(">PH<   apply_changes")
+end
+
+SignalTable.text_master = function(caller)
+    if caller then
+        Echo("%s: %s", caller.Name, caller.Content)
+    end
+end
+
+SignalTable.text_rate = function(caller)
+    if caller then
+        Echo("%s: %s", caller.Name, caller.Content)
+    end
+end
+
+SignalTable.key_down = function(caller, dummy, keycode)
+    if caller.HasFocus and keycode == Enums.KeyboardCodes.Enter then
+        Echo("Enter -> %s: %s", caller.Name, caller.Content)
+    end
 end
 
 function S.echo(message)

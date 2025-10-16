@@ -76,11 +76,18 @@ C.GVars = {
   firststart = "TM_firststart"
 }
 
-function C.echo(message)
-  Echo("CONSTANTS READY!")
-end
+-- Classes that should have PluginComponent assigned
+C.INTERACTIVE_CLASSES = {
+  "Button",
+  "LineEdit",
+  "CheckBox",
+}
 
 C.cmdLN = GetDisplayByIndex(1).CmdLineSection
 C.screenOV = GetDisplayByIndex(1).ScreenOverlay
+
+function C.echo(message)
+  Echo("CONSTANTS READY!")
+end
 
 return C

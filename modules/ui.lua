@@ -35,14 +35,6 @@ UI.PROPERTY_MAP = {
   PluginComponent = function(el, value) el.PluginComponent = value end,
 }
 
--- Classes that should have PluginComponent assigned
-UI.INTERACTIVE_CLASSES = {
-  "Button",
-  "LineEdit",
-  "CheckBox",
-  -- Add more as needed: "Slider", "ComboBox", etc.
-}
-
 -- Recursively assign PluginComponent to all interactive elements
 function UI.assign_plugin_components(menu)
   if not menu then
@@ -64,7 +56,7 @@ function UI.assign_plugin_components(menu)
     -- Check if this is an interactive element that needs PluginComponent
     local class = el:GetClass()
     if class then
-      for _, interactiveClass in ipairs(UI.INTERACTIVE_CLASSES) do
+      for _, interactiveClass in ipairs(C.INTERACTIVE_CLASSES) do
         if class == interactiveClass then
           -- Exclude buttons with TextColor="CheckBox.ReadOnlyText" (read-only display buttons)
           local textColor = el.TextColor
