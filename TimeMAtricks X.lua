@@ -166,7 +166,7 @@ local function main()
       })
       GMA.set_globalV("TM_firststart", true)
     end
-    GMA.set_globalV("TM_firststart", true)
+    GMA.set_globalV(C.GVars.firststart, true)
     Timer(loop, 0, 0, kill_plugin)
   else
     SignalTable.open_menu()

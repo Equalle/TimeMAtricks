@@ -122,13 +122,15 @@ end
 
 -- Loads current UI data with variable data
 function UI.load()
-  UI.fill_element("TitleButton", {
+  UI.edit_element("TitleButton", {
     Text = C.PLUGIN_NAME,
     Icon = C.icons.matricks,
   })
-  UI.fill_element("Version", {
+  UI.edit_element("Version", {
     Text = "Version: " .. C.PLUGIN_VERSION,
   })
+
+  C.CMD_ICON.Icon = C.icons.matricks
 end
 
 -- Returns cmdline or screenoverlay object
@@ -156,16 +158,14 @@ function UI.create_icon()
   local cols = lastCols + 1
   C.cmdLN.Columns = cols
 
-  TMIcon = C.cmdLN:Append("Button")
-  TMIcon.Name = C.CMD_ICON_NAME
-  TMIcon.Anchors = { left = cols - 2 }
-  TMIcon.W = 49
-  TMIcon.H = "100%"
-  TMIcon.PluginComponent = MyHandle
-  TMIcon.Clicked = 'open_menu'
-  TMIcon.Icon = C.icons.star
-  TMIcon.IconColor = C.colors.icon.inactive
-  TMIcon.Tooltip = C.PLUGIN_NAME .. " Plugin"
+  C.CMD_ICON = C.cmdLN:Append("Button")
+  C.CMD_ICON.Name = C.CMD_ICON_NAME
+  C.CMD_ICON.Anchors = { left = cols - 2 }
+  C.CMD_ICON.W = 49
+  C.CMD_ICON.H = "100%"
+  C.CMD_ICON.PluginComponent = MyHandle
+  C.CMD_ICON.Clicked = 'open_menu'
+  C.CMD_ICON.Tooltip = C.PLUGIN_NAME .. " Plugin"
 
   Tri = C.cmdLN:FindRecursive("RightTriangle")
   if Tri then
@@ -208,7 +208,7 @@ function UI.add_element(object, menu, options)
   return true
 end
 
-function UI.fill_element(obj, property_or_table, value)
+function UI.edit_element(obj, property_or_table, value)
   local el = C.UI_MENU:FindRecursive(obj)
   if not el then
     ErrEcho("Element %s not found in UI", obj)
@@ -248,30 +248,8 @@ function UI.create_menu()
 
   C.UI_MENU:HookDelete(SignalTable.close_menu, C.UI_MENU)
 
-
   -- Automatically assign PluginComponent to all interactive elements
   UI.assign_plugin_components(C.UI_MENU)
-end
-
-function UI.open_menu()
-  if not UI.is_valid_item(C.UI_MENU_NAME, "screenOV") then
-    UI.create_menu()
-    FindBestFocus(GetTopOverlay(1))
-  else
-    UI.fill_element(C.UI_MENU_NAME, "Visible", "YES")
-  end
-  UI.load()
-end
-
-function UI.close_menu(caller)
-  UI.save()
-  if C.UI_MENU then
-    if caller and caller.Name == "Close" then
-      GMA.press_key("Escape")
-    end
-  elseif caller and caller == C.UI_SETTINGS then
-    C.UI_MENU.Visible = "Yes"
-  end
 end
 
 function UI.echo(message)

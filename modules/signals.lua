@@ -7,7 +7,7 @@ SignalTable.open_menu = function()
         UI.create_menu()
         FindBestFocus(GetTopOverlay(1))
     else
-        UI.fill_element(C.UI_MENU_NAME, "Visible", "YES")
+        UI.edit_element(C.UI_MENU_NAME, "Visible", "YES")
     end
     UI.load()
 end
@@ -24,18 +24,63 @@ SignalTable.close_menu = function(caller)
 end
 
 SignalTable.plugin_off = function()
-    -- Code to handle plugin off
-    Echo(">PH<   plugin_off")
+    UI.edit_element("PlOn", {
+        BackColor = C.colors.button.default,
+        TextColor = C.colors.icon.inactive
+    })
+
+    UI.edit_element("PlOff", {
+        BackColor = C.colors.button.clear,
+        TextColor = C.colors.icon.active
+    })
+
+    UI.edit_element("TitleButton", {
+        IconColor = C.colors.icon.inactive,
+    })
+
+    C.CMD_ICON.IconColor = C.colors.icon.inactive
 end
 
 SignalTable.plugin_on = function()
-    -- Code to handle plugin on
-    Echo(">PH<   plugin_on")
+    UI.edit_element("PlOn", {
+        BackColor = C.colors.button.please,
+        TextColor = C.colors.icon.active
+    })
+
+    UI.edit_element("PlOff", {
+        BackColor = C.colors.button.default,
+        TextColor = C.colors.icon.inactive
+    })
+
+    UI.edit_element("TitleButton", {
+        IconColor = C.colors.icon.active,
+    })
+
+    C.CMD_ICON.IconColor = C.colors.icon.active
 end
 
 SignalTable.set_master = function(caller)
-    -- Code to set the master
-    Echo(">PH<   set_master")
+    if caller and caller.Name == "MstTiming" then
+        GMA.set_globalV(C.GVars.timing, 1)
+        GMA.set_globalV(C.GVars.speed, 0)
+
+        UI.edit_element("MstTiming", {
+            TextColor = C.colors.icon.active
+        })
+        UI.edit_element("MstSpeed", {
+            TextColor = C.colors.icon.inactive
+        })
+    elseif caller and caller.Name == "MstSpeed" then
+        GMA.set_globalV(C.GVars.timing, 0)
+        GMA.set_globalV(C.GVars.speed, 1)
+
+        UI.edit_element("MstTiming", {
+            TextColor = C.colors.icon.inactive
+        })
+        UI.edit_element("MstSpeed", {
+            TextColor = C.colors.icon.active
+        })
+    end
 end
 
 SignalTable.toggle_matricks = function(caller)

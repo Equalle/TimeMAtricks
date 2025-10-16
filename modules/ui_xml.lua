@@ -210,9 +210,11 @@ XML.UI_MENU = [[
       </ItemCollectColumns>
 
       <Button Name="FadeLess" Text="Fade Less" Anchors="0,0" Texture="corner5" Focus="Never"
-        TextShadow="Yes" Font="Medium20" BackColor="ProgLayer.Fade" Clicked=":fade_change" />
+        TextShadow="Yes" Font="Medium20" BackColor="ProgLayer.Fade" Clicked=":fade_change"
+        MouseDownHold=":fade_toggle" />
       <Button Name="FadeMore" Text="Fade More" Anchors="1,0" Texture="corner10" Focus="Never"
-        TextShadow="Yes" Font="Medium20" BackColor="ProgLayer.Delay" Clicked=":fade_change" />
+        TextShadow="Yes" Font="Medium20" BackColor="ProgLayer.Delay" Clicked=":fade_change"
+        MouseDownHold=":fade_toggle" />
     </UILayoutGrid>
 
     <!-- Scale Title -->

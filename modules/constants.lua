@@ -7,6 +7,7 @@ C.PLUGIN_VERSION = "Beta 0.0.0"
 C.CMD_ICON_NAME = C.PLUGIN_NAME .. "_Icon"
 C.UI_MENU_NAME = C.PLUGIN_NAME .. "_Menu"
 C.UI_SETTINGS_NAME = C.PLUGIN_NAME .. "_Settings"
+C.CMD_ICON = nil
 C.UI_MENU = nil
 
 
@@ -53,26 +54,26 @@ C.corners = {
 }
 
 C.GVars = {
-  "TM_mvalue",
-  "TM_timing",
-  "TM_speed",
-  "TM_mx1name",
-  "TM_mx2name",
-  "TM_mx3name",
-  "TM_mx1rate",
-  "TM_mx2rate",
-  "TM_mx3rate",
-  "TM_mx1",
-  "TM_mx2",
-  "TM_mx3",
-  "TM_prefixname",
-  "TM_prefix",
-  "TM_mxstart",
-  "TM_refresh",
-  "TM_fadeamount",
-  "TM_fade",
-  "TM_ovrate",
-  "TM_firststart"
+  mvalue = "TM_mvalue",
+  timing = "TM_timing",
+  speed = "TM_speed",
+  mx1name = "TM_mx1name",
+  mx2name = "TM_mx2name",
+  mx3name = "TM_mx3name",
+  mx1rate = "TM_mx1rate",
+  mx2rate = "TM_mx2rate",
+  mx3rate = "TM_mx3rate",
+  mx1 = "TM_mx1",
+  mx2 = "TM_mx2",
+  mx3 = "TM_mx3",
+  prefixname = "TM_prefixname",
+  prefix = "TM_prefix",
+  mxstart = "TM_mxstart",
+  refresh = "TM_refresh",
+  fadeamount = "TM_fadeamount",
+  fade = "TM_fade",
+  ovrate = "TM_ovrate",
+  firststart = "TM_firststart"
 }
 
 function C.echo(message)
