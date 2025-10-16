@@ -160,6 +160,7 @@ SignalTable.LineEditDeselect = function(caller)
     end
 end
 
+-- Debug
 function S.echo(message)
     Echo("SIGNALS READY!")
 end

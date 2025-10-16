@@ -86,6 +86,7 @@ C.INTERACTIVE_CLASSES = {
 C.cmdLN = GetDisplayByIndex(1).CmdLineSection
 C.screenOV = GetDisplayByIndex(1).ScreenOverlay
 
+-- Debug
 function C.echo(message)
   Echo("CONSTANTS READY!")
 end

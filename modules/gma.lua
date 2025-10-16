@@ -47,6 +47,10 @@ function GMA.press_key(key, modifier)
   Keyboard(1, "release", key, modifier.shift, modifier.ctrl, modifier.alt, modifier.numlock)
 end
 
+----------------------
+--SPECIAL FUNCTIONS --
+----------------------
+
 --create reset macro for beta testers
 function GMA.reset_macro()
   local macroPool = DataPool(1).Macros
@@ -74,6 +78,7 @@ function GMA.msgbox(table)
   MessageBox(settings)
 end
 
+-- Debug
 function GMA.echo(message)
   Echo("GMA READY!")
 end

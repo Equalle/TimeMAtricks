@@ -289,7 +289,7 @@ XML.UI_SETTINGS = [[
 </GMA3>
 ]]
 
-
+-- Debug
 function XML.echo(message)
 Echo("XML READY!")
 end
