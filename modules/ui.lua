@@ -64,15 +64,34 @@ end
 --- HELPERS ---
 ---------------
 
+-- Find an element by name from the collected UI_ELEMENTS table
+function UI.find_element(name)
+  if not C.UI_ELEMENTS then
+    ErrEcho("UI.find_element: C.UI_ELEMENTS not initialized")
+    return nil
+  end
+
+  for _, elem in ipairs(C.UI_ELEMENTS) do
+    if elem.name == name then
+      return elem.handle
+    end
+  end
+
+  ErrEcho("UI.find_element: Element '%s' not found", name)
+  return nil
+end
+
 -- Recursively assign PluginComponent to all interactive elements
+-- Returns: count of elements, table of element info
 function UI.assign_plugin_components(menu)
   if not menu then
     ErrEcho("UI.assign_plugin_components: parentElement is nil")
-    return 0
+    return 0, {}
   end
 
   local count = 0
-  local visited = {} -- Prevent infinite loops
+  local visited = {}  -- Prevent infinite loops
+  local elements = {} -- Table to store element information
 
   -- Helper function to recursively process elements
   local function process_element(el)
@@ -93,7 +112,13 @@ function UI.assign_plugin_components(menu)
             el.PluginComponent = MyHandle
             count = count + 1
             local name = el.Name or "unnamed"
-            -- Echo("Assigned PluginComponent to %s: %s", class, name)
+
+            -- Store element information
+            table.insert(elements, {
+              class = class,
+              name = name,
+              handle = el
+            })
           end
           break
         end
@@ -135,7 +160,16 @@ function UI.assign_plugin_components(menu)
   end
 
   process_element(menu)
-  return count
+
+  -- Echo the collected elements table
+  if count > 0 then
+    Echo("=== Assigned PluginComponent to %d elements ===", count)
+    for i, elem in ipairs(elements) do
+      Echo("  [%d] %s: %s", i, elem.class, elem.name)
+    end
+  end
+
+  return count, elements
 end
 
 -- Returns cmdline or screenoverlay object
@@ -232,7 +266,16 @@ function UI.create_menu()
   C.UI_MENU:HookDelete(SignalTable.close_menu, C.UI_MENU)
 
   -- Automatically assign PluginComponent to all interactive elements
-  UI.assign_plugin_components(C.UI_MENU)
+  local count, elements = UI.assign_plugin_components(C.UI_MENU)
+
+  -- Store the elements table for later use
+  C.UI_ELEMENTS = elements
+
+  -- Initialize the signals module element references
+  if S and S.init_elements then
+    S.init_elements()
+  end
+
   C.UI_MENU_WARNING = C.UI_MENU:FindRecursive("TitleWarningButton")
 
   coroutine.yield(0.05) -- Wait a moment for UI to build

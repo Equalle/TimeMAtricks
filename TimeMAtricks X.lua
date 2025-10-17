@@ -55,7 +55,7 @@ local modules = {
 local function import_modules()
   local pluginLibPath = GetPath(Enums.PathType.PluginLibrary)
   local devModulePath = 'C:\\Users\\Juri\\Desktop\\GrandMA3 Plugins\\TimeMAtricks with modules\\modules\\'
-  local devModulePath = '/Users/juriseiffert/Documents/GrandMA3Plugins/TimeMAtricks with modules/modules/'
+  -- local devModulePath = '/Users/juriseiffert/Documents/GrandMA3Plugins/TimeMAtricks with modules/modules/'
 
   -- Create plugin-specific subfolder in plugin library
   local slash = package.config:sub(1, 1) -- Get OS-specific path separator
