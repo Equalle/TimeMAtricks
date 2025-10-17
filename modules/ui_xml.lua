@@ -185,15 +185,15 @@ XML.UI_MENU = [[
         <Button Text="Name" Anchors="1,0" HasHover="No" Focus="Never" HasPressedAnimation="No" BackColor="CheckBox.ReadOnlyBackground" />
         <Button Text="Rate" Anchors="2,0" Texture="corner2" Focus="Never" HasHover="No" HasPressedAnimation="No" BackColor="CheckBox.ReadOnlyBackground" />
 
-        <CheckBox Name="Matricks 1" Text="Matricks 1" TextAlignmentH="Left" Anchors="0,1" Focus="Never" Clicked=":matricks_toggle" />
+        <CheckBox Name="Matricks 1" Text="MAtricks 1" TextAlignmentH="Left" Anchors="0,1" Focus="Never" Clicked=":matricks_toggle" />
         <LineEdit Name="Matricks 1 Name" Message="Suffix 1 (e.g: in)" Anchors="1,1" Padding="0,0,10,0" Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center" KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect" />
         <LineEdit Name="Matricks 1 Rate" Message="Rate 1" Anchors="2,1" Padding="0,0,10,0" Icon="object_xkeys" IconAlignmentH="Right" IconAlignmentV="Center" TextChanged=":text_rate" KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect" />
 
-        <CheckBox Name="Matricks 2" Text="Matricks 2" TextAlignmentH="Left" Anchors="0,2" Focus="Never" Clicked=":matricks_toggle" />
+        <CheckBox Name="Matricks 2" Text="MAtricks 2" TextAlignmentH="Left" Anchors="0,2" Focus="Never" Clicked=":matricks_toggle" />
         <LineEdit Name="Matricks 2 Name" Message="Suffix 2 (e.g: out)" Anchors="1,2" Padding="0,0,10,0" Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center" KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect" />
         <LineEdit Name="Matricks 2 Rate" Message="Rate 2" Anchors="2,2" Padding="0,0,10,0" Icon="object_xkeys" IconAlignmentH="Right" IconAlignmentV="Center" TextChanged=":text_rate" KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect" />
 
-        <CheckBox Name="Matricks 3" Text="Matricks 3" TextAlignmentH="Left" Anchors="0,3" Focus="Never" Texture="corner4" Clicked=":matricks_toggle" />
+        <CheckBox Name="Matricks 3" Text="MAtricks 3" TextAlignmentH="Left" Anchors="0,3" Focus="Never" Texture="corner4" Clicked=":matricks_toggle" />
         <LineEdit Name="Matricks 3 Name" Message="Suffix 3 (e.g: long)" Anchors="1,3" Padding="0,0,10,0" Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center" KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect" />
         <LineEdit Name="Matricks 3 Rate" Message="Rate 3" Anchors="2,3" Padding="0,0,10,0" Icon="object_xkeys" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner8" TextChanged=":text_rate" KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect" />
       </UILayoutGrid>
@@ -208,7 +208,7 @@ XML.UI_MENU = [[
           <!-- Fade -->
         </ItemCollectRows>
         <ItemCollectColumns>
-          <Item SizePolicy="Fixed" Size="325" Name="Fade Less" />
+          <Item SizePolicy="Fixed" Size="325" Name="Fade Width" />
           <Item SizePolicy="Stretch" />
           <!-- Fade More -->
         </ItemCollectColumns>
@@ -264,7 +264,7 @@ XML.UI_MENU = [[
 ]]
 
 XML.UI_SETTINGS = [[
-      <?xml version="1.0" encoding="UTF-8"?>
+                                      <?xml version="1.0" encoding="UTF-8"?>
   <GMA3 DataVersion="0.9.0.1">
     <BaseInput Name="TimeMAtricks_Settings" H="0" W="700" AlignmentH="Center" AlignmentV="Center" Focus="InitialFocus" CanCoexistWithModal="Yes" BlockClickThru="Yes" SuppressOverlayAutoClose="Yes" HideFocusFrame="Yes" CloseOnEscape="Yes">
     </BaseInput>

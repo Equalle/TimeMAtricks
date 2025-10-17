@@ -78,6 +78,15 @@ function O.sanitize_rate(text)
   end
 end
 
+function O.fade_adjust(caller, width, direction)
+  Echo(caller.Name)
+  Echo(width)
+  Echo(direction)
+end
+
+function O.fade_button()
+end
+
 -- Debug
 function O.echo(message)
   Echo("OPERATORS READY!")

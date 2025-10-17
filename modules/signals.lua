@@ -37,6 +37,9 @@ function S.init_elements()
     Mx2Rate = UI.find_element("Matricks 2 Rate"),
     Mx3Rate = UI.find_element("Matricks 3 Rate"),
   }
+
+  --Fade Width
+  elements.FadeWidth = C.UI_MENU:FindRecursive("Fade Width")
 end
 
 ----------
@@ -143,13 +146,40 @@ SignalTable.set_master = function(caller)
 end
 
 SignalTable.matricks_toggle = function(caller)
-  -- Code to toggle matricks
-  Echo(">PH<   toggle_matricks")
+  if not caller then return end
+
+  -- Toggle the state first
+  caller.State = (caller.State == 1) and 0 or 1
+
+  -- Then determine enable state based on NEW state
+  local enableState = (caller.State == 1) and "Yes" or "No"
+
+  -- Determine which matricks was toggled and update corresponding fields
+  if caller == elements.Mx1Toggle then
+    if elements.Mx1Name then
+      elements.Mx1Name.Enabled = enableState
+    end
+    if elements.Mx1Rate then
+      elements.Mx1Rate.Enabled = enableState
+    end
+  elseif caller == elements.Mx2Toggle then
+    if elements.Mx2Name then
+      elements.Mx2Name.Enabled = enableState
+    end
+    if elements.Mx2Rate then
+      elements.Mx2Rate.Enabled = enableState
+    end
+  elseif caller == elements.Mx3Toggle then
+    if elements.Mx3Name then
+      elements.Mx3Name.Enabled = enableState
+    end
+    if elements.Mx3Rate then
+      elements.Mx3Rate.Enabled = enableState
+    end
+  end
 end
 
 SignalTable.prefix_toggle = function(caller)
-  -- Code to toggle prefix
-  Echo(">PH<   toggle_prefix")
   if elements.MxPreName then
     if caller.State == 1 then
       caller.State = 0
@@ -164,6 +194,18 @@ end
 SignalTable.fade_change = function(caller)
   -- Code to change fade
   Echo(">PH<   fade_change")
+  local direction
+  if caller == elements.FLess then
+    direction = -1
+  elseif caller == elements.FMore then
+    direction = 1
+  end
+  width = tonumber(elements.FadeWidth:Get("Size"))
+
+  enabled = elements.FadeLess:Get("Enabled", Enums.Roles.Default)
+  if enabled == "No" then
+    O.fade_adjust(caller, width, direction)
+  end
 end
 
 ----------
