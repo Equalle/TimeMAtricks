@@ -56,7 +56,7 @@ function UI.load()
   UI.edit_element("Version", {
     Text = "Version: " .. C.PLUGIN_VERSION,
   })
-
+  O.fade_adjust(0, true)
   C.CMD_ICON.Icon = C.icons.matricks
 end
 

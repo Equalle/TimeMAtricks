@@ -123,8 +123,8 @@ end
 
 SignalTable.set_master = function(caller)
   if caller and caller == elements.MstTiming then
-    GMA.set_globalV(C.GVars.timing, 1)
-    GMA.set_globalV(C.GVars.speed, 0)
+    GMA.set_global(C.GVars.timing, 1)
+    GMA.set_global(C.GVars.speed, 0)
 
     if elements.MstTiming then
       elements.MstTiming.TextColor = C.colors.icon.active
@@ -133,8 +133,8 @@ SignalTable.set_master = function(caller)
       elements.MstSpeed.TextColor = C.colors.icon.inactive
     end
   elseif caller and caller == elements.MstSpeed then
-    GMA.set_globalV(C.GVars.timing, 0)
-    GMA.set_globalV(C.GVars.speed, 1)
+    GMA.set_global(C.GVars.timing, 0)
+    GMA.set_global(C.GVars.speed, 1)
 
     if elements.MstTiming then
       elements.MstTiming.TextColor = C.colors.icon.inactive
@@ -192,29 +192,13 @@ SignalTable.prefix_toggle = function(caller)
 end
 
 SignalTable.fade_change = function(caller)
-  -- Code to change fade
-  Echo(">PH<   fade_change")
   local direction
   if caller == elements.FLess then
     direction = -1
   elseif caller == elements.FMore then
     direction = 1
   end
-  width = tonumber(elements.FadeWidth:Get("Size"))
-
-  enabled = elements.FadeLess:Get("Enabled", Enums.Roles.Default)
-  if enabled == "No" then
-    O.fade_adjust(caller, width, direction)
-  end
-end
-
-----------
--- HOLD --
-----------
-
-SignalTable.fade_toggle = function(caller)
-  -- Code to toggle fade
-  Echo(">PH<   fade_toggle")
+  O.fade_adjust(direction)
 end
 
 SignalTable.rate_change = function(caller)
@@ -226,6 +210,23 @@ SignalTable.apply_changes = function(caller)
   -- Code to apply changes
   Echo(">PH<   apply_changes")
 end
+
+----------
+-- HOLD --
+----------
+
+SignalTable.fade_toggle = function()
+  -- When button is pressed (held), disable FadeLess and set variable to false
+  -- Button is held/pressed
+  local enable = elements.FLess:Get("Enabled")
+  if enable then
+    elements.FLess.Enabled = "No"
+    elements.FLess.Text = "DISABLED"
+  end
+  local n = GMA.set_global(C.GVars.fade, false)
+  Echo("Fade toggle: OFF (FadeLess disabled)")
+end
+
 
 --------------
 -- LINEEDIT --
@@ -241,9 +242,9 @@ SignalTable.text_master = function(caller)
       if caller.HasFocus then
         GMA.press_key("End")
         if caller == elements.MstID then
-          if GMA.get_globalV(C.GVars.timing) == 1 then
+          if GMA.get_global(C.GVars.timing) == 1 then
             SignalTable.show_warning(caller, "Timing Master 1-50")
-          elseif GMA.get_globalV(C.GVars.speed) == 1 then
+          elseif GMA.get_global(C.GVars.speed) == 1 then
             SignalTable.show_warning(caller, "Speed Master 1-16")
           else
             SignalTable.show_warning(caller, "Maximum 2 Digits")
@@ -289,9 +290,9 @@ end
 
 SignalTable.show_warning = function(caller, status)
   if caller and status and status == "Name is too long (maximum 2 characters)" then
-    if GMA.get_globalV(C.GVars.timing) == 1 then
+    if GMA.get_global(C.GVars.timing) == 1 then
       status = "Timing Master 1-50"
-    elseif GMA.get_globalV(C.GVars.speed) == 1 then
+    elseif GMA.get_global(C.GVars.speed) == 1 then
       status = "Speed Master 1-16"
     else
       status = "Maximum 2 Digits"

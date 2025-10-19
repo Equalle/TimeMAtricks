@@ -12,14 +12,14 @@ end
 -- var: string name of the variable
 -- value: value to set (string, number, boolean)
 -- returns: boolean success
-function GMA.set_globalV(var, value)
+function GMA.set_global(var, value)
   return SetVar(GlobalVars(), var, value)
 end
 
 -- Gets the GrandMA3 global variable
 -- var: string name of the variable
 -- returns: value or nil if not found
-function GMA.get_globalV(var)
+function GMA.get_global(var)
   return GetVar(GlobalVars(), var)
 end
 
@@ -27,14 +27,14 @@ end
 -- var: string name of the variable
 -- value: value to set (string, number, boolean)
 -- returns: boolean success
-function GMA.set_userV(var, value)
+function GMA.set_user(var, value)
   return SetVar(UserVars(), var, value)
 end
 
 -- Gets the GrandMA3 user variable
 -- var: string name of the variable
 -- returns: value or nil if not found
-function GMA.get_userV(var)
+function GMA.get_user(var)
   return GetVar(UserVars(), var)
 end
 

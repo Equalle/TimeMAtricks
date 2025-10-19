@@ -1,5 +1,8 @@
 # Main
 
+set fadeamount function in operators
+toggle state needs to be checked and set when opening menu
+
 ### Add
 
 -Button Click √

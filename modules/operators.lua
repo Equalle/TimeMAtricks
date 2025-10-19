@@ -9,13 +9,13 @@ function O.master_limit(caller, value)
   if after ~= "" then
     local num = tonumber(after)
     if num then
-      if GMA.get_globalV(C.GVars.timing) == 1 then
+      if GMA.get_global(C.GVars.timing) == 1 then
         if num < 1 then
           after = 1
         elseif num > 50 then
           after = 50
         end
-      elseif GMA.get_globalV(C.GVars.speed) == 1 then
+      elseif GMA.get_global(C.GVars.speed) == 1 then
         if num < 1 then
           after = 1
         elseif num > 16 then
@@ -78,10 +78,134 @@ function O.sanitize_rate(text)
   end
 end
 
-function O.fade_adjust(caller, width, direction)
-  Echo(caller.Name)
-  Echo(width)
-  Echo(direction)
+-- Helper: Get fade slider dimensions
+local function get_fade_dimensions()
+  local menu = C.UI_MENU
+  local menuwidth = menu:Get("W")
+  local fullwidth = menuwidth - 50 -- remove padding
+  local center = fullwidth / 2
+  local step = 70
+  local min = center - (step * 2)
+  local max = center + (step * 2)
+
+  return center, step, min, max
+end
+
+-- Convert fadeamount (0.3-0.7) to slider position
+function O.fade_amount_to_position(fadeamount)
+  local center, step, min, max = get_fade_dimensions()
+
+  if fadeamount <= 0.3 then
+    return min
+  elseif fadeamount <= 0.4 then
+    return center - step
+  elseif fadeamount <= 0.5 then
+    return center
+  elseif fadeamount <= 0.6 then
+    return center + step
+  else -- fadeamount >= 0.7
+    return max
+  end
+end
+
+-- Convert slider position to fadeamount (0.3-0.7)
+function O.fade_position_to_amount(position)
+  local center, step, min, max = get_fade_dimensions()
+
+  if position <= min then
+    return 0.3
+  elseif position <= center - step then
+    return 0.4
+  elseif position <= center then
+    return 0.5
+  elseif position <= center + step then
+    return 0.6
+  else -- position >= max
+    return 0.7
+  end
+end
+
+-- Update button texts based on slider position
+function O.fade_update_buttons(position)
+  local center, step, min, max = get_fade_dimensions()
+
+  if position <= min then
+    UI.edit_element("FadeLess", { Enabled = "Yes", Text = "MIN" })
+    UI.edit_element("FadeMore", { Enabled = "Yes", Text = "Fade More" })
+  elseif position >= max then
+    UI.edit_element("FadeMore", { Enabled = "Yes", Text = "MAX" })
+    UI.edit_element("FadeLess", { Enabled = "Yes", Text = "Fade Less" })
+  else
+    UI.edit_element("FadeLess", { Enabled = "Yes", Text = "Fade Less" })
+    UI.edit_element("FadeMore", { Enabled = "Yes", Text = "Fade More" })
+  end
+end
+
+-- Adjust fade slider by direction (called on button press)
+function O.fade_adjust(direction)
+  local anchor = C.UI_MENU:FindRecursive("Fade Width")
+  if not anchor then
+    Echo("Error: Fade Width anchor not found")
+    return
+  end
+
+  -- Check if fade is disabled (toggle button is held)
+  local fadeEnabled = GMA.get_global(C.GVars.fade)
+  if fadeEnabled == false then
+    -- Re-enable fade functionality
+    GMA.set_global(C.GVars.fade, true)
+    UI.edit_element("FadeLess", { Enabled = "Yes" })
+    UI.edit_element("FadeMore", { Enabled = "Yes" })
+
+    -- Update button texts based on current position
+    local curr = tonumber(anchor.Size)
+    O.fade_update_buttons(curr)
+
+    Echo("Fade re-enabled")
+    return
+  end
+
+  local center, step, min, max = get_fade_dimensions()
+  local curr = tonumber(anchor.Size)
+
+  -- Calculate new position
+  local new = curr + (step * direction)
+
+  -- Clamp to min/max
+  if new <= min then
+    new = min
+  elseif new >= max then
+    new = max
+  end
+
+  -- Update slider position
+  anchor.Size = new
+
+  -- Update button texts
+  O.fade_update_buttons(new)
+
+  -- Convert to fadeamount and save
+  local fadeamount = O.fade_position_to_amount(new)
+  GMA.set_global(C.GVars.fadeamount, fadeamount)
+
+  Echo("Fade adjusted: position=" .. tostring(new) .. ", amount=" .. tostring(fadeamount))
+end
+
+-- Load saved fadeamount and position slider (called on menu open)
+function O.fade_set_from_global()
+  local fadeamount = GMA.get_global(C.GVars.fadeamount) or 0.5
+  local anchor = C.UI_MENU:FindRecursive("Fade Width")
+
+  -- Convert fadeamount to position
+  local position = O.fade_amount_to_position(fadeamount)
+
+  -- Set slider position
+  anchor.Size = position
+
+  -- Update button texts
+  O.fade_update_buttons(position)
+
+  Echo("Fade loaded: position=" .. tostring(position) .. ", amount=" .. tostring(fadeamount))
 end
 
 function O.fade_button()
