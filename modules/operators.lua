@@ -27,9 +27,82 @@ function O.master_limit(caller, value)
   end
 end
 
-function O.sanitize_rate(text)
+-- Matricks name field mappings: { element_name, gvar_name }
+local MATRICKS_NAME_FIELDS = {
+  { name = "Matricks Prefix Name", gvar = "prefixname" },
+  { name = "Matricks 1 Name",      gvar = "mx1name" },
+  { name = "Matricks 2 Name",      gvar = "mx2name" },
+  { name = "Matricks 3 Name",      gvar = "mx3name" },
+}
+
+-- Save matricks name with duplicate checking
+function O.save_matricks_name(caller, newName)
+  if not caller or newName == "" then return end
+
+  -- Find the current field's entry
+  local currentField = nil
+  for _, field in ipairs(MATRICKS_NAME_FIELDS) do
+    if UI.find_element(field.name) == caller then
+      currentField = field
+      break
+    end
+  end
+
+  if not currentField then return end
+
+  -- Check for duplicates in other matricks names
+  -- Only compare Matricks 1-3 with each other, never compare with prefix
+  for _, field in ipairs(MATRICKS_NAME_FIELDS) do
+    -- Skip if it's the current field or if either field is prefix
+    if field ~= currentField and currentField.gvar ~= "prefixname" and field.gvar ~= "prefixname" then
+      local existingName = GMA.get_global(C.GVars[field.gvar])
+      if existingName and existingName == newName then
+        -- Duplicate found - show warning and revert
+        SignalTable.show_warning(caller, "Name already taken")
+        caller.Content = GMA.get_global(C.GVars[currentField.gvar]) or ""
+        FindBestFocus(caller)
+        caller:SelectAll()
+        return
+      end
+    end
+  end
+
+  -- No duplicate - save the name
+  GMA.set_global(C.GVars[currentField.gvar], newName)
+end
+
+-- Handle master mode switching with validation
+function O.set_master_mode(newMode)
+  -- newMode: 1 for timing (1-50), 0 for speed (1-16)
+  local currentValue = GMA.get_global(C.GVars.mvalue)
+
+  if newMode == 1 then
+    -- Switching to timing master (1-50)
+    GMA.set_global(C.GVars.timing, 1)
+    GMA.set_global(C.GVars.speed, 0)
+  elseif newMode == 0 then
+    -- Switching to speed master (1-16)
+    -- Check if current value is valid for speed master
+    if currentValue and tonumber(currentValue) > 16 then
+      -- Value too high for speed master - clear it and show warning
+      GMA.set_global(C.GVars.mvalue, nil)
+      local masterIDElement = UI.find_element("Master ID")
+      if masterIDElement then
+        masterIDElement.Content = ""
+      end
+      SignalTable.show_warning(nil, "Set new master 1-16")
+    end
+    GMA.set_global(C.GVars.timing, 0)
+    GMA.set_global(C.GVars.speed, 1)
+  end
+end
+
+function O.sanitize_rate(text, caller)
   text = tostring(text or "")
   if text == "" then return "" end
+
+  local originalText = text
+
   -- convert comma to dots
   text = text:gsub(",", ".")
   -- keep only digits and dot
@@ -71,14 +144,92 @@ function O.sanitize_rate(text)
       -- user just typed the dot; allow transient
       return firstDigit .. "."
     end
-    return firstDigit .. "." .. decimals
+    local result = firstDigit .. "." .. decimals
+    -- Check if there was a format error
+    if result ~= originalText and originalText ~= "" then
+      if caller then
+        SignalTable.show_warning(caller, "Rate format: x.xx")
+      end
+    end
+    return result
   else
     -- no dot, just return leading digits
-    return firstDigit
+    local result = firstDigit
+    -- Check if there was a format error
+    if result ~= originalText and originalText ~= "" then
+      if caller then
+        SignalTable.show_warning(caller, "Rate format: x.xx")
+      end
+    end
+    return result
   end
 end
 
--- Helper: Get fade slider dimensions
+-- Sanitize refresh rate: only allow numbers from 0.1 to 10 in x.x format
+function O.sanitize_refresh(text, caller)
+  text = tostring(text or "")
+  if text == "" then return "" end
+
+  local originalText = text
+
+  -- convert comma to dots
+  text = text:gsub(",", ".")
+  -- keep only digits and dot
+  text = text:gsub("[^%d%.]", "")
+  -- keep just the first dot
+  local firstDotSeen = false
+  local cleaned = {}
+  for i = 1, #text do
+    local c = text:sub(i, i)
+    if c == "." then
+      if not firstDotSeen then
+        table.insert(cleaned, c)
+        firstDotSeen = true
+      end
+    else
+      table.insert(cleaned, c)
+    end
+  end
+  text = table.concat(cleaned)
+
+  -- must start with a digit, find first digit
+  local firstDigit = text:match("%d")
+  if not firstDigit then
+    return ""
+  end
+
+  -- build result
+  local digitIndex = text:find(firstDigit, 1, true)
+  local afterFirst = text:sub(digitIndex + 1)
+
+  -- ignore any further digits before a possible dot
+  local dotPos = afterFirst:find("%.")
+  local result = ""
+  if dotPos then
+    -- there is a dot after the leading digit
+    local decimals = afterFirst:sub(dotPos + 1)
+    decimals = decimals:gsub("%.", "")              -- remove any further dots
+    decimals = decimals:gsub("[^%d]", ""):sub(1, 1) -- keep only 1 decimal
+    if decimals == "" and text:sub(-1) == "." then
+      -- user just typed the dot; allow transient
+      return firstDigit .. "."
+    end
+    result = firstDigit .. "." .. decimals
+  else
+    -- no dot, just return leading digit
+    result = firstDigit
+  end
+
+  -- Check if there was a format error
+  if result ~= originalText and originalText ~= "" then
+    if caller then
+      SignalTable.show_warning(caller, "Refresh format: x.x")
+    end
+  end
+
+  return result
+end
+
 local function get_fade_dimensions()
   local menu = C.UI_MENU
   local menuwidth = tonumber(menu:Get("W")) or 600 -- Convert to number, default to 600
@@ -211,23 +362,41 @@ function O.fade_set_from_global()
     return
   end
 
-  -- Convert fadeamount to position
-  local position = O.fade_amount_to_position(fadeamount)
+  local center, step, min, max = get_fade_dimensions()
 
-  -- Set slider position (ensure it's a number)
-  anchor.Size = tonumber(position) or 300
-
-  -- First, always set the button texts based on position (enabled state)
-  O.fade_update_buttons(position)
-
-  -- Then, if fade is disabled, override with disabled texts and state
-  if not fadeEnabled then
-    fadeLess.Enabled = "No"
-    fadeLess.Text = "DISABLED"
-    fadeMore.Text = "(Press to enable)"
+  if fadeEnabled then
+    -- Fade is enabled - load saved fadeamount position
+    local position = O.fade_amount_to_position(fadeamount)
+    anchor.Size = tonumber(position) or 300
+    O.fade_update_buttons(position)
+  else
+    -- Fade is disabled - reset slider to center
+    anchor.Size = center
+    UI.edit_element("FadeLess", { Enabled = "No", Text = "DISABLED" })
+    UI.edit_element("FadeMore", { Text = "(Hold to enable)" })
   end
 
   -- Echo("Fade loaded: position=" .. tostring(position) .. ", amount=" .. tostring(fadeamount) .. ", enabled=" .. tostring(fadeEnabled))
+end
+
+function O.adjust_rate(factor)
+  local currentRate = GMA.get_global(C.GVars.ovrate) or 1
+  local newRate = currentRate * factor
+  if factor == 1 then
+    newRate = 1
+    return newRate
+    -- Clamp between 0.125 and 8
+  elseif newRate < 0.125 then
+    newRate = 0.125
+  elseif newRate > 8.0 then
+    newRate = 8.0
+  end
+  if newRate >= 1 then
+    newRate = math.floor(newRate)                     -- round to nearest integer
+  else
+    newRate = math.floor(newRate * 1000 + 0.5) / 1000 -- round to 3 decimal places
+  end
+  return newRate
 end
 
 -- Debug

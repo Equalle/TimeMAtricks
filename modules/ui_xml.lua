@@ -22,7 +22,7 @@ local filename, content
 if xmlType == "ui" then
 filename = tostring(C.UI_MENU_NAME) .. ".xml"
 content = XML.UI_MENU
-elseif xmlType == "ui_settings" then
+elseif xmlType == "settings" then
 filename = tostring(C.UI_SETTINGS_NAME) .. ".xml"
 content = XML.UI_SETTINGS
 else
@@ -46,11 +46,10 @@ end
 return dir, filename
 end
 
-
 XML.UI_MENU = [[
 <?xml version="1.0" encoding="UTF-8"?>
 <GMA3 DataVersion="0.0.1">
-  <BaseInput Name="TimeMAtricks_Menu" H="0" W="700" AlignmentH="Center" AlignmentV="Center"
+  <BaseInput Name="TimeMAtricks_Menu" H="0" W="600" AlignmentH="Center" AlignmentV="Center"
     Focus="InitialFocus" CanCoexistWithModal="Yes" BlockClickThru="Yes"
     SuppressOverlayAutoClose="Yes" HideFocusFrame="Yes" CloseOnEscape="Yes">
     <ItemCollectRows>
@@ -71,10 +70,14 @@ XML.UI_MENU = [[
         <!-- Title -->
         <Item SizePolicy="Fixed" Size="50" />
         <!-- Close -->
+        <Item SizePolicy="Fixed" Size="50" />
+        <!-- Close -->
       </ItemCollectColumns>
       <TitleButton Name="TitleButton" Anchors="0,0" Texture="corner1" />
-      <CloseButton Name="CloseButton" Anchors="1,0" Texture="corner2" />
-      <WarningInfoButton Name="TitleWarningButton" Anchors="0,0,1,0" Font="Regular32"
+      <Button Name="SettingsButton" Anchors="1,0" Texture="corner0" Icon="settings"
+        Clicked=":open_settings" />
+      <CloseButton Name="CloseButton" Anchors="2,0" Texture="corner2" />
+      <WarningInfoButton Name="TitleWarningButton" Anchors="0,0,2,0" Font="Regular32"
         BackColor="Global.AlertText" Texture="corner3" />
     </TitleBar>
 
@@ -143,7 +146,7 @@ XML.UI_MENU = [[
         <!-- Timing -->
         <Item SizePolicy="Stretch" />
         <!-- Speed -->
-        <Item SizePolicy="Fixed" Size="325" />
+        <Item SizePolicy="Fixed" Size="210" />
         <!-- Master ID -->
       </ItemCollectColumns>
 
@@ -159,7 +162,7 @@ XML.UI_MENU = [[
     </UILayoutGrid>
 
     <!-- Matricks Prefix -->
-    <UILayoutGrid Name="MatricksPrefix" Anchors="0,4" Padding="10,5,170,0">
+    <UILayoutGrid Name="MatricksPrefix" Anchors="0,4" Padding="10,5,120,0">
       <ItemCollectRows>
         <Item SizePolicy="Fixed" Size="55" />
         <!-- Matricks Prefix -->
@@ -173,7 +176,9 @@ XML.UI_MENU = [[
         Texture="corner5" Focus="Never" Clicked=":prefix_toggle" />
       <LineEdit Name="Matricks Prefix Name" Message="Prefix (e.g: tm_)" Anchors="1,0"
         Texture="corner10" KeyDown=":key_down" FocusGet=":LineEditSelectAll"
-        FocusLost=":LineEditDeselect" />
+        FocusLost=":LineEditDeselect" OnWrongChar=":show_warning"
+        VKPluginName="TextInputAlphaNumOnly"
+        Filter="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZöäüÖÄÜß0123456789 -_/()@,.;:<>!?|" />
     </UILayoutGrid>
 
     <!-- Matricks -->
@@ -189,11 +194,11 @@ XML.UI_MENU = [[
         <!-- Matricks 1 -->
       </ItemCollectRows>
       <ItemCollectColumns>
-        <Item SizePolicy="Fixed" Size="180" />
+        <Item SizePolicy="Fixed" Size="150" />
         <!-- Toggle -->
         <Item SizePolicy="Stretch" Name="Name" />
         <!-- Name -->
-        <Item SizePolicy="Fixed" Size="160" />
+        <Item SizePolicy="Fixed" Size="150" />
         <!-- Rate -->
       </ItemCollectColumns>
 
@@ -208,29 +213,38 @@ XML.UI_MENU = [[
         Focus="Never" Clicked=":matricks_toggle" />
       <LineEdit Name="Matricks 1 Name" Message="Suffix 1 (e.g: in)" Anchors="1,1" Padding="0,0,10,0"
         Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center" KeyDown=":key_down"
-        FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect" />
+        FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect"
+        Filter="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZöäüÖÄÜß0123456789 -_/()@,.;:<>!?|"
+        OnWrongChar=":show_warning" />
       <LineEdit Name="Matricks 1 Rate" Message="Rate 1" Anchors="2,1" Padding="0,0,10,0"
         Icon="object_xkeys" IconAlignmentH="Right" IconAlignmentV="Center" TextChanged=":text_rate"
-        KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect" />
+        KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect"
+        VKPluginName="TextInputNumOnly" Filter=".0123456789" OnWrongChar=":show_warning" />
 
       <CheckBox Name="Matricks 2" Text="MAtricks 2" TextAlignmentH="Left" Anchors="0,2"
         Focus="Never" Clicked=":matricks_toggle" />
       <LineEdit Name="Matricks 2 Name" Message="Suffix 2 (e.g: out)" Anchors="1,2"
         Padding="0,0,10,0" Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center"
-        KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect" />
+        KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect"
+        Filter="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZöäüÖÄÜß0123456789 -_/()@,.;:<>!?|"
+        OnWrongChar=":show_warning" />
       <LineEdit Name="Matricks 2 Rate" Message="Rate 2" Anchors="2,2" Padding="0,0,10,0"
         Icon="object_xkeys" IconAlignmentH="Right" IconAlignmentV="Center" TextChanged=":text_rate"
-        KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect" />
+        KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect"
+        VKPluginName="TextInputNumOnly" Filter=".0123456789" OnWrongChar=":show_warning" />
 
       <CheckBox Name="Matricks 3" Text="MAtricks 3" TextAlignmentH="Left" Anchors="0,3"
         Focus="Never" Texture="corner4" Clicked=":matricks_toggle" />
       <LineEdit Name="Matricks 3 Name" Message="Suffix 3 (e.g: long)" Anchors="1,3"
         Padding="0,0,10,0" Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center"
-        KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect" />
+        KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect"
+        Filter="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZöäüÖÄÜß0123456789 -_/()@,.;:<>!?|"
+        OnWrongChar=":show_warning" />
       <LineEdit Name="Matricks 3 Rate" Message="Rate 3" Anchors="2,3" Padding="0,0,10,0"
         Icon="object_xkeys" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner8"
         TextChanged=":text_rate" KeyDown=":key_down" FocusGet=":LineEditSelectAll"
-        FocusLost=":LineEditDeselect" />
+        FocusLost=":LineEditDeselect"
+        VKPluginName="TextInputNumOnly" Filter=".0123456789" OnWrongChar=":show_warning" />
     </UILayoutGrid>
 
     <!-- Fade Title-->
@@ -245,7 +259,7 @@ XML.UI_MENU = [[
         <!-- Fade -->
       </ItemCollectRows>
       <ItemCollectColumns>
-        <Item SizePolicy="Fixed" Size="325" Name="Fade Width" />
+        <Item SizePolicy="Fixed" Size="275" Name="Fade Width" />
         <Item SizePolicy="Stretch" />
         <!-- Fade More -->
       </ItemCollectColumns>
@@ -272,7 +286,7 @@ XML.UI_MENU = [[
       <ItemCollectColumns>
         <Item SizePolicy="Stretch" />
         <!-- HT -->
-        <Item SizePolicy="Fixed" Size="250" />
+        <Item SizePolicy="Fixed" Size="200" />
         <!-- Center -->
         <Item SizePolicy="Stretch" />
         <!-- DT -->
@@ -280,15 +294,15 @@ XML.UI_MENU = [[
 
 
       <Button Name="1/2" Anchors="0,0" Texture="corner5" Icon="ExecuteHalfSpeed84" Focus="Never"
-        Clicked=":rate_change" />
+        Clicked=":rate_change" Padding="10,5,10,5" />
       <Button Name="OVRate" Text="X" Anchors="1,0" TextAlignmentV="Top" Padding="0,10,0,0"
         Focus="Never" HasHover="No" HasPressedAnimation="No" BackColor="CheckBox.ReadOnlyBackground"
         BackColor="CheckBox.ReadOnlyBackground" TextColor="CheckBox.ReadOnlyText" Font="Regular28"
         TextShadow="Yes" />
       <Button Name="2" Anchors="2,0" Texture="corner10" Icon="ExecuteDoubleSpeed84" Focus="Never"
-        Clicked="dRate" Clicked=":rate_change" />
+        Clicked="dRate" Clicked=":rate_change" Padding="10,5,10,5" />
 
-      <Button Name="Reset" Anchors="1,0" Icon="ExecuteRate120" Focus="Never" Margin="80,45,80,0"
+      <Button Name="Reset" Anchors="1,0" Icon="ExecuteRate120" Focus="Never" Margin="10,45,10,0"
         Texture="corner15" Clicked=":rate_change" />
     </UILayoutGrid>
 
@@ -299,15 +313,15 @@ XML.UI_MENU = [[
         <!-- Bottom Buttons -->
       </ItemCollectRows>
       <ItemCollectColumns>
-        <Item SizePolicy="Stretch" />
+        <!-- <Item SizePolicy="Stretch" /> -->
         <!-- Apply -->
         <Item SizePolicy="Stretch" />
         <!-- Close -->
       </ItemCollectColumns>
 
-      <Button Name="Apply" Text="Apply" Anchors="0,0" Texture="corner5" Focus="CanHaveFocus"
-        TextShadow="Yes" Font="Medium20" Clicked=":apply_changes" />
-      <Button Name="Close" Text="Close" Anchors="1,0" Texture="corner10" Focus="CanHaveFocus"
+      <!-- <Button Name="Apply" Text="Apply" Anchors="0,0" Texture="corner5" Focus="CanHaveFocus" -->
+      <!-- TextShadow="Yes" Font="Medium20" Clicked=":apply_changes" /> -->
+      <Button Name="Close" Text="Close" Anchors="0,0" Texture="corner15" Focus="CanHaveFocus"
         TextShadow="Yes" Font="Medium20" Clicked=":close_menu" />
     </UILayoutGrid>
   </BaseInput>
@@ -315,11 +329,83 @@ XML.UI_MENU = [[
 ]]
 
 XML.UI_SETTINGS = [[
-                                      <?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GMA3 DataVersion="0.9.0.1">
-  <BaseInput Name="TimeMAtricks_Settings" H="0" W="700" AlignmentH="Center" AlignmentV="Center"
+  <BaseInput Name="TimeMAtricks_Settings" H="0" W="500" AlignmentH="Center" AlignmentV="Top"
+    Y="150"
     Focus="InitialFocus" CanCoexistWithModal="Yes" BlockClickThru="Yes"
     SuppressOverlayAutoClose="Yes" HideFocusFrame="Yes" CloseOnEscape="Yes">
+    <ItemCollectRows>
+      <Item SizePolicy="Fixed" Size="50" />
+      <!-- Title Bar -->
+      <Item SizePolicy="Stretch" />
+      <!-- Main Content -->
+    </ItemCollectRows>
+
+    <!-- Title Bar  -->
+    <TitleBar Name="TitleBar" Anchors="0,0">
+      <ItemCollectRows>
+        <Item SizePolicy="Fixed" Size="50" />
+        <!-- Title Bar -->
+      </ItemCollectRows>
+      <ItemCollectColumns>
+        <Item SizePolicy="Stretch" Size="0" />
+        <!-- Title -->
+        <Item SizePolicy="Fixed" Size="50" />
+        <!-- Close -->
+      </ItemCollectColumns>
+      <TitleButton Name="TitleButton" Anchors="0,0" Texture="corner1" />
+      <CloseButton Name="CloseButton" Anchors="1,0" Texture="corner2" />
+      <WarningInfoButton Name="TitleWarningButton" Anchors="0,0,1,0" Font="Regular32"
+        BackColor="Global.AlertText" Texture="corner3" />
+    </TitleBar>
+
+
+    <!-- Main Content -->
+
+
+    <DialogFrame Name="MainSettings" Anchors="0,1">
+    <ItemCollectRows>
+      <Item SizePolicy="Content" />
+      <!-- Inputs -->
+      <Item SizePolicy="Fixed" Size="50" />
+      <!-- Close -->
+    </ItemCollectRows>
+    <UILayoutGrid Name="MainSettingsGrid" Anchors="0,0" Padding="10,10,10,10">
+
+      <ItemCollectRows>
+        <Item SizePolicy="Fixed" Size="50" />
+        <!-- Matricks Start Index -->
+        <Item SizePolicy="Fixed" Size="50" />
+        <!-- Refresh Rate -->
+      </ItemCollectRows>
+      <ItemCollectColumns>
+        <Item SizePolicy="Stretch" />
+        <Item SizePolicy="Stretch" />
+      </ItemCollectColumns>
+
+      <Button Name="MatricksStartIndexLabel" Text="MAtricks Pool Start" Anchors="0,0"
+        Focus="Never" HasHover="No" HasPressedAnimation="No"
+        BackColor="CheckBox.ReadOnlyBackground" />
+      <LineEdit Name="Matricks Start" Message="Start Index" Anchors="1,0" Padding="0,0,10,0"
+        Texture="corner15" Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center"
+        KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect"
+        VKPluginName="TextInputNumOnly" Filter="0123456789" OnWrongChar=":show_warning"
+        MaxTextLength="4" />
+
+      <Button Name="RefreshRateLabel" Text="Refresh Rate (s)" Anchors="0,1" Focus="Never"
+        HasHover="No" HasPressedAnimation="No"
+        BackColor="CheckBox.ReadOnlyBackground" />
+      <LineEdit Name="Refresh Rate" Message="Refresh Rate" Anchors="1,1" Padding="0,0,10,0"
+        Texture="corner15" Icon="object_clock" IconAlignmentH="Right" IconAlignmentV="Center"
+        KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect"
+        VKPluginName="TextInputNumOnly" Filter="0123456789." OnWrongChar=":show_warning"
+        TextChanged=":text_rate" />
+    </UILayoutGrid>
+
+    <Button Name="Close" Text="Close" Anchors="0,1" Texture="corner15"
+      Focus="CanHaveFocus" TextShadow="Yes" Font="Medium20" Clicked=":close_menu" />
+
   </BaseInput>
 </GMA3>
 ]]

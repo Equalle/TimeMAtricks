@@ -49,19 +49,100 @@ end
 
 -- Loads current UI data with variable data
 function UI.load()
+  -- Title
   UI.edit_element("TitleButton", {
     Text = C.PLUGIN_NAME,
     Icon = C.icons.matricks,
   })
-  UI.edit_element("Version", {
-    Text = "Version: " .. C.PLUGIN_VERSION,
-  })
-  -- Initialize fade enable state to true if not set
-  local fadeState = GMA.get_global(C.GVars.fade)
-  if fadeState == nil then
-    GMA.set_global(C.GVars.fade, true)
+  -- Version
+  UI.edit_element("Version", { Text = "Version: " .. C.PLUGIN_VERSION, })
+
+  -- Plugin On/Off
+  if PluginRunning then
+    UI.edit_element("PlOn", {
+      BackColor = C.colors.button.please,
+      TextColor = C.colors.icon.active,
+    })
+    UI.edit_element("PlOff", {
+      BackColor = C.colors.button.default,
+      TextColor = C.colors.icon.inactive,
+    })
+  else
+    UI.edit_element("PlOn", {
+      BackColor = C.colors.button.default,
+      TextColor = C.colors.icon.inactive,
+    })
+    UI.edit_element("PlOff", {
+      BackColor = C.colors.button.please,
+      TextColor = C.colors.icon.active,
+    })
   end
+
+  -- Matricks Toggles - Load state and enable/disable corresponding fields
+  local mx1State = GMA.get_global(C.GVars.mx1) or 1
+  UI.edit_element("Matricks 1", { State = mx1State })
+  local mx1EnableState = (mx1State == 1) and "Yes" or "No"
+  UI.edit_element("Matricks 1 Name", { Enabled = mx1EnableState })
+  UI.edit_element("Matricks 1 Rate", { Enabled = mx1EnableState })
+
+  local mx2State = GMA.get_global(C.GVars.mx2) or 1
+  UI.edit_element("Matricks 2", { State = mx2State })
+  local mx2EnableState = (mx2State == 1) and "Yes" or "No"
+  UI.edit_element("Matricks 2 Name", { Enabled = mx2EnableState })
+  UI.edit_element("Matricks 2 Rate", { Enabled = mx2EnableState })
+
+  local mx3State = GMA.get_global(C.GVars.mx3) or 1
+  UI.edit_element("Matricks 3", { State = mx3State })
+  local mx3EnableState = (mx3State == 1) and "Yes" or "No"
+  UI.edit_element("Matricks 3 Name", { Enabled = mx3EnableState })
+  UI.edit_element("Matricks 3 Rate", { Enabled = mx3EnableState })
+
+  -- Matricks Prefix Toggle
+  local prefixState = GMA.get_global(C.GVars.prefix) or 1
+  UI.edit_element("Matricks Prefix", { State = prefixState })
+  local prefixEnableState = (prefixState == 1) and "Yes" or "No"
+  UI.edit_element("Matricks Prefix Name", { Enabled = prefixEnableState })
+
+
+  -- Matricks Name fields
+  UI.edit_element("Matricks 1 Name", { Content = tostring(GMA.get_global(C.GVars.mx1name) or ""), })
+  UI.edit_element("Matricks 2 Name", { Content = tostring(GMA.get_global(C.GVars.mx2name) or ""), })
+  UI.edit_element("Matricks 3 Name", { Content = tostring(GMA.get_global(C.GVars.mx3name) or ""), })
+
+  -- Matricks Rate fields
+  UI.edit_element("Matricks 1 Rate", { Content = tostring(GMA.get_global(C.GVars.mx1rate) or ""), })
+  UI.edit_element("Matricks 2 Rate", { Content = tostring(GMA.get_global(C.GVars.mx2rate) or ""), })
+  UI.edit_element("Matricks 3 Rate", { Content = tostring(GMA.get_global(C.GVars.mx3rate) or ""), })
+
+  -- Prefix Name field
+  UI.edit_element("Matricks Prefix Name", { Content = tostring(GMA.get_global(C.GVars.prefixname) or ""), })
+
+  -- CmdIcon
   C.CMD_ICON.Icon = C.icons.matricks
+  -- Master Select
+  UI.edit_element("MstTiming", { State = GMA.get_global(C.GVars.timing), })
+  UI.edit_element("MstSpeed", { State = GMA.get_global(C.GVars.speed), })
+  -- Master Value
+  UI.edit_element("Master ID", { Content = tostring(GMA.get_global(C.GVars.mvalue) or "") })
+
+  -- Rate
+  UI.edit_element("OVRate", { Text = tostring(GMA.get_global(C.GVars.ovrate) or 1) })
+
+  -- Fade Buttons
+  O.fade_set_from_global()
+end
+
+function UI.save_settings()
+end
+
+function UI.load_settings()
+  UI.edit_settings_element("TitleButton", {
+    Text = C.PLUGIN_NAME .. " Settings",
+    Icon = C.icons.matricks,
+  })
+
+  UI.edit_settings_element("Matricks Start", { Content = tostring(GMA.get_global(C.GVars.mxstart) or "") })
+  UI.edit_settings_element("Refresh Rate", { Content = tostring(GMA.get_global(C.GVars.refresh) or "") })
 end
 
 ---------------
@@ -96,6 +177,8 @@ function UI.assign_plugin_components(menu)
   local count = 0
   local visited = {}  -- Prevent infinite loops
   local elements = {} -- Table to store element information
+  local menuName = menu == C.UI_MENU and "MAIN MENU" or "SETTINGS MENU"
+  Echo("DEBUG: assign_plugin_components for " .. menuName)
 
   -- Helper function to recursively process elements
   local function process_element(el)
@@ -111,11 +194,13 @@ function UI.assign_plugin_components(menu)
       for _, interactiveClass in ipairs(C.INTERACTIVE_CLASSES) do
         if class == interactiveClass then
           -- Exclude buttons with TextColor="CheckBox.ReadOnlyText" (read-only display buttons)
+          -- This applies to all menus, not just main menu
           local textColor = el.TextColor
           if not (class == "Button" and textColor == "CheckBox.ReadOnlyText") then
             el.PluginComponent = MyHandle
             count = count + 1
             local name = el.Name or "unnamed"
+            Echo("DEBUG: " .. menuName .. " - Assigned PluginComponent to " .. name .. " (" .. class .. ")")
 
             -- Store element information
             table.insert(elements, {
@@ -166,6 +251,7 @@ function UI.assign_plugin_components(menu)
   process_element(menu)
 
   -- Echo the collected elements table
+  Echo("DEBUG: " .. menuName .. " - Total components assigned: " .. count)
   if count > 0 then
     -- Echo("=== Assigned PluginComponent to %d elements ===", count)
     for i, elem in ipairs(elements) do
@@ -232,9 +318,40 @@ function UI.edit_element(obj, property_or_table, value)
   return true
 end
 
+function UI.edit_settings_element(obj, property_or_table, value)
+  local el = C.UI_SETTINGS:FindRecursive(obj)
+  if not el then
+    ErrEcho("Element %s not found in UI_SETTINGS", obj)
+    return false
+  end
+
+  -- Check if property_or_table is actually a table of properties
+  if type(property_or_table) == "table" and value == nil then
+    -- Table mode: property_or_table = { Text = "Hello", Icon = "star", ... }
+    for prop, val in pairs(property_or_table) do
+      local func = UI.PROPERTY_MAP[prop]
+      if func then
+        func(el, val)
+      else
+        ErrEcho("Property %s not found in PROPERTY_MAP", prop)
+      end
+    end
+  else
+    -- Single property mode: property_or_table = "Text", value = "Hello"
+    local func = UI.PROPERTY_MAP[property_or_table]
+    if func then
+      func(el, value)
+    else
+      ErrEcho("Property %s not found in PROPERTY_MAP", property_or_table)
+    end
+  end
+  return true
+end
+
 ---------------
 -- CREATE UI --
 ---------------
+---
 -- Creates the command line icon button
 function UI.create_icon()
   local lastCols = tonumber(C.cmdLN.Columns)
@@ -284,12 +401,35 @@ function UI.create_menu()
 
   coroutine.yield(0.05) -- Wait a moment for UI to build
 
-  -- Load saved fade state (position and enable state) after UI is built
-  if O and O.fade_set_from_global then
-    O.fade_set_from_global()
+  FindBestFocus(C.UI_MENU)
+end
+
+function UI.create_settings()
+  C.UI_SETTINGS = C.screenOV:Append('BaseInput')
+  C.UI_SETTINGS.SuppressOverlayAutoclose = "Yes"
+  C.UI_SETTINGS.AutoClose = "No"
+  C.UI_SETTINGS.CloseOnEscape = "Yes"
+  local path, file = XML.importxml("settings")
+  C.UI_SETTINGS:Import(path, file)
+
+  C.UI_SETTINGS:HookDelete(SignalTable.close_menu, C.UI_SETTINGS)
+
+  -- Automatically assign PluginComponent to all interactive elements
+  local count, elements = UI.assign_plugin_components(C.UI_SETTINGS)
+
+  -- Store the elements table for later use
+  C.UI_ELEMENTS = elements
+
+  -- Initialize the signals module element references for settings menu
+  if S and S.init_settings_elements then
+    S.init_settings_elements()
   end
 
-  FindBestFocus(C.UI_MENU)
+  C.UI_SETTINGS_WARNING = C.UI_SETTINGS:FindRecursive("TitleWarningButton")
+
+  coroutine.yield(0.05) -- Wait a moment for UI to build
+
+  FindBestFocus(C.UI_SETTINGS)
 end
 
 -- Debug

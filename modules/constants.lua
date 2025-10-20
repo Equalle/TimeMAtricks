@@ -9,7 +9,9 @@ C.UI_MENU_NAME = C.PLUGIN_NAME .. "_Menu"
 C.UI_SETTINGS_NAME = C.PLUGIN_NAME .. "_Settings"
 C.CMD_ICON = nil
 C.UI_MENU = nil
+C.UI_SETTINGS = nil
 C.UI_MENU_WARNING = nil
+C.UI_SETTINGS_WARNING = nil
 
 
 C.colors = {

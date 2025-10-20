@@ -1,7 +1,7 @@
 # Main
 
-set fadeamount function in operators
-toggle state needs to be checked and set when opening menu
+select text on error
+hold to enable
 
 ### Add
 
@@ -36,3 +36,6 @@ toggle state needs to be checked and set when opening menu
 ## Extra
 
 -add SpeedtoTime integration
+
+
+Target="../../FilterGrid/Internals/GridBase/GridSettings/GridObjectContentFilter/Filter"
