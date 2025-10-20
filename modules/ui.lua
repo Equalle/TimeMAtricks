@@ -56,7 +56,11 @@ function UI.load()
   UI.edit_element("Version", {
     Text = "Version: " .. C.PLUGIN_VERSION,
   })
-  O.fade_adjust(0, true)
+  -- Initialize fade enable state to true if not set
+  local fadeState = GMA.get_global(C.GVars.fade)
+  if fadeState == nil then
+    GMA.set_global(C.GVars.fade, true)
+  end
   C.CMD_ICON.Icon = C.icons.matricks
 end
 
@@ -163,9 +167,9 @@ function UI.assign_plugin_components(menu)
 
   -- Echo the collected elements table
   if count > 0 then
-    Echo("=== Assigned PluginComponent to %d elements ===", count)
+    -- Echo("=== Assigned PluginComponent to %d elements ===", count)
     for i, elem in ipairs(elements) do
-      Echo("  [%d] %s: %s", i, elem.class, elem.name)
+      -- Echo("  [%d] %s: %s", i, elem.class, elem.name)
     end
   end
 
@@ -279,6 +283,12 @@ function UI.create_menu()
   C.UI_MENU_WARNING = C.UI_MENU:FindRecursive("TitleWarningButton")
 
   coroutine.yield(0.05) -- Wait a moment for UI to build
+
+  -- Load saved fade state (position and enable state) after UI is built
+  if O and O.fade_set_from_global then
+    O.fade_set_from_global()
+  end
+
   FindBestFocus(C.UI_MENU)
 end
 

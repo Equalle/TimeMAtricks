@@ -222,9 +222,10 @@ SignalTable.fade_toggle = function()
   if enable then
     elements.FLess.Enabled = "No"
     elements.FLess.Text = "DISABLED"
+    elements.FMore.Text = "(Press to enable)"
   end
   local n = GMA.set_global(C.GVars.fade, false)
-  Echo("Fade toggle: OFF (FadeLess disabled)")
+  -- Echo("Fade toggle: OFF (FadeLess disabled)")
 end
 
 

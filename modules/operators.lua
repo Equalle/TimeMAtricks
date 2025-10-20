@@ -81,8 +81,8 @@ end
 -- Helper: Get fade slider dimensions
 local function get_fade_dimensions()
   local menu = C.UI_MENU
-  local menuwidth = menu:Get("W")
-  local fullwidth = menuwidth - 50 -- remove padding
+  local menuwidth = tonumber(menu:Get("W")) or 600 -- Convert to number, default to 600
+  local fullwidth = menuwidth - 50                 -- remove padding
   local center = fullwidth / 2
   local step = 70
   local min = center - (step * 2)
@@ -145,7 +145,7 @@ end
 function O.fade_adjust(direction)
   local anchor = C.UI_MENU:FindRecursive("Fade Width")
   if not anchor then
-    Echo("Error: Fade Width anchor not found")
+    ErrEcho("Error: Fade Width anchor not found")
     return
   end
 
@@ -161,7 +161,7 @@ function O.fade_adjust(direction)
     local curr = tonumber(anchor.Size)
     O.fade_update_buttons(curr)
 
-    Echo("Fade re-enabled")
+    -- Echo("Fade re-enabled")
     return
   end
 
@@ -188,27 +188,46 @@ function O.fade_adjust(direction)
   local fadeamount = O.fade_position_to_amount(new)
   GMA.set_global(C.GVars.fadeamount, fadeamount)
 
-  Echo("Fade adjusted: position=" .. tostring(new) .. ", amount=" .. tostring(fadeamount))
+  -- Echo("Fade adjusted: position=" .. tostring(new) .. ", amount=" .. tostring(fadeamount))
 end
 
 -- Load saved fadeamount and position slider (called on menu open)
 function O.fade_set_from_global()
   local fadeamount = GMA.get_global(C.GVars.fadeamount) or 0.5
+  local fadeEnabledRaw = GMA.get_global(C.GVars.fade)
+  -- Convert to boolean: nil or true = enabled (default), false = disabled
+  local fadeEnabled = fadeEnabledRaw ~= false
+
   local anchor = C.UI_MENU:FindRecursive("Fade Width")
+  if not anchor then
+    ErrEcho("Error: Fade Width anchor not found")
+    return
+  end
+
+  local fadeLess = C.UI_MENU:FindRecursive("FadeLess")
+  local fadeMore = C.UI_MENU:FindRecursive("FadeMore")
+  if not fadeLess or not fadeMore then
+    Echo("Error: Fade buttons not found")
+    return
+  end
 
   -- Convert fadeamount to position
   local position = O.fade_amount_to_position(fadeamount)
 
-  -- Set slider position
-  anchor.Size = position
+  -- Set slider position (ensure it's a number)
+  anchor.Size = tonumber(position) or 300
 
-  -- Update button texts
+  -- First, always set the button texts based on position (enabled state)
   O.fade_update_buttons(position)
 
-  Echo("Fade loaded: position=" .. tostring(position) .. ", amount=" .. tostring(fadeamount))
-end
+  -- Then, if fade is disabled, override with disabled texts and state
+  if not fadeEnabled then
+    fadeLess.Enabled = "No"
+    fadeLess.Text = "DISABLED"
+    fadeMore.Text = "(Press to enable)"
+  end
 
-function O.fade_button()
+  -- Echo("Fade loaded: position=" .. tostring(position) .. ", amount=" .. tostring(fadeamount) .. ", enabled=" .. tostring(fadeEnabled))
 end
 
 -- Debug
