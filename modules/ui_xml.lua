@@ -49,7 +49,7 @@ end
 XML.UI_MENU = [[
 <?xml version="1.0" encoding="UTF-8"?>
 <GMA3 DataVersion="0.0.1">
-  <BaseInput Name="TimeMAtricks_Menu" H="0" W="600" AlignmentH="Center" AlignmentV="Center"
+  <BaseInput Name="TimeMAtricks_Menu" H="0" W="700" AlignmentH="Center" AlignmentV="Center"
     Focus="InitialFocus" CanCoexistWithModal="Yes" BlockClickThru="Yes"
     SuppressOverlayAutoClose="Yes" HideFocusFrame="Yes" CloseOnEscape="Yes">
     <ItemCollectRows>
@@ -146,7 +146,7 @@ XML.UI_MENU = [[
         <!-- Timing -->
         <Item SizePolicy="Stretch" />
         <!-- Speed -->
-        <Item SizePolicy="Fixed" Size="210" />
+        <Item SizePolicy="Fixed" Size="300" />
         <!-- Master ID -->
       </ItemCollectColumns>
 
@@ -162,22 +162,22 @@ XML.UI_MENU = [[
     </UILayoutGrid>
 
     <!-- Matricks Prefix -->
-    <UILayoutGrid Name="MatricksPrefix" Anchors="0,4" Padding="10,5,120,0">
+    <UILayoutGrid Name="MatricksPrefix" Anchors="0,4" Padding="10,5,10,0">
       <ItemCollectRows>
         <Item SizePolicy="Fixed" Size="55" />
         <!-- Matricks Prefix -->
       </ItemCollectRows>
       <ItemCollectColumns>
-        <Item SizePolicy="Fixed" Size="180" />
-        <Item SizePolicy="Stretch" />
+        <Item SizePolicy="Fixed" Size="200" />
+        <Item SizePolicy="Fixed" Size="200" />
       </ItemCollectColumns>
 
       <CheckBox Name="Matricks Prefix" Text="Matricks Prefix" TextAlignmentH="Left" Anchors="0,0"
-        Texture="corner5" Focus="Never" Clicked=":prefix_toggle" />
+        Texture="corner5" Focus="Never" Clicked=":prefix_toggle" TextAlignmentH="Center" />
       <LineEdit Name="Matricks Prefix Name" Message="Prefix (e.g: tm_)" Anchors="1,0"
         Texture="corner10" KeyDown=":key_down" FocusGet=":LineEditSelectAll"
         FocusLost=":LineEditDeselect" OnWrongChar=":show_warning"
-        VKPluginName="TextInputAlphaNumOnly"
+        VKPluginName="TextInputAlphaNumOnly" MaxTextLength="13"
         Filter="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZöäüÖÄÜß0123456789 -_/()@,.;:<>!?|" />
     </UILayoutGrid>
 
@@ -194,7 +194,7 @@ XML.UI_MENU = [[
         <!-- Matricks 1 -->
       </ItemCollectRows>
       <ItemCollectColumns>
-        <Item SizePolicy="Fixed" Size="150" />
+        <Item SizePolicy="Fixed" Size="200" />
         <!-- Toggle -->
         <Item SizePolicy="Stretch" Name="Name" />
         <!-- Name -->
@@ -209,37 +209,37 @@ XML.UI_MENU = [[
       <Button Text="Rate" Anchors="2,0" Texture="corner2" Focus="Never" HasHover="No"
         HasPressedAnimation="No" BackColor="CheckBox.ReadOnlyBackground" />
 
-      <CheckBox Name="Matricks 1" Text="MAtricks 1" TextAlignmentH="Left" Anchors="0,1"
+      <CheckBox Name="Matricks 1" Text="MAtricks 1" TextAlignmentH="Center" Anchors="0,1"
         Focus="Never" Clicked=":matricks_toggle" />
       <LineEdit Name="Matricks 1 Name" Message="Suffix 1 (e.g: in)" Anchors="1,1" Padding="0,0,10,0"
         Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center" KeyDown=":key_down"
         FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect"
         Filter="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZöäüÖÄÜß0123456789 -_/()@,.;:<>!?|"
-        OnWrongChar=":show_warning" />
+        OnWrongChar=":show_warning" MaxTextLength="16" />
       <LineEdit Name="Matricks 1 Rate" Message="Rate 1" Anchors="2,1" Padding="0,0,10,0"
         Icon="object_xkeys" IconAlignmentH="Right" IconAlignmentV="Center" TextChanged=":text_rate"
         KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect"
         VKPluginName="TextInputNumOnly" Filter=".0123456789" OnWrongChar=":show_warning" />
 
-      <CheckBox Name="Matricks 2" Text="MAtricks 2" TextAlignmentH="Left" Anchors="0,2"
+      <CheckBox Name="Matricks 2" Text="MAtricks 2" TextAlignmentH="Center" Anchors="0,2"
         Focus="Never" Clicked=":matricks_toggle" />
       <LineEdit Name="Matricks 2 Name" Message="Suffix 2 (e.g: out)" Anchors="1,2"
         Padding="0,0,10,0" Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center"
         KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect"
         Filter="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZöäüÖÄÜß0123456789 -_/()@,.;:<>!?|"
-        OnWrongChar=":show_warning" />
+        OnWrongChar=":show_warning" MaxTextLength="16" />
       <LineEdit Name="Matricks 2 Rate" Message="Rate 2" Anchors="2,2" Padding="0,0,10,0"
         Icon="object_xkeys" IconAlignmentH="Right" IconAlignmentV="Center" TextChanged=":text_rate"
         KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect"
         VKPluginName="TextInputNumOnly" Filter=".0123456789" OnWrongChar=":show_warning" />
 
-      <CheckBox Name="Matricks 3" Text="MAtricks 3" TextAlignmentH="Left" Anchors="0,3"
+      <CheckBox Name="Matricks 3" Text="MAtricks 3" TextAlignmentH="Center" Anchors="0,3"
         Focus="Never" Texture="corner4" Clicked=":matricks_toggle" />
       <LineEdit Name="Matricks 3 Name" Message="Suffix 3 (e.g: long)" Anchors="1,3"
         Padding="0,0,10,0" Icon="object_matricks" IconAlignmentH="Right" IconAlignmentV="Center"
         KeyDown=":key_down" FocusGet=":LineEditSelectAll" FocusLost=":LineEditDeselect"
         Filter="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZöäüÖÄÜß0123456789 -_/()@,.;:<>!?|"
-        OnWrongChar=":show_warning" />
+        OnWrongChar=":show_warning" MaxTextLength="16" />
       <LineEdit Name="Matricks 3 Rate" Message="Rate 3" Anchors="2,3" Padding="0,0,10,0"
         Icon="object_xkeys" IconAlignmentH="Right" IconAlignmentV="Center" Texture="corner8"
         TextChanged=":text_rate" KeyDown=":key_down" FocusGet=":LineEditSelectAll"
@@ -278,7 +278,7 @@ XML.UI_MENU = [[
       BackColor="CheckBox.ReadOnlyBackground" />
 
     <!-- Scale -->
-    <UILayoutGrid Name="Scale" Anchors="0,9" Padding="10,0,10,10">
+    <UILayoutGrid Name="Scale" Anchors="0,9" Padding="125,0,125,10">
       <ItemCollectRows>
         <Item SizePolicy="Fixed" Size="80" />
         <!-- Scale -->
@@ -328,10 +328,22 @@ XML.UI_MENU = [[
 </GMA3>
 ]]
 
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+
 XML.UI_SETTINGS = [[
 <?xml version="1.0" encoding="UTF-8"?>
 <GMA3 DataVersion="0.9.0.1">
-  <BaseInput Name="TimeMAtricks_Settings" H="0" W="500" AlignmentH="Center" AlignmentV="Top"
+  <BaseInput Name="TimeMAtricks_Settings" H="0" W="650" AlignmentH="Center" AlignmentV="Top"
     Y="150"
     Focus="InitialFocus" CanCoexistWithModal="Yes" BlockClickThru="Yes"
     SuppressOverlayAutoClose="Yes" HideFocusFrame="Yes" CloseOnEscape="Yes">

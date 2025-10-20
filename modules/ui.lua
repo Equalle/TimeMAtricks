@@ -141,8 +141,8 @@ function UI.load_settings()
     Icon = C.icons.matricks,
   })
 
-  UI.edit_settings_element("Matricks Start", { Content = tostring(GMA.get_global(C.GVars.mxstart) or "") })
-  UI.edit_settings_element("Refresh Rate", { Content = tostring(GMA.get_global(C.GVars.refresh) or "") })
+  UI.edit_settings_element("Matricks Start", { Content = tostring(GMA.get_global(C.GVars.mxstart) or 1) })
+  UI.edit_settings_element("Refresh Rate", { Content = tostring(GMA.get_global(C.GVars.refresh) or 0.5) })
 end
 
 ---------------
@@ -366,10 +366,15 @@ function UI.create_icon()
   C.CMD_ICON.PluginComponent = MyHandle
   C.CMD_ICON.Clicked = 'open_menu'
   C.CMD_ICON.Tooltip = C.PLUGIN_NAME .. " Plugin"
+  C.CMD_ICON.MouseEnter = ':icon_hover'
+  C.CMD_ICON.MouseLeave = ':icon_unhover'
+  C.CMD_ICON.TouchStart = ':icon_hover'
+  C.CMD_ICON.TouchEnd = ':icon_unhover'
+
 
   Tri = C.cmdLN:FindRecursive("RightTriangle")
   if Tri then
-    Tri.Anchors = { left = cols - 1 }
+    Tri.Anchors = { left = cols - 1, right = -1, top = -1, bottom = -1 }
     C.cmdLN[2][cols].SizePolicy = "Fixed"
     C.cmdLN[2][cols].Size = 50
   end
@@ -402,6 +407,7 @@ function UI.create_menu()
   coroutine.yield(0.05) -- Wait a moment for UI to build
 
   FindBestFocus(C.UI_MENU)
+  C.UI_MENU:FindRecursive("Matricks 1"):Dump()
 end
 
 function UI.create_settings()

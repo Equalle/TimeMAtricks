@@ -478,13 +478,15 @@ end
 -------------
 
 SignalTable.show_warning = function(caller, status)
-  local warn
-  GetTopOverlay()
-  if UI.is_valid_item(C.UI_SETTINGS, "screenOV") then
+  local ov = GetTopOverlay(1)
+  Printf(tostring(ov.Name))
+  local warn = ov:FindRecursive("TitleWarningButton")
+  Printf(tostring(warn.Name))
+  --[[   if UI.is_valid_item(C.UI_SETTINGS, "screenOV") then
     warn = C.UI_SETTINGS_WARNING
   else
     warn = C.UI_MENU_WARNING
-  end
+  end ]]
   if caller and status and status == "Name is too long (maximum 2 characters)" then
     if GMA.get_global(C.GVars.timing) == 1 then
       status = "Timing Master 1-50"
@@ -504,6 +506,16 @@ SignalTable.show_warning = function(caller, status)
 end
 
 SignalTable.show_apply = function(caller)
+end
+
+SignalTable.icon_hover = function()
+  C.CMD_ICON.ICONOFFSETV = -5
+  C.CMD_ICON.ICONSCALE = 1.5
+end
+
+SignalTable.icon_unhover = function()
+  C.CMD_ICON.ICONOFFSETV = 0
+  C.CMD_ICON.ICONSCALE = 1
 end
 
 -- Debug
