@@ -54,11 +54,6 @@ function S.init_settings_elements()
     StartIndex = UI.find_element("Matricks Start"),
     RefreshRate = UI.find_element("Refresh Rate"),
   }
-
-  -- Debug: Print settings elements initialization
-  -- Echo("DEBUG: Settings Elements Initialized")
-  -- Echo("  StartIndex: " .. tostring(settings_elements.StartIndex))
-  -- Echo("  RefreshRate: " .. tostring(settings_elements.RefreshRate))
 end
 
 -- Get the correct element table and overlay based on which menu is active
@@ -112,18 +107,15 @@ end
 -- Swipe gesture handlers for icon interaction
 SignalTable.icon_mouse_down = function()
   icon_swiping = true
-  -- Echo("DEBUG: icon_mouse_down - set icon_swiping = true")
 end
 
 SignalTable.icon_mouse_up = function()
   -- Reset flag on normal mouse up (no swipe)
-  -- Echo("DEBUG: icon_mouse_up - normal click, resetting flag")
   icon_swiping = false
 end
 
 SignalTable.icon_mouse_leave = function()
   if icon_swiping then
-    -- Echo("DEBUG: icon_mouse_leave - opening small menu via swipe")
     if not UI.is_valid_item(C.UI_SMALL_NAME, "screenOV") then
       UI.create_small()
       FindBestFocus(GetTopOverlay(1))
@@ -136,7 +128,6 @@ SignalTable.icon_mouse_leave = function()
 end
 
 SignalTable.open_menu = function()
-  -- Echo("DEBUG: open_menu called")
   if not UI.is_valid_item(C.UI_MENU_NAME, "screenOV") then
     UI.create_menu()
     FindBestFocus(GetTopOverlay(1))
@@ -184,7 +175,7 @@ end
 
 -------------
 -- BUTTONS --
-----y---------
+-------------
 
 SignalTable.plugin_off = function()
   PluginRunning = false
@@ -346,11 +337,6 @@ SignalTable.rate_change = function(caller)
   GMA.set_global(C.GVars.ovrate, rate)
 end
 
-SignalTable.apply_changes = function(caller)
-  -- Code to apply changes
-  Echo(">PH<   apply_changes")
-end
-
 ----------
 -- HOLD --
 ----------
@@ -384,7 +370,6 @@ end
 
 SignalTable.text_master = function(caller)
   if caller then
-    -- Echo("%s: %s", caller.Name, caller.Content)
     before = caller.Content
     after = O.master_limit(caller, before)
     if after ~= before then
@@ -453,7 +438,6 @@ end
 
 SignalTable.key_down = function(caller, dummy, keycode)
   if caller.HasFocus and keycode == Enums.KeyboardCodes.Enter then
-    -- Echo("Enter -> %s: %s", caller.Name, caller.Content)
     if caller == elements.MstID then
       if caller.Content == "" then
         SignalTable.show_warning(caller, "Please enter a Master ID")
@@ -584,11 +568,6 @@ SignalTable.icon_unhover = function()
   C.CMD_ICON.ICONOFFSETV = 0
   C.CMD_ICON.ICONSCALE = 1
   SignalTable.close_small()
-end
-
--- Debug
-function S.echo(message)
-  Echo("SIGNALS READY!")
 end
 
 return S

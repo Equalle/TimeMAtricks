@@ -174,25 +174,17 @@ end
 --- HELPERS ---
 ---------------
 
--- Find an element by name from the collected UI_ELEMENTS table or by recursive search
+-- Find an element by name from the collected UI_ELEMENTS table
 function UI.find_element(name)
-  if C.UI_ELEMENTS then
-    for _, elem in ipairs(C.UI_ELEMENTS) do
-      if elem.name == name then
-        return elem.handle
-      end
+  if not C.UI_ELEMENTS then
+    ErrEcho("UI.find_element: C.UI_ELEMENTS not initialized")
+    return nil
+  end
+
+  for _, elem in ipairs(C.UI_ELEMENTS) do
+    if elem.name == name then
+      return elem.handle
     end
-  end
-
-  -- Fallback: try to find in active menus using FindRecursive
-  if C.UI_MENU then
-    local elem = C.UI_MENU:FindRecursive(name)
-    if elem then return elem end
-  end
-
-  if C.UI_SETTINGS then
-    local elem = C.UI_SETTINGS:FindRecursive(name)
-    if elem then return elem end
   end
 
   ErrEcho("UI.find_element: Element '%s' not found", name)
@@ -211,7 +203,6 @@ function UI.assign_plugin_components(menu)
   local visited = {}  -- Prevent infinite loops
   local elements = {} -- Table to store element information
   local menuName = menu == C.UI_MENU and "MAIN MENU" or "SETTINGS MENU"
-  -- Echo("DEBUG: assign_plugin_components for " .. menuName)
 
   -- Helper function to recursively process elements
   local function process_element(el)
@@ -233,7 +224,6 @@ function UI.assign_plugin_components(menu)
             el.PluginComponent = MyHandle
             count = count + 1
             local name = el.Name or "unnamed"
-            -- Echo("DEBUG: " .. menuName .. " - Assigned PluginComponent to " .. name .. " (" .. class .. ")")
 
             -- Store element information
             table.insert(elements, {
@@ -282,15 +272,6 @@ function UI.assign_plugin_components(menu)
   end
 
   process_element(menu)
-
-  -- Echo the collected elements table
-  -- Echo("DEBUG: " .. menuName .. " - Total components assigned: " .. count)
-  if count > 0 then
-    -- Echo("=== Assigned PluginComponent to %d elements ===", count)
-    for i, elem in ipairs(elements) do
-      -- Echo("  [%d] %s: %s", i, elem.class, elem.name)
-    end
-  end
 
   return count, elements
 end
@@ -519,22 +500,12 @@ function UI.create_small()
   C.UI_SMALL.PluginButtons.MouseLeave = 'close_small'
 
   -- Automatically assign PluginComponent to all interactive elements
-  -- Echo("DEBUG: About to assign PluginComponent to SMALL UI")
   local count, elements = UI.assign_plugin_components(C.UI_SMALL)
-  -- Echo("DEBUG: Assigned " .. count .. " components to SMALL UI")
 
   -- Debug: Check PluginComponent of buttons
   local plOn = C.UI_SMALL:FindRecursive("PlOn")
   local plOff = C.UI_SMALL:FindRecursive("PlOff")
-  -- ErrEcho("DEBUG: PlOn PluginComponent: " .. tostring(plOn and plOn.PluginComponent or "NOT FOUND"))
-  -- ErrEcho("DEBUG: PlOff PluginComponent: " .. tostring(plOff and plOff.PluginComponent or "NOT FOUND"))
-
   UI.load_small()
-end
-
--- Debug
-function UI.echo(message)
-  Echo("UI READY!")
 end
 
 return UI

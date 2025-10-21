@@ -58,20 +58,15 @@ end
 -- timing: normalized timing value
 function O.apply_matricks_triplet(baseName, rate, prefix, fadeAmount, timing)
   if not baseName or baseName == "" then
-    Echo("DEBUG apply_matricks_triplet: baseName is empty")
     return
   end
   if not timing or timing == 0 then
-    Echo("DEBUG apply_matricks_triplet: timing is invalid: " .. tostring(timing))
     return
   end
 
   local mxPool = DataPool(1).Matricks
-  Echo("DEBUG apply_matricks_triplet: mxPool = " .. tostring(mxPool))
 
   local d = timing * rate -- Calculate total delay
-  Echo("DEBUG apply_matricks_triplet: baseName=" ..
-    tostring(baseName) .. ", rate=" .. tostring(rate) .. ", timing=" .. tostring(timing) .. ", d=" .. tostring(d))
 
   local fade, delay
   if fadeAmount and fadeAmount > 0 then
@@ -82,21 +77,15 @@ function O.apply_matricks_triplet(baseName, rate, prefix, fadeAmount, timing)
     delay = d
   end
 
-  Echo("DEBUG apply_matricks_triplet: fade=" .. tostring(fade) .. ", delay=" .. tostring(delay))
 
   -- Apply to all three triplet objects
   for k = 1, 3 do
     local fullName = prefix .. baseName .. " " .. k
-    Echo("DEBUG apply_matricks_triplet: Looking for triplet: " .. tostring(fullName))
     local obj = mxPool:Find(fullName)
     if obj then
-      Echo("DEBUG apply_matricks_triplet: Found " ..
-        fullName .. ", setting fade=" .. tostring(fade) .. ", delay=" .. tostring(delay))
       obj:Set("FadeFromX", fade)
       obj:Set("DelayFromX", delay)
       obj:Set("DelayToX", 0)
-    else
-      Echo("DEBUG apply_matricks_triplet: NOT FOUND: " .. fullName)
     end
   end
 end
@@ -413,7 +402,6 @@ function O.fade_adjust(direction)
     local curr = tonumber(anchor.Size)
     O.fade_update_buttons(curr)
 
-    -- Echo("Fade re-enabled")
     return
   end
 
@@ -439,8 +427,6 @@ function O.fade_adjust(direction)
   -- Convert to fadeamount and save
   local fadeamount = O.fade_position_to_amount(new)
   GMA.set_global(C.GVars.fadeamount, fadeamount)
-
-  -- Echo("Fade adjusted: position=" .. tostring(new) .. ", amount=" .. tostring(fadeamount))
 end
 
 -- Load saved fadeamount and position slider (called on menu open)
@@ -476,8 +462,6 @@ function O.fade_set_from_global()
     UI.edit_element("FadeLess", { Enabled = "No", Text = "DISABLED" })
     UI.edit_element("FadeMore", { Text = "(Hold to enable)" })
   end
-
-  -- Echo("Fade loaded: position=" .. tostring(position) .. ", amount=" .. tostring(fadeamount) .. ", enabled=" .. tostring(fadeEnabled))
 end
 
 function O.adjust_rate(factor)
@@ -706,11 +690,6 @@ function O.handle_prefix_change(caller, oldPrefix, newPrefix)
       end
     end
   end
-end
-
--- Debug
-function O.echo(message)
-  Echo("OPERATORS READY!")
 end
 
 return O

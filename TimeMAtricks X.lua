@@ -96,7 +96,7 @@ local function import_modules()
       if copyFile then
         copyFile:write(devContent)
         copyFile:close()
-        Echo("Copied dev module %s to plugin library", moduleData.file)
+        -- Echo("Copied dev module %s to plugin library", moduleData.file)
       else
         ErrEcho("Failed to copy dev module %s to plugin library", moduleData.file)
       end
@@ -107,7 +107,7 @@ local function import_modules()
         if moduleVars[moduleName] then
           moduleVars[moduleName](result)
         end
-        Echo("Loaded module %s", pluginLibFile)
+        -- Echo("Loaded module %s", pluginLibFile)
       else
         ErrEcho("Error loading module %s from plugin library: %s", pluginLibFile, result)
       end
@@ -117,7 +117,7 @@ local function import_modules()
       if file then
         file:write(moduleData.code)
         file:close()
-        Echo("Written embedded module %s to plugin library", moduleName)
+        -- Echo("Written embedded module %s to plugin library", moduleName)
 
         -- Load the module
         local success, result = pcall(dofile, pluginLibFile)
@@ -126,19 +126,19 @@ local function import_modules()
             moduleVars[moduleName](result)
           end
         else
-          Echo("Error loading module %s: %s", moduleName, result)
+          ErrEcho("Error loading module %s: %s", moduleName, result)
         end
       else
-        Echo("Error writing module %s to file", moduleName)
+        ErrEcho("Error writing module %s to file", moduleName)
       end
     end
   end
-  C.echo()
-  GMA.echo()
-  UI.echo()
-  XML.echo()
-  S.echo()
-  O.echo()
+  -- C.echo()
+  -- GMA.echo()
+  -- UI.echo()
+  -- XML.echo()
+  -- S.echo()
+  -- O.echo()
 end
 
 ------------------------
@@ -148,7 +148,6 @@ end
 local function loop()
   if PluginRunning then
     pluginAlive = true
-    Echo("=== LOOP TICK ===")
 
     -- Get all matricks configuration from globals
     local config = {
@@ -182,60 +181,40 @@ local function loop()
       fade_amount = tonumber(GMA.get_global(C.GVars.fadeamount) or 0.5) or 0.5,
     }
 
-    Echo("Master ID: " .. tostring(config.master_id))
-    Echo("Timing Enabled: " .. tostring(config.timing_enabled) .. ", Speed Enabled: " .. tostring(config.speed_enabled))
-    Echo("Mx1 Enabled: " .. tostring(config.mx1_enabled) .. ", Mx1 Name: " .. tostring(config.mx1_name))
 
     -- Only execute if a master is configured and enabled
     if config.master_id ~= "" and (config.timing_enabled == 1 or config.speed_enabled == 1) then
-      Echo("Master configured and enabled, getting fader value...")
       -- Get normalized timing from master
       local timing = O.get_master_fader_normalized()
-      Echo("Timing value: " .. tostring(timing))
 
       if timing and timing > 0 then
-        Echo("Timing valid: " .. tostring(timing))
         -- Apply overall rate scaling
         timing = timing / config.overall_rate
-        Echo("After rate scaling: " .. tostring(timing))
 
         -- Determine fade/delay split
         local fadeAmount = config.fade_enabled == false and 0 or (config.fade_amount or 0.5)
-        Echo("Fade amount: " .. tostring(fadeAmount))
 
         -- Get prefix to apply (if enabled)
-        local prefix = (config.mx_prefix_enabled == 1 and config.mx_prefix_name ~= "") and (config.mx_prefix_name) or
-            ""
-        Echo("Prefix: " .. tostring(prefix))
+        local prefix = (config.mx_prefix_enabled == 1 and config.mx_prefix_name ~= "") and (config.mx_prefix_name) or ""
 
         -- Apply matricks triplets if enabled
         if config.mx1_enabled == 1 then
-          Echo("Applying Mx1: " .. tostring(config.mx1_name))
           O.apply_matricks_triplet(config.mx1_name, config.mx1_rate, prefix, fadeAmount, timing)
         end
         if config.mx2_enabled == 1 then
-          Echo("Applying Mx2: " .. tostring(config.mx2_name))
           O.apply_matricks_triplet(config.mx2_name, config.mx2_rate, prefix, fadeAmount, timing)
         end
         if config.mx3_enabled == 1 then
-          Echo("Applying Mx3: " .. tostring(config.mx3_name))
           O.apply_matricks_triplet(config.mx3_name, config.mx3_rate, prefix, fadeAmount, timing)
         end
       else
         Echo("WARNING: Timing not valid: " .. tostring(timing))
       end
-    else
-      Echo("WARNING: Master not configured. Master ID: " ..
-        tostring(config.master_id) ..
-        ", Timing: " .. tostring(config.timing_enabled) .. ", Speed: " .. tostring(config.speed_enabled))
     end
-  else
-    Echo("Plugin not running, skipping loop")
   end
 
   -- Get refresh rate from settings (default 1 second)
   local refreshrate = tonumber(GMA.get_global(C.GVars.refresh) or 0.5) or 0.5
-  Echo("Next refresh in: " .. tostring(refreshrate) .. "s")
   coroutine.yield(refreshrate)
 end
 

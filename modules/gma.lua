@@ -78,9 +78,4 @@ function GMA.msgbox(table)
   MessageBox(settings)
 end
 
--- Debug
-function GMA.echo(message)
-  Echo("GMA READY!")
-end
-
 return GMA
