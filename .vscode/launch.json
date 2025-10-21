@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "GMA3 Lua Debugger",
+      "type": "lua",
+      "request": "attach",
+      "listenPublicly": false,
+      "listenPort": 11411,
+      "workingDirectory": "${workspaceFolder}"
+    }
+  ]
+}

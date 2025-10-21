@@ -1,14 +1,16 @@
 # Main
 
-fix prefix toggle button
-check matricks123 toggle buttons
-fix bugs in ui and signals cmdbar swipey and menu open errors (bottom of file)
+-default master and default matricks toggles!
 
-total cleanup
+-fix prefix toggle button
+-check matricks123 toggle buttons
+-fix bugs in ui and signals cmdbar swipey and -menu open errors (bottom of file)
+
+-complete cleanup
 
 ### Add
 
-documentation
+-documentation
 
 ### Remove
 

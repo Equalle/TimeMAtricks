@@ -1,3 +1,5 @@
+---@diagnostic disable: redundant-parameter
+
 O = {}
 
 -- Convert speed master fader value (0-1 normalized) to BPM using quartic curve
