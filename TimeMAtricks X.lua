@@ -54,8 +54,24 @@ local modules = {
 -- WRITE AND LOAD MODULES
 local function import_modules()
   local pluginLibPath = GetPath(Enums.PathType.PluginLibrary)
-  local devModulePath = 'C:\\Users\\Juri\\Desktop\\GrandMA3 Plugins\\TimeMAtricks with modules\\modules\\'
-  -- local devModulePath = '/Users/juriseiffert/Documents/GrandMA3Plugins/TimeMAtricks with modules/modules/'
+
+  -- Possible development paths (Windows and macOS)
+  local devModulePaths = {
+    'C:\\Users\\Juri\\Desktop\\GrandMA3 Plugins\\TimeMAtricks with modules\\modules\\',
+    '/Users/juriseiffert/Documents/GrandMA3Plugins/TimeMAtricks with modules/modules/'
+  }
+
+  -- Find which dev path exists
+  local devModulePath = nil
+  for _, path in ipairs(devModulePaths) do
+    local testFile = io.open(path .. "gma.lua", "r")
+    if testFile then
+      testFile:close()
+      devModulePath = path
+      Echo("[MODULES] Using development path: %s", path)
+      break
+    end
+  end
 
   -- Create plugin-specific subfolder in plugin library
   local slash = package.config:sub(1, 1) -- Get OS-specific path separator
@@ -81,38 +97,44 @@ local function import_modules()
   for moduleName, moduleData in pairs(modules) do
     local fileName = "TM_" .. moduleData.file
     local pluginLibFile = pluginModulePath .. fileName
+    local loaded = false
 
-    -- First, try to load from development directory
-    local devFilePath = devModulePath .. moduleData.file
-    local devFile = io.open(devFilePath, "r")
+    -- First, try to load from development directory (if found)
+    if devModulePath then
+      local devFilePath = devModulePath .. moduleData.file
+      local devFile = io.open(devFilePath, "r")
 
-    if devFile then
-      -- Development file exists, read its content
-      local devContent = devFile:read("*a")
-      devFile:close()
+      if devFile then
+        -- Development file exists, read its content
+        local devContent = devFile:read("*a")
+        devFile:close()
 
-      -- Copy dev file to plugin library
-      local copyFile = io.open(pluginLibFile, "w")
-      if copyFile then
-        copyFile:write(devContent)
-        copyFile:close()
-        -- Echo("Copied dev module %s to plugin library", moduleData.file)
-      else
-        ErrEcho("Failed to copy dev module %s to plugin library", moduleData.file)
-      end
-
-      -- Load from plugin library (not dev directory)
-      local success, result = pcall(dofile, pluginLibFile)
-      if success then
-        if moduleVars[moduleName] then
-          moduleVars[moduleName](result)
+        -- Copy dev file to plugin library
+        local copyFile = io.open(pluginLibFile, "w")
+        if copyFile then
+          copyFile:write(devContent)
+          copyFile:close()
+          -- Echo("Copied dev module %s to plugin library", moduleData.file)
+        else
+          ErrEcho("Failed to copy dev module %s to plugin library", moduleData.file)
         end
-        -- Echo("Loaded module %s", pluginLibFile)
-      else
-        ErrEcho("Error loading module %s from plugin library: %s", pluginLibFile, result)
+
+        -- Load from plugin library (not dev directory)
+        local success, result = pcall(dofile, pluginLibFile)
+        if success then
+          if moduleVars[moduleName] then
+            moduleVars[moduleName](result)
+          end
+          loaded = true
+          -- Echo("Loaded module %s", pluginLibFile)
+        else
+          ErrEcho("Error loading module %s from plugin library: %s", pluginLibFile, result)
+        end
       end
-    else
-      -- Fall back to embedded module code and write to plugin library subfolder
+    end
+
+    -- Fall back to embedded module code if not loaded from dev path
+    if not loaded then
       local file = io.open(pluginLibFile, "w")
       if file then
         file:write(moduleData.code)
