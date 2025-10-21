@@ -184,11 +184,10 @@ end
 
 -------------
 -- BUTTONS --
--------------
+----y---------
 
 SignalTable.plugin_off = function()
   PluginRunning = false
-
 
   -- Set PluginOn colors
   if UI.is_valid_item(C.UI_MENU.Name, "screenOV") then
@@ -210,7 +209,7 @@ SignalTable.plugin_off = function()
     end
   end
 
-  if UI.is_valid_item(C.UI_SMALL.Name, "screenOV") then
+  if C.UI_SMALL and UI.is_valid_item(C.UI_SMALL.Name, "screenOV") then
     UI.edit_small_element("PlOn", { BackColor = C.colors.button.default, TextColor = C.colors.icon.inactive })
     UI.edit_small_element("PlOff", { BackColor = C.colors.button.clear, TextColor = C.colors.icon.active })
     SignalTable.close_small()
@@ -243,7 +242,7 @@ SignalTable.plugin_on = function()
     end
   end
 
-  if UI.is_valid_item(C.UI_SMALL.Name, "screenOV") then
+  if C.UI_SMALL and UI.is_valid_item(C.UI_SMALL.Name, "screenOV") then
     UI.edit_small_element("PlOn", { BackColor = C.colors.button.please, TextColor = C.colors.icon.active })
     UI.edit_small_element("PlOff", { BackColor = C.colors.button.default, TextColor = C.colors.icon.inactive })
     SignalTable.close_small()
@@ -484,13 +483,22 @@ SignalTable.LineEditDeselect = function(caller)
         GMA.set_global(C.GVars.mvalue, tonumber(caller.Content))
       end
     elseif caller == elements.MxPreName then
-      O.save_matricks_name(caller, caller.Content)
+      -- Handle prefix name change
+      local oldPrefix = GMA.get_global(C.GVars.prefixname) or ""
+      local newPrefix = caller.Content
+      if newPrefix ~= oldPrefix and tonumber(GMA.get_global(C.GVars.prefix) or 0) == 1 then
+        O.handle_prefix_change(caller, oldPrefix, newPrefix)
+      end
+      GMA.set_global(C.GVars.prefixname, newPrefix)
     elseif caller == elements.Mx1Name then
-      O.save_matricks_name(caller, caller.Content)
+      GMA.set_global(C.GVars.mx1name, caller.Content)
+      O.handle_matricks_value_change(caller, 1)
     elseif caller == elements.Mx2Name then
-      O.save_matricks_name(caller, caller.Content)
+      GMA.set_global(C.GVars.mx2name, caller.Content)
+      O.handle_matricks_value_change(caller, 2)
     elseif caller == elements.Mx3Name then
-      O.save_matricks_name(caller, caller.Content)
+      GMA.set_global(C.GVars.mx3name, caller.Content)
+      O.handle_matricks_value_change(caller, 3)
     elseif caller == elements.Mx1Rate then
       if caller.Content ~= "" then
         GMA.set_global(C.GVars.mx1rate, caller.Content)

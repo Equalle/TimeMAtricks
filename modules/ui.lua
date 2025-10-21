@@ -174,17 +174,25 @@ end
 --- HELPERS ---
 ---------------
 
--- Find an element by name from the collected UI_ELEMENTS table
+-- Find an element by name from the collected UI_ELEMENTS table or by recursive search
 function UI.find_element(name)
-  if not C.UI_ELEMENTS then
-    ErrEcho("UI.find_element: C.UI_ELEMENTS not initialized")
-    return nil
+  if C.UI_ELEMENTS then
+    for _, elem in ipairs(C.UI_ELEMENTS) do
+      if elem.name == name then
+        return elem.handle
+      end
+    end
   end
 
-  for _, elem in ipairs(C.UI_ELEMENTS) do
-    if elem.name == name then
-      return elem.handle
-    end
+  -- Fallback: try to find in active menus using FindRecursive
+  if C.UI_MENU then
+    local elem = C.UI_MENU:FindRecursive(name)
+    if elem then return elem end
+  end
+
+  if C.UI_SETTINGS then
+    local elem = C.UI_SETTINGS:FindRecursive(name)
+    if elem then return elem end
   end
 
   ErrEcho("UI.find_element: Element '%s' not found", name)

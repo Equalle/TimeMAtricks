@@ -144,14 +144,105 @@ end
 ------------------------
 -- MAIN LOOP AND EXIT --
 ------------------------
----
+
 local function loop()
-  pluginAlive = true
-  coroutine.yield(1)
-  -- Echo("LOOPING...")
+  if PluginRunning then
+    pluginAlive = true
+    Echo("=== LOOP TICK ===")
+
+    -- Get all matricks configuration from globals
+    local config = {
+      -- Matricks enabled states (1 or 0)
+      mx1_enabled = GMA.get_global(C.GVars.mx1) or 0,
+      mx2_enabled = GMA.get_global(C.GVars.mx2) or 0,
+      mx3_enabled = GMA.get_global(C.GVars.mx3) or 0,
+      mx_prefix_enabled = GMA.get_global(C.GVars.prefix) or 0,
+
+      -- Matricks names (e.g., "Test Matricks")
+      mx1_name = GMA.get_global(C.GVars.mx1name) or "",
+      mx2_name = GMA.get_global(C.GVars.mx2name) or "",
+      mx3_name = GMA.get_global(C.GVars.mx3name) or "",
+      mx_prefix_name = GMA.get_global(C.GVars.prefixname) or "",
+
+      -- Matricks rates (multipliers)
+      mx1_rate = tonumber(GMA.get_global(C.GVars.mx1rate) or 0.25) or 0.25,
+      mx2_rate = tonumber(GMA.get_global(C.GVars.mx2rate) or 0.5) or 0.5,
+      mx3_rate = tonumber(GMA.get_global(C.GVars.mx3rate) or 1.0) or 1.0,
+
+      -- Master configuration
+      master_id = GMA.get_global(C.GVars.mvalue) or "",
+      timing_enabled = tonumber(GMA.get_global(C.GVars.timing) or 0) or 0,
+      speed_enabled = tonumber(GMA.get_global(C.GVars.speed) or 0) or 0,
+
+      -- Overall rate scaling
+      overall_rate = tonumber(GMA.get_global(C.GVars.ovrate) or 1.0) or 1.0,
+
+      -- Fade configuration
+      fade_enabled = GMA.get_global(C.GVars.fade),
+      fade_amount = tonumber(GMA.get_global(C.GVars.fadeamount) or 0.5) or 0.5,
+    }
+
+    Echo("Master ID: " .. tostring(config.master_id))
+    Echo("Timing Enabled: " .. tostring(config.timing_enabled) .. ", Speed Enabled: " .. tostring(config.speed_enabled))
+    Echo("Mx1 Enabled: " .. tostring(config.mx1_enabled) .. ", Mx1 Name: " .. tostring(config.mx1_name))
+
+    -- Only execute if a master is configured and enabled
+    if config.master_id ~= "" and (config.timing_enabled == 1 or config.speed_enabled == 1) then
+      Echo("Master configured and enabled, getting fader value...")
+      -- Get normalized timing from master
+      local timing = O.get_master_fader_normalized()
+      Echo("Timing value: " .. tostring(timing))
+
+      if timing and timing > 0 then
+        Echo("Timing valid: " .. tostring(timing))
+        -- Apply overall rate scaling
+        timing = timing / config.overall_rate
+        Echo("After rate scaling: " .. tostring(timing))
+
+        -- Determine fade/delay split
+        local fadeAmount = config.fade_enabled == false and 0 or (config.fade_amount or 0.5)
+        Echo("Fade amount: " .. tostring(fadeAmount))
+
+        -- Get prefix to apply (if enabled)
+        local prefix = (config.mx_prefix_enabled == 1 and config.mx_prefix_name ~= "") and (config.mx_prefix_name) or
+            ""
+        Echo("Prefix: " .. tostring(prefix))
+
+        -- Apply matricks triplets if enabled
+        if config.mx1_enabled == 1 then
+          Echo("Applying Mx1: " .. tostring(config.mx1_name))
+          O.apply_matricks_triplet(config.mx1_name, config.mx1_rate, prefix, fadeAmount, timing)
+        end
+        if config.mx2_enabled == 1 then
+          Echo("Applying Mx2: " .. tostring(config.mx2_name))
+          O.apply_matricks_triplet(config.mx2_name, config.mx2_rate, prefix, fadeAmount, timing)
+        end
+        if config.mx3_enabled == 1 then
+          Echo("Applying Mx3: " .. tostring(config.mx3_name))
+          O.apply_matricks_triplet(config.mx3_name, config.mx3_rate, prefix, fadeAmount, timing)
+        end
+      else
+        Echo("WARNING: Timing not valid: " .. tostring(timing))
+      end
+    else
+      Echo("WARNING: Master not configured. Master ID: " ..
+        tostring(config.master_id) ..
+        ", Timing: " .. tostring(config.timing_enabled) .. ", Speed: " .. tostring(config.speed_enabled))
+    end
+  else
+    Echo("Plugin not running, skipping loop")
+  end
+
+  -- Get refresh rate from settings (default 1 second)
+  local refreshrate = tonumber(GMA.get_global(C.GVars.refresh) or 0.5) or 0.5
+  Echo("Next refresh in: " .. tostring(refreshrate) .. "s")
+  coroutine.yield(refreshrate)
 end
 
 local function kill_plugin()
+  SignalTable.close_menu()
+  pluginAlive = false
+  PluginRunning = false
 end
 
 ---------------------

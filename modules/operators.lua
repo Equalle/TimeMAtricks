@@ -1,5 +1,106 @@
 O = {}
 
+-- Convert speed master fader value (0-1 normalized) to BPM using quartic curve
+function O.bpm_quartic(normed)
+  -- Quartic polynomial coefficients (highest degree -> lowest)
+  local a4 = 1.4782363954528236e-07
+  local a3 = -4.7011506911898910e-05
+  local a2 = 0.02546732094127444
+  local a1 = 0.02565532641182032
+  local a0 = -0.015923207227581285
+  local y = ((((a4 * normed + a3) * normed + a2) * normed + a1) * normed + a0)
+  if y <= 30 then y = 30 end
+  if y >= 0 then
+    return math.floor(y * 10 + 0.5) / 10
+  else
+    return math.ceil(y * 10 - 0.5) / 10
+  end
+end
+
+-- Get normalized fader value from master (timing or speed)
+-- Returns normalized value with proper scaling for the selected master type
+function O.get_master_fader_normalized()
+  local masterID = GMA.get_global(C.GVars.mvalue)
+  if not masterID or masterID == "" then
+    return nil
+  end
+
+  local mstr = MasterPool()
+  local master = nil
+
+  if GMA.get_global(C.GVars.timing) == 1 then
+    -- Timing master (1-50 range)
+    master = mstr.Timing:Ptr(tonumber(masterID))
+    if not master then return nil end
+    local normed = master:GetFader({}) or 0
+    normed = normed / 10                          -- Timing master returns 0-1000, normalize to 0-100
+    normed = math.floor(normed * 100 + 0.5) / 100 -- Round to 2 decimals
+    return normed
+  elseif GMA.get_global(C.GVars.speed) == 1 then
+    -- Speed master (1-16 range)
+    master = mstr.Speed:Ptr(tonumber(masterID))
+    if not master then return nil end
+    local normed = master:GetFader({}) or 0       -- Already 0-1 normalized
+    local bpm = O.bpm_quartic(normed)
+    normed = 60 / bpm                             -- Convert BPM to beats per second
+    normed = math.floor(normed * 100 + 0.5) / 100 -- Round to 2 decimals
+    return normed
+  end
+
+  return nil
+end
+
+-- Apply matricks triplet with fade and delay
+-- baseName: string name of the matricks (e.g., "Test")
+-- rate: number multiplier for timing (e.g., 0.25, 0.5, 1.0)
+-- prefix: string prefix to prepend to matricks name (e.g., "PREFIX_")
+-- fadeAmount: number between 0-1 indicating fade/delay split (0 = all delay, 1 = all fade)
+-- timing: normalized timing value
+function O.apply_matricks_triplet(baseName, rate, prefix, fadeAmount, timing)
+  if not baseName or baseName == "" then
+    Echo("DEBUG apply_matricks_triplet: baseName is empty")
+    return
+  end
+  if not timing or timing == 0 then
+    Echo("DEBUG apply_matricks_triplet: timing is invalid: " .. tostring(timing))
+    return
+  end
+
+  local mxPool = DataPool(1).Matricks
+  Echo("DEBUG apply_matricks_triplet: mxPool = " .. tostring(mxPool))
+
+  local d = timing * rate -- Calculate total delay
+  Echo("DEBUG apply_matricks_triplet: baseName=" ..
+    tostring(baseName) .. ", rate=" .. tostring(rate) .. ", timing=" .. tostring(timing) .. ", d=" .. tostring(d))
+
+  local fade, delay
+  if fadeAmount and fadeAmount > 0 then
+    fade = d * fadeAmount
+    delay = d * (1 - fadeAmount)
+  else
+    fade = "None"
+    delay = d
+  end
+
+  Echo("DEBUG apply_matricks_triplet: fade=" .. tostring(fade) .. ", delay=" .. tostring(delay))
+
+  -- Apply to all three triplet objects
+  for k = 1, 3 do
+    local fullName = prefix .. baseName .. " " .. k
+    Echo("DEBUG apply_matricks_triplet: Looking for triplet: " .. tostring(fullName))
+    local obj = mxPool:Find(fullName)
+    if obj then
+      Echo("DEBUG apply_matricks_triplet: Found " ..
+        fullName .. ", setting fade=" .. tostring(fade) .. ", delay=" .. tostring(delay))
+      obj:Set("FadeFromX", fade)
+      obj:Set("DelayFromX", delay)
+      obj:Set("DelayToX", 0)
+    else
+      Echo("DEBUG apply_matricks_triplet: NOT FOUND: " .. fullName)
+    end
+  end
+end
+
 function O.master_limit(caller, value)
   local before = caller.Content
   local after = before
@@ -397,6 +498,214 @@ function O.adjust_rate(factor)
     newRate = math.floor(newRate * 1000 + 0.5) / 1000 -- round to 3 decimal places
   end
   return newRate
+end
+
+-- Get all matricks from pool with metadata
+function O.get_all_matricks()
+  local mxpath = DataPool(1).Matricks
+  local mxt = {}
+  for i = 1, 10000 do
+    local p = mxpath:Ptr(i)
+    if p then
+      mxt[i] = {
+        index = i,
+        note = p:Get("Note"),
+        name = p:Get("Name")
+      }
+    end
+  end
+  return mxt, mxpath
+end
+
+-- Validate matricks name (check for duplicates and empty)
+function O.validate_matricks_name(caller, callerid, content)
+  -- Get all matricks names for this callerid (1, 2, or 3)
+  local globals = {
+    GMA.get_global(C.GVars.mx1name),
+    GMA.get_global(C.GVars.mx2name),
+    GMA.get_global(C.GVars.mx3name),
+  }
+
+  -- Check for duplicate names (exclude current field)
+  for i, v in ipairs(globals) do
+    if i ~= callerid and content == v then
+      SignalTable.show_warning(caller, "Name already used")
+      local oldValue = GMA.get_global(C.GVars["mx" .. callerid .. "name"]) or ""
+      caller.Content = oldValue
+      return false
+    end
+  end
+
+  -- Check for empty name
+  if content == "" then
+    SignalTable.show_warning(caller, "Matricks name cannot be empty")
+    local oldValue = GMA.get_global(C.GVars["mx" .. callerid .. "name"]) or ""
+    caller.Content = oldValue
+    return false
+  end
+
+  return true
+end
+
+-- Rename existing matricks triplet (all three objects)
+function O.rename_matricks_triplet(callerid, newName, prefix, mxt, mxpath)
+  local cand = {}
+
+  -- Find existing matricks with correct notes
+  for _, v in pairs(mxt) do
+    for i = 1, 3 do
+      if v.note == "TimeMatricks " .. callerid .. "." .. i then
+        cand[i] = {
+          index = v.index,
+          name = v.name
+        }
+      end
+    end
+  end
+
+  -- Rename all three matricks triplet objects
+  for i = 1, 3 do
+    local found = false
+    -- Try to find in candidates first
+    if cand[i] and cand[i].name ~= newName then
+      local obj = mxpath:FindRecursive(cand[i].name)
+      if obj then
+        obj:Set("Name", tostring(prefix .. newName .. " " .. i))
+        found = true
+      end
+    end
+    -- If not found in candidates, search all matricks
+    if not found then
+      for _, v in pairs(mxt) do
+        if v.note == ("TimeMatricks " .. callerid .. "." .. i) then
+          local obj = mxpath:FindRecursive(v.name)
+          if obj and v.name ~= newName then
+            obj:Set("Name", tostring(prefix .. newName .. " " .. i))
+          end
+        end
+      end
+    end
+  end
+end
+
+-- Create new matricks triplet (all three objects)
+function O.create_matricks_triplet(callerid, newName, prefix, mxt, mxpath)
+  for i = 1, 3 do
+    local exists = false
+    local targetName = tostring(prefix .. newName .. " " .. i)
+    local targetNote = "TimeMatricks " .. callerid .. "." .. i
+
+    -- Check if already exists
+    for _, v in pairs(mxt) do
+      local obj = mxpath:FindRecursive(v.name)
+      local objname = obj and obj:Get("Name") or ""
+      local objnote = obj and obj:Get("Note") or ""
+      if objname == targetName or objnote == targetNote then
+        exists = true
+        break
+      end
+    end
+
+    if not exists then
+      -- Find first free slot from settings start index
+      local startidx = tonumber(GMA.get_global(C.GVars.mxstart) or 1) or 1
+      local freeidx = nil
+      for n = startidx, 10000 do
+        if not mxpath:Ptr(n) then
+          freeidx = n
+          break
+        end
+      end
+
+      if not freeidx then
+        return false, "No free Matricks slot found"
+      end
+
+      local newobj = mxpath:Create(freeidx)
+      if not newobj then
+        return false, "Failed to create new object"
+      end
+
+      newobj:Set("Name", prefix .. newName .. " " .. i)
+      newobj:Set("Note", targetNote)
+      newobj:Set("InvertStyle", "All")
+    end
+  end
+  return true
+end
+
+-- Handle matricks value changes (rename or create triplet)
+function O.handle_matricks_value_change(caller, callerid)
+  local content = caller.Content or ""
+
+  -- Validate the name
+  if not O.validate_matricks_name(caller, callerid, content) then
+    return
+  end
+
+  -- Get prefix
+  local prefixEnabled = GMA.get_global(C.GVars.prefix) or 0
+  local prefixName = GMA.get_global(C.GVars.prefixname) or ""
+  local prefix = ""
+  if tonumber(prefixEnabled) == 1 and prefixName ~= "" then
+    prefix = tostring(prefixName)
+  end
+
+  -- Get all matricks
+  local mxt, mxpath = O.get_all_matricks()
+
+  -- Check if triplet exists
+  local found_any = false
+  for _, v in pairs(mxt) do
+    for i = 1, 3 do
+      if v.note == "TimeMatricks " .. callerid .. "." .. i then
+        found_any = true
+        break
+      end
+    end
+    if found_any then break end
+  end
+
+  if found_any then
+    -- Rename existing triplet
+    O.rename_matricks_triplet(callerid, content, prefix, mxt, mxpath)
+  else
+    -- Create new triplet
+    local success, error = O.create_matricks_triplet(callerid, content, prefix, mxt, mxpath)
+    if not success then
+      SignalTable.show_warning(caller, error)
+      return
+    end
+  end
+end
+
+-- Handle prefix name changes (rename all matricks to use new prefix)
+function O.handle_prefix_change(caller, oldPrefix, newPrefix)
+  if newPrefix == "" then
+    SignalTable.show_warning(caller, "Prefix cannot be empty")
+    caller.Content = oldPrefix
+    return
+  end
+
+  local mxt, mxpath = O.get_all_matricks()
+  for i, v in pairs(mxt) do
+    local name = v.name
+    if name and name ~= "" then
+      local obj = mxpath:FindRecursive(name)
+      if obj then
+        -- Check if this is a TimeMatricks object
+        local note = obj:Get("Note")
+        if note and note:match("^TimeMatricks") then
+          -- Remove old prefix if present
+          local strippedName = name
+          if strippedName:sub(1, #oldPrefix) == oldPrefix then
+            strippedName = strippedName:sub(#oldPrefix + 1)
+          end
+          obj:Set("Name", newPrefix .. strippedName)
+        end
+      end
+    end
+  end
 end
 
 -- Debug
