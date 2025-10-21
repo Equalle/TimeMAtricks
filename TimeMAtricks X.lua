@@ -251,8 +251,6 @@ end
 ---------------------
 
 local function main()
-  require 'gma3_debug' ()
-  debuggee.print("log", "start")
   if not pluginAlive then
     import_modules()
     if UI.is_valid_item(C.CMD_ICON_NAME, "cmdLN") then
