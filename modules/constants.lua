@@ -12,6 +12,7 @@ C.UI_MENU = nil
 C.UI_SETTINGS = nil
 C.UI_MENU_WARNING = nil
 C.UI_SETTINGS_WARNING = nil
+C.UI_SMALL = nil
 
 
 C.colors = {

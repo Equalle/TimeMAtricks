@@ -145,6 +145,31 @@ function UI.load_settings()
   UI.edit_settings_element("Refresh Rate", { Content = tostring(GMA.get_global(C.GVars.refresh) or 0.5) })
 end
 
+function UI.save_small()
+end
+
+function UI.load_small()
+  if PluginRunning then
+    UI.edit_small_element("PlOn", {
+      BackColor = C.colors.button.please,
+      TextColor = C.colors.icon.active,
+    })
+    UI.edit_small_element("PlOff", {
+      BackColor = C.colors.button.default,
+      TextColor = C.colors.icon.inactive,
+    })
+  else
+    UI.edit_small_element("PlOn", {
+      BackColor = C.colors.button.default,
+      TextColor = C.colors.icon.inactive,
+    })
+    UI.edit_small_element("PlOff", {
+      BackColor = C.colors.button.please,
+      TextColor = C.colors.icon.active,
+    })
+  end
+end
+
 ---------------
 --- HELPERS ---
 ---------------
@@ -178,7 +203,7 @@ function UI.assign_plugin_components(menu)
   local visited = {}  -- Prevent infinite loops
   local elements = {} -- Table to store element information
   local menuName = menu == C.UI_MENU and "MAIN MENU" or "SETTINGS MENU"
-  Echo("DEBUG: assign_plugin_components for " .. menuName)
+  -- Echo("DEBUG: assign_plugin_components for " .. menuName)
 
   -- Helper function to recursively process elements
   local function process_element(el)
@@ -200,7 +225,7 @@ function UI.assign_plugin_components(menu)
             el.PluginComponent = MyHandle
             count = count + 1
             local name = el.Name or "unnamed"
-            Echo("DEBUG: " .. menuName .. " - Assigned PluginComponent to " .. name .. " (" .. class .. ")")
+            -- Echo("DEBUG: " .. menuName .. " - Assigned PluginComponent to " .. name .. " (" .. class .. ")")
 
             -- Store element information
             table.insert(elements, {
@@ -251,7 +276,7 @@ function UI.assign_plugin_components(menu)
   process_element(menu)
 
   -- Echo the collected elements table
-  Echo("DEBUG: " .. menuName .. " - Total components assigned: " .. count)
+  -- Echo("DEBUG: " .. menuName .. " - Total components assigned: " .. count)
   if count > 0 then
     -- Echo("=== Assigned PluginComponent to %d elements ===", count)
     for i, elem in ipairs(elements) do
@@ -348,6 +373,36 @@ function UI.edit_settings_element(obj, property_or_table, value)
   return true
 end
 
+function UI.edit_small_element(obj, property_or_table, value)
+  local el = C.UI_SMALL:FindRecursive(obj)
+  if not el then
+    ErrEcho("Element %s not found in UI_SMALL", obj)
+    return false
+  end
+
+  -- Check if property_or_table is actually a table of properties
+  if type(property_or_table) == "table" and value == nil then
+    -- Table mode: property_or_table = { Text = "Hello", Icon = "star", ... }
+    for prop, val in pairs(property_or_table) do
+      local func = UI.PROPERTY_MAP[prop]
+      if func then
+        func(el, val)
+      else
+        ErrEcho("Property %s not found in PROPERTY_MAP", prop)
+      end
+    end
+  else
+    -- Single property mode: property_or_table = "Text", value = "Hello"
+    local func = UI.PROPERTY_MAP[property_or_table]
+    if func then
+      func(el, value)
+    else
+      ErrEcho("Property %s not found in PROPERTY_MAP", property_or_table)
+    end
+  end
+  return true
+end
+
 ---------------
 -- CREATE UI --
 ---------------
@@ -365,11 +420,12 @@ function UI.create_icon()
   C.CMD_ICON.H = "100%"
   C.CMD_ICON.PluginComponent = MyHandle
   C.CMD_ICON.Clicked = 'open_menu'
+  C.CMD_ICON.MouseDownHold = 'nothing'
   C.CMD_ICON.Tooltip = C.PLUGIN_NAME .. " Plugin"
-  C.CMD_ICON.MouseEnter = ':icon_hover'
-  C.CMD_ICON.MouseLeave = ':icon_unhover'
-  C.CMD_ICON.TouchStart = ':icon_hover'
-  C.CMD_ICON.TouchEnd = ':icon_unhover'
+  -- Swipe gesture detection
+  C.CMD_ICON.MouseDown = ':icon_mouse_down'
+  C.CMD_ICON.MouseUp = ':icon_mouse_up'
+  C.CMD_ICON.MouseLeave = ':icon_mouse_leave'
 
 
   Tri = C.cmdLN:FindRecursive("RightTriangle")
@@ -407,7 +463,6 @@ function UI.create_menu()
   coroutine.yield(0.05) -- Wait a moment for UI to build
 
   FindBestFocus(C.UI_MENU)
-  C.UI_MENU:FindRecursive("Matricks 1"):Dump()
 end
 
 function UI.create_settings()
@@ -436,6 +491,37 @@ function UI.create_settings()
   coroutine.yield(0.05) -- Wait a moment for UI to build
 
   FindBestFocus(C.UI_SETTINGS)
+end
+
+function UI.create_small()
+  C.UI_SMALL = C.screenOV:Append('BaseInput')
+  C.UI_SMALL.SuppressOverlayAutoclose = "Yes"
+  C.UI_SMALL.AutoClose = "No"
+  C.UI_SMALL.CloseOnEscape = "Yes"
+  C.UI_SMALL.AlignmentH = "Right"
+  C.UI_SMALL.AlignmentV = "Bottom"
+  C.UI_SMALL.W = 300
+  C.UI_SMALL.H = 150
+
+  local path, file = XML.importxml("small")
+  C.UI_SMALL:Import(path, file)
+
+  C.UI_SMALL:HookDelete(SignalTable.close_small, C.UI_SMALL)
+  C.UI_SMALL.PluginButtons.PluginComponent = MyHandle
+  C.UI_SMALL.PluginButtons.MouseLeave = 'close_small'
+
+  -- Automatically assign PluginComponent to all interactive elements
+  -- Echo("DEBUG: About to assign PluginComponent to SMALL UI")
+  local count, elements = UI.assign_plugin_components(C.UI_SMALL)
+  -- Echo("DEBUG: Assigned " .. count .. " components to SMALL UI")
+
+  -- Debug: Check PluginComponent of buttons
+  local plOn = C.UI_SMALL:FindRecursive("PlOn")
+  local plOff = C.UI_SMALL:FindRecursive("PlOff")
+  -- ErrEcho("DEBUG: PlOn PluginComponent: " .. tostring(plOn and plOn.PluginComponent or "NOT FOUND"))
+  -- ErrEcho("DEBUG: PlOff PluginComponent: " .. tostring(plOff and plOff.PluginComponent or "NOT FOUND"))
+
+  UI.load_small()
 end
 
 -- Debug

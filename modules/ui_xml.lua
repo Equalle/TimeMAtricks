@@ -25,6 +25,9 @@ content = XML.UI_MENU
 elseif xmlType == "settings" then
 filename = tostring(C.UI_SETTINGS_NAME) .. ".xml"
 content = XML.UI_SETTINGS
+elseif xmlType == "small" then
+filename = "TimeMAtricks_Small.xml"
+content = XML.UI_SMALL
 else
 ErrEcho("XML.import: Unknown xmlType '%s'", tostring(xmlType))
 return
@@ -418,6 +421,33 @@ XML.UI_SETTINGS = [[
     <Button Name="Close" Text="Close" Anchors="0,1" Texture="corner15"
       Focus="CanHaveFocus" TextShadow="Yes" Font="Medium20" Clicked=":close_menu" />
 
+  </BaseInput>
+</GMA3>
+]]
+
+XML.UI_SMALL = [[
+<?xml version="1.0" encoding="UTF-8"?>
+<GMA3 DataVersion="0.0.1">
+  <BaseInput Name="TimeMAtricks_Small" H="0" W="400" AlignmentH="Right" AlignmentV="Bottom">
+    <!-- Plugin Off/On Buttons -->
+    <DialogFrame Anchors="0,0" Name="PluginButtons" Texture="frame15" Focus="WantsFocus">
+      <ItemCollectRows>
+        <Item SizePolicy="Fixed" Size="100" />
+        <!-- Plugin Buttons -->
+      </ItemCollectRows>
+      <ItemCollectColumns>
+        <Item SizePolicy="Stretch" />
+        <!-- Plugin Off-->
+        <Item SizePolicy="Stretch" />
+        <!-- Plugin On-->
+      </ItemCollectColumns>
+
+      <Button Name="PlOff" Text="Plugin Off" Anchors="0,0" Texture="corner5" Focus="Never"
+        TextShadow="Yes" Font="Medium20" MOUSEUPLEFT=":plugin_off" />
+      <Button Name="PlOn" Text="Plugin On" Anchors="1,0" Texture="corner10" Focus="Never"
+        TextShadow="Yes" Font="Medium20" MOUSEUPLEFT=":plugin_on" />
+
+    </DialogFrame>
   </BaseInput>
 </GMA3>
 ]]

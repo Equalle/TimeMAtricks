@@ -6,6 +6,9 @@ S = {}
 local elements = {}
 local settings_elements = {}
 
+-- Swipe gesture detection for icon
+local icon_swiping = false
+
 -- Populate elements table with UI element handles for main menu
 function S.init_elements()
   elements = {
@@ -53,9 +56,9 @@ function S.init_settings_elements()
   }
 
   -- Debug: Print settings elements initialization
-  Echo("DEBUG: Settings Elements Initialized")
-  Echo("  StartIndex: " .. tostring(settings_elements.StartIndex))
-  Echo("  RefreshRate: " .. tostring(settings_elements.RefreshRate))
+  -- Echo("DEBUG: Settings Elements Initialized")
+  -- Echo("  StartIndex: " .. tostring(settings_elements.StartIndex))
+  -- Echo("  RefreshRate: " .. tostring(settings_elements.RefreshRate))
 end
 
 -- Get the correct element table and overlay based on which menu is active
@@ -106,7 +109,34 @@ end
 -- MENU --
 ----------
 
+-- Swipe gesture handlers for icon interaction
+SignalTable.icon_mouse_down = function()
+  icon_swiping = true
+  -- Echo("DEBUG: icon_mouse_down - set icon_swiping = true")
+end
+
+SignalTable.icon_mouse_up = function()
+  -- Reset flag on normal mouse up (no swipe)
+  -- Echo("DEBUG: icon_mouse_up - normal click, resetting flag")
+  icon_swiping = false
+end
+
+SignalTable.icon_mouse_leave = function()
+  if icon_swiping then
+    -- Echo("DEBUG: icon_mouse_leave - opening small menu via swipe")
+    if not UI.is_valid_item(C.UI_SMALL_NAME, "screenOV") then
+      UI.create_small()
+      FindBestFocus(GetTopOverlay(1))
+    else
+      C.UI_SMALL.Enabled = "Yes"
+    end
+    UI.load_small()
+    icon_swiping = false
+  end
+end
+
 SignalTable.open_menu = function()
+  -- Echo("DEBUG: open_menu called")
   if not UI.is_valid_item(C.UI_MENU_NAME, "screenOV") then
     UI.create_menu()
     FindBestFocus(GetTopOverlay(1))
@@ -115,6 +145,7 @@ SignalTable.open_menu = function()
     C.UI_MENU.Enabled = "Yes"
   end
   UI.load()
+  icon_swiping = false
 end
 
 SignalTable.open_settings = function()
@@ -141,6 +172,16 @@ SignalTable.close_menu = function(caller)
   C.UI_MENU.Enabled = "Yes"
 end
 
+SignalTable.close_small = function()
+  if C.UI_SMALL and UI.is_valid_item(C.UI_SMALL.Name, "screenOV") then
+    FindBestFocus(C.UI_SMALL.PluginButtons)
+    coroutine.yield(0.1)
+    GMA.press_key("Escape")
+  end
+  C.CMD_ICON.ICONSCALE = 1
+  C.CMD_ICON.ICONOFFSETV = 0
+end
+
 -------------
 -- BUTTONS --
 -------------
@@ -148,22 +189,31 @@ end
 SignalTable.plugin_off = function()
   PluginRunning = false
 
+
   -- Set PluginOn colors
-  if elements.PlOn then
-    elements.PlOn.BackColor = C.colors.button.default
-    elements.PlOn.TextColor = C.colors.icon.inactive
+  if UI.is_valid_item(C.UI_MENU.Name, "screenOV") then
+    if elements.PlOn then
+      elements.PlOn.BackColor = C.colors.button.default
+      elements.PlOn.TextColor = C.colors.icon.inactive
+    end
+
+    -- Set PluginOff colors
+    if elements.PlOff then
+      elements.PlOff.BackColor = C.colors.button.clear
+      elements.PlOff.TextColor = C.colors.icon.active
+    end
+
+    -- set Title icon color
+    local tb = C.UI_MENU:FindRecursive("TitleButton")
+    if tb then
+      tb.IconColor = C.colors.icon.inactive
+    end
   end
 
-  -- Set PluginOff colors
-  if elements.PlOff then
-    elements.PlOff.BackColor = C.colors.button.clear
-    elements.PlOff.TextColor = C.colors.icon.active
-  end
-
-  -- set Title icon color
-  local tb = C.UI_MENU:FindRecursive("TitleButton")
-  if tb then
-    tb.IconColor = C.colors.icon.inactive
+  if UI.is_valid_item(C.UI_SMALL.Name, "screenOV") then
+    UI.edit_small_element("PlOn", { BackColor = C.colors.button.default, TextColor = C.colors.icon.inactive })
+    UI.edit_small_element("PlOff", { BackColor = C.colors.button.clear, TextColor = C.colors.icon.active })
+    SignalTable.close_small()
   end
 
   -- Set command line icon color
@@ -173,22 +223,30 @@ end
 SignalTable.plugin_on = function()
   PluginRunning = true
 
-  -- Set PluginOn colors
-  if elements.PlOn then
-    elements.PlOn.BackColor = C.colors.button.please
-    elements.PlOn.TextColor = C.colors.icon.active
+  if UI.is_valid_item(C.UI_MENU.Name, "screenOV") then
+    -- Set PluginOn colors
+    if elements.PlOn then
+      elements.PlOn.BackColor = C.colors.button.please
+      elements.PlOn.TextColor = C.colors.icon.active
+    end
+
+    -- Set PluginOff colors
+    if elements.PlOff then
+      elements.PlOff.BackColor = C.colors.button.default
+      elements.PlOff.TextColor = C.colors.icon.inactive
+    end
+
+    -- Set Title icon color
+    local tb = C.UI_MENU:FindRecursive("TitleButton")
+    if tb then
+      tb.IconColor = C.colors.icon.active
+    end
   end
 
-  -- Set PluginOff colors
-  if elements.PlOff then
-    elements.PlOff.BackColor = C.colors.button.default
-    elements.PlOff.TextColor = C.colors.icon.inactive
-  end
-
-  -- Set Title icon color
-  local tb = C.UI_MENU:FindRecursive("TitleButton")
-  if tb then
-    tb.IconColor = C.colors.icon.active
+  if UI.is_valid_item(C.UI_SMALL.Name, "screenOV") then
+    UI.edit_small_element("PlOn", { BackColor = C.colors.button.please, TextColor = C.colors.icon.active })
+    UI.edit_small_element("PlOff", { BackColor = C.colors.button.default, TextColor = C.colors.icon.inactive })
+    SignalTable.close_small()
   end
 
   -- Set command line icon color
@@ -511,11 +569,13 @@ end
 SignalTable.icon_hover = function()
   C.CMD_ICON.ICONOFFSETV = -5
   C.CMD_ICON.ICONSCALE = 1.5
+  UI.create_small()
 end
 
 SignalTable.icon_unhover = function()
   C.CMD_ICON.ICONOFFSETV = 0
   C.CMD_ICON.ICONSCALE = 1
+  SignalTable.close_small()
 end
 
 -- Debug
