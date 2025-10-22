@@ -96,7 +96,13 @@ Quickfix:
 -Start Recipe Tools first  
 -Then start TimeMAtricks again  
 
-When resizing the onpc window or changing the display scale option, the viewbutton toggle (rightarrow last icon in the commandline) will break.  
+When resizing the onpc window or changing the display scale option, the viewbutton toggle (rightarrow last icon in the commandline) will break.
+
+-Fixed in next version
+
+When there never was a MAtricks in the pool, if then the plugin is run: it can't create any MAtricks.
+
+-create a MAtricks in any slot and delete it. the creation should then work
 
 ## Requirements
 GrandMA3 software (version 2.3+)  
