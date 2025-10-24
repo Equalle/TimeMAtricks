@@ -665,6 +665,40 @@ function O.handle_matricks_value_change(caller, callerid)
   end
 end
 
+-- Toggle prefix on/off for all TimeMatricks objects
+-- enable: boolean - true to add prefix, false to remove prefix
+function O.toggle_prefix_on_all_matricks(enable)
+  local prefixName = GMA.get_global(C.GVars.prefixname) or ""
+  if prefixName == "" then
+    return -- Cannot toggle if no prefix name is set
+  end
+
+  local mxt, mxpath = O.get_all_matricks()
+  for i, v in pairs(mxt) do
+    local name = v.name
+    if name and name ~= "" then
+      local obj = mxpath:FindRecursive(name)
+      if obj then
+        -- Check if this is a TimeMatricks object
+        local note = obj:Get("Note")
+        if note and note:match("^TimeMatricks") then
+          if enable then
+            -- Add prefix if not already present
+            if name:sub(1, #prefixName) ~= prefixName then
+              obj:Set("Name", prefixName .. name)
+            end
+          else
+            -- Remove prefix if present
+            if name:sub(1, #prefixName) == prefixName then
+              obj:Set("Name", name:sub(#prefixName + 1))
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
 -- Handle prefix name changes (rename all matricks to use new prefix)
 function O.handle_prefix_change(caller, oldPrefix, newPrefix)
   if newPrefix == "" then

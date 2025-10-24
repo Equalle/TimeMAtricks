@@ -155,12 +155,6 @@ local function import_modules()
       end
     end
   end
-  -- C.echo()
-  -- GMA.echo()
-  -- UI.echo()
-  -- XML.echo()
-  -- S.echo()
-  -- O.echo()
 end
 
 ------------------------
@@ -245,6 +239,28 @@ local function kill_plugin()
   CloseAllOverlays()
   pluginAlive = false
   PluginRunning = false
+  local path = GetPath(Enums.PathType.PluginLibrary)
+  local plfolder = path .. "/TimeMAtricks/"
+
+  -- Remove individual module files
+  local moduleFiles = { "TM_gma.lua", "TM_constants.lua", "TM_ui.lua", "TM_ui_xml.lua", "TM_signals.lua",
+    "TM_operators.lua" }
+  for _, file in ipairs(moduleFiles) do
+    os.remove(plfolder .. file)
+  end
+
+  -- Remove XML files in temp directory
+  local tempPath = GetPath("temp") .. "/TimeMAtricks/"
+  local xmlFiles = { "TimeMAtricks_Menu.xml", "TimeMAtricks_Settings.xml", "TimeMAtricks_Small.xml" }
+  for _, file in ipairs(xmlFiles) do
+    os.remove(tempPath .. file)
+  end
+
+  -- Remove temp folders
+  os.remove(tempPath)
+
+  -- Remove the plugin library folder
+  os.remove(plfolder)
 end
 
 ---------------------

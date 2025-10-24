@@ -1,9 +1,4 @@
 # Main
-
--fix prefix toggle button
--check matricks123 toggle buttons
--fix bugs in ui and signals cmdbar swipey and -menu open errors (bottom of file)
-
 -complete cleanup
 
 ### Add
@@ -18,7 +13,6 @@
 
 ## Later
 
--add save
 -maybe hotkey?
 -create repo for compiling
 -add compiling
