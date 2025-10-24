@@ -132,8 +132,10 @@ SignalTable.open_menu = function()
     UI.create_menu()
     FindBestFocus(GetTopOverlay(1))
   else
-    -- C.UI_MENU.Visible = "Yes"
-    C.UI_MENU.Enabled = "Yes"
+    if C.UI_MENU then
+      C.UI_MENU.Enabled = "Yes"
+      FindBestFocus(C.UI_MENU)
+    end
   end
   UI.load()
   icon_swiping = false
@@ -157,6 +159,8 @@ SignalTable.close_menu = function(caller)
     end
     if caller:Parent():Parent() or caller == C.UI_SETTINGS then
       GMA.press_key("Escape")
+      coroutine.yield(0.1)
+      FindBestFocus(C.UI_MENU)
     end
   else
     --CloseAllOverlays()
@@ -535,9 +539,7 @@ end
 
 SignalTable.show_warning = function(caller, status)
   local ov = GetTopOverlay(1)
-  Printf(tostring(ov.Name))
   local warn = ov:FindRecursive("TitleWarningButton")
-  Printf(tostring(warn.Name))
   if caller and status and status == "Name is too long (maximum 2 characters)" then
     if GMA.get_global(C.GVars.timing) == 1 then
       status = "Timing Master 1-50"

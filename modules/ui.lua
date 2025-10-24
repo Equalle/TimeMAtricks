@@ -420,7 +420,7 @@ function UI.create_icon()
   C.CMD_ICON.MouseDown = ':icon_mouse_down'
   C.CMD_ICON.MouseUp = ':icon_mouse_up'
   C.CMD_ICON.MouseLeave = ':icon_mouse_leave'
-
+  C.CMD_ICON.HotKey = 'Shift+M'
 
   Tri = C.cmdLN:FindRecursive("RightTriangle")
   if Tri then
