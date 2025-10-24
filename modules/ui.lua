@@ -80,18 +80,21 @@ function UI.load()
 
   -- Matricks Toggles - Load state and enable/disable corresponding fields
   local mx1State = GMA.get_global(C.GVars.mx1) or 1
+  GMA.set_global(C.GVars.mx1, mx1State)
   UI.edit_element("Matricks 1", { State = mx1State })
   local mx1EnableState = (mx1State == 1) and "Yes" or "No"
   UI.edit_element("Matricks 1 Name", { Enabled = mx1EnableState })
   UI.edit_element("Matricks 1 Rate", { Enabled = mx1EnableState })
 
   local mx2State = GMA.get_global(C.GVars.mx2) or 1
+  GMA.set_global(C.GVars.mx2, mx2State)
   UI.edit_element("Matricks 2", { State = mx2State })
   local mx2EnableState = (mx2State == 1) and "Yes" or "No"
   UI.edit_element("Matricks 2 Name", { Enabled = mx2EnableState })
   UI.edit_element("Matricks 2 Rate", { Enabled = mx2EnableState })
 
   local mx3State = GMA.get_global(C.GVars.mx3) or 1
+  GMA.set_global(C.GVars.mx3, mx3State)
   UI.edit_element("Matricks 3", { State = mx3State })
   local mx3EnableState = (mx3State == 1) and "Yes" or "No"
   UI.edit_element("Matricks 3 Name", { Enabled = mx3EnableState })
@@ -99,6 +102,7 @@ function UI.load()
 
   -- Matricks Prefix Toggle
   local prefixState = GMA.get_global(C.GVars.prefix) or 1
+  GMA.set_global(C.GVars.prefix, prefixState)
   UI.edit_element("Matricks Prefix", { State = prefixState })
   local prefixEnableState = (prefixState == 1) and "Yes" or "No"
   UI.edit_element("Matricks Prefix Name", { Enabled = prefixEnableState })
@@ -121,8 +125,8 @@ function UI.load()
   C.CMD_ICON = C.cmdLN:FindRecursive(C.CMD_ICON_NAME)
   C.CMD_ICON.Icon = C.icons.matricks
   -- Master Select
-  UI.edit_element("MstTiming", { State = GMA.get_global(C.GVars.timing), })
-  UI.edit_element("MstSpeed", { State = GMA.get_global(C.GVars.speed), })
+  UI.edit_element("MstTiming", { State = GMA.get_global(C.GVars.timing) or 1 })
+  UI.edit_element("MstSpeed", { State = GMA.get_global(C.GVars.speed) or 0 })
   -- Master Value
   UI.edit_element("Master ID", { Content = tostring(GMA.get_global(C.GVars.mvalue) or "") })
 

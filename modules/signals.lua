@@ -309,10 +309,14 @@ SignalTable.prefix_toggle = function(caller)
       caller.State = 0
       GMA.set_global(C.GVars.prefix, 0)
       elements.MxPreName.Enabled = "No"
+      -- Remove prefix from all matricks
+      O.toggle_prefix_on_all_matricks(false)
     elseif caller.State == 0 then
       caller.State = 1
       GMA.set_global(C.GVars.prefix, 1)
       elements.MxPreName.Enabled = "Yes"
+      -- Add prefix to all matricks
+      O.toggle_prefix_on_all_matricks(true)
     end
   end
 end
