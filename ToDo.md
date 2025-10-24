@@ -11,6 +11,7 @@
 ### Add
 
 -documentation
+-EULA
 
 ### Remove
 
@@ -20,6 +21,7 @@
 ## Later
 
 -add save
+-maybe hotkey?
 -create repo for compiling
 -add compiling
 -compiling has the issue, that SignalTable did not work properly after compiling

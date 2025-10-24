@@ -21,33 +21,33 @@ local GMA, C, UI, XML, S, O
 local modules = {
   GMA = {
     file = "gma.lua",
-    code = [[
-  ]]
+    code = [==[
+]==]
   },
   C = {
     file = "constants.lua",
-    code = [[
-]]
+    code = [==[
+]==]
   },
   UI = {
     file = "ui.lua",
-    code = [[
-]]
+    code = [==[
+]==]
   },
   XML = {
     file = "ui_xml.lua",
-    code = [[
-]]
+    code = [==[
+]==]
   },
   S = {
     file = "signals.lua",
-    code = [[
-]]
+    code = [==[
+]==]
   },
   O = {
     file = "operators.lua",
-    code = [[
-]]
+    code = [==[
+]==]
   },
 }
 
@@ -68,7 +68,7 @@ local function import_modules()
     if testFile then
       testFile:close()
       devModulePath = path
-      Echo("[MODULES] Using development path: %s", path)
+      Echo("[MODULES] Using development path: %s", devModulePath)
       break
     end
   end
@@ -241,7 +241,8 @@ local function loop()
 end
 
 local function kill_plugin()
-  SignalTable.close_menu()
+  UI.delete_icon()
+  CloseAllOverlays()
   pluginAlive = false
   PluginRunning = false
 end
@@ -264,9 +265,11 @@ local function main()
         end
       end
     end
+    coroutine.yield(0.1) -- Wait a moment for icon to appear
     SignalTable.open_menu()
     local firstopen = GMA.get_global("TM_firststart") or nil
     if not firstopen then
+      GMA.pool_check()
       GMA.msgbox({
         title = "First Launch",
         message = "Press the Settings button at the top to configure the starting MAtricks pool number.",

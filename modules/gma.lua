@@ -51,6 +51,23 @@ end
 --SPECIAL FUNCTIONS --
 ----------------------
 
+function GMA.pool_check()
+  local mc = DataPool().Macros:Count()
+  local mx = DataPool().MAtricks:Count()
+  if not mc or mc < 1 then
+    Printf("No Macros found in Data Pool")
+    Printf("Create Delete")
+    Cmd("Store Macro 9999 /noo")
+    Cmd("Delete Macro 9999 /noo")
+  end
+  if not mx or mx < 1 then
+    Printf("No MAtricks found in Data Pool")
+    Printf("Create Delete")
+    Cmd("Store MAtricks 9999 /noo")
+    Cmd("Delete MAtricks 9999 /noo")
+  end
+end
+
 --create reset macro for beta testers
 function GMA.reset_macro()
   local macroPool = DataPool(1).Macros

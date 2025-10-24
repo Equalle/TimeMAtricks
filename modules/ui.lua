@@ -118,6 +118,7 @@ function UI.load()
   UI.edit_element("Matricks Prefix Name", { Content = tostring(GMA.get_global(C.GVars.prefixname) or ""), })
 
   -- CmdIcon
+  C.CMD_ICON = C.cmdLN:FindRecursive(C.CMD_ICON_NAME)
   C.CMD_ICON.Icon = C.icons.matricks
   -- Master Select
   UI.edit_element("MstTiming", { State = GMA.get_global(C.GVars.timing), })
@@ -395,7 +396,7 @@ end
 ---------------
 -- CREATE UI --
 ---------------
----
+
 -- Creates the command line icon button
 function UI.create_icon()
   local lastCols = tonumber(C.cmdLN.Columns)
@@ -483,29 +484,64 @@ function UI.create_settings()
 end
 
 function UI.create_small()
-  C.UI_SMALL = C.screenOV:Append('BaseInput')
-  C.UI_SMALL.SuppressOverlayAutoclose = "Yes"
-  C.UI_SMALL.AutoClose = "No"
-  C.UI_SMALL.CloseOnEscape = "Yes"
-  C.UI_SMALL.AlignmentH = "Right"
-  C.UI_SMALL.AlignmentV = "Bottom"
-  C.UI_SMALL.W = 300
-  C.UI_SMALL.H = 150
+  local menu = C.screenOV:FindRecursive(C.UI_SMALL_NAME)
+  if not menu then
+    C.UI_SMALL = C.screenOV:Append('BaseInput')
+    C.UI_SMALL.SuppressOverlayAutoclose = "Yes"
+    C.UI_SMALL.AutoClose = "No"
+    C.UI_SMALL.CloseOnEscape = "Yes"
+    C.UI_SMALL.AlignmentH = "Right"
+    C.UI_SMALL.AlignmentV = "Bottom"
+    C.UI_SMALL.W = 300
+    C.UI_SMALL.H = 150
 
-  local path, file = XML.importxml("small")
-  C.UI_SMALL:Import(path, file)
+    local path, file = XML.importxml("small")
+    C.UI_SMALL:Import(path, file)
 
-  C.UI_SMALL:HookDelete(SignalTable.close_small, C.UI_SMALL)
-  C.UI_SMALL.PluginButtons.PluginComponent = MyHandle
-  C.UI_SMALL.PluginButtons.MouseLeave = 'close_small'
+    C.UI_SMALL:HookDelete(SignalTable.close_small, C.UI_SMALL)
+    C.UI_SMALL.PluginButtons.PluginComponent = MyHandle
+    C.UI_SMALL.PluginButtons.MouseLeave = 'close_small'
 
-  -- Automatically assign PluginComponent to all interactive elements
-  local count, elements = UI.assign_plugin_components(C.UI_SMALL)
+    -- Automatically assign PluginComponent to all interactive elements
+    local count, elements = UI.assign_plugin_components(C.UI_SMALL)
 
-  -- Debug: Check PluginComponent of buttons
-  local plOn = C.UI_SMALL:FindRecursive("PlOn")
-  local plOff = C.UI_SMALL:FindRecursive("PlOff")
-  UI.load_small()
+    -- Debug: Check PluginComponent of buttons
+    local plOn = C.UI_SMALL:FindRecursive("PlOn")
+    local plOff = C.UI_SMALL:FindRecursive("PlOff")
+    UI.load_small()
+  end
+end
+
+------------
+-- Delete --
+------------
+
+function UI.delete_icon()
+  if UI.is_valid_item(C.CMD_ICON_NAME, "cmdLN") then
+    local iconpos = C.CMD_ICON.Anchors.left or 0
+    -- Delete Icon
+    C.cmdLN:Remove(C.CMD_ICON:Get("No"))
+    C.CMD_ICON = nil
+
+    -- Adjust cmdLN columns
+    local lastCols = tonumber(C.cmdLN.Columns)
+    C.cmdLN.Columns = lastCols - 1
+
+    for i = 1, C.cmdLN:Count() do
+      local el = C.cmdLN:Ptr(i)
+      if el and el.Anchors and el.Anchors.left then
+        local itempos = el.Anchors.left
+        if itempos > iconpos then
+          el.Anchors.left = itempos - 2
+        end
+      end
+    end
+
+    Tri = GetDisplayByIndex(1):FindRecursive("RightTriangle")
+    if Tri then
+      Tri.Anchors = { left = lastCols - 2, right = -1, top = -1, bottom = -1 }
+    end
+  end
 end
 
 return UI
