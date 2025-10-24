@@ -491,8 +491,8 @@ function UI.create_small()
   local menu = C.screenOV:FindRecursive(C.UI_SMALL_NAME)
   if not menu then
     C.UI_SMALL = C.screenOV:Append('BaseInput')
-    C.UI_SMALL.SuppressOverlayAutoclose = "Yes"
-    C.UI_SMALL.AutoClose = "No"
+    C.UI_SMALL.SuppressOverlayAutoclose = "No"
+    C.UI_SMALL.AutoClose = "Yes"
     C.UI_SMALL.CloseOnEscape = "Yes"
     C.UI_SMALL.AlignmentH = "Right"
     C.UI_SMALL.AlignmentV = "Bottom"
@@ -513,6 +513,7 @@ function UI.create_small()
     local plOn = C.UI_SMALL:FindRecursive("PlOn")
     local plOff = C.UI_SMALL:FindRecursive("PlOff")
     UI.load_small()
+    C.UI_SMALL:Dump()
   end
 end
 

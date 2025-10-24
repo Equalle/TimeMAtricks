@@ -163,7 +163,9 @@ SignalTable.close_menu = function(caller)
       FindBestFocus(C.UI_MENU)
     end
   else
-    --CloseAllOverlays()
+    if C.UI_MENU then
+      FindBestFocus(C.UI_MENU)
+    end
   end
   -- C.UI_MENU.Visible = "Yes"
   C.UI_MENU.Enabled = "Yes"
