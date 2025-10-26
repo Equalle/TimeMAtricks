@@ -494,10 +494,6 @@ function UI.create_small()
     C.UI_SMALL.SuppressOverlayAutoclose = "No"
     C.UI_SMALL.AutoClose = "Yes"
     C.UI_SMALL.CloseOnEscape = "Yes"
-    C.UI_SMALL.AlignmentH = "Right"
-    C.UI_SMALL.AlignmentV = "Bottom"
-    C.UI_SMALL.W = 300
-    C.UI_SMALL.H = 150
 
     local path, file = XML.importxml("small")
     C.UI_SMALL:Import(path, file)

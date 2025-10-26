@@ -3,50 +3,50 @@
 XML = {}
 
 function XML.importxml(xmlType)
-  local slash = "/"
-  local base = GetPath("temp") or ""
+local slash = "/"
+local base = GetPath("temp") or ""
 
-  -- Create plugin-specific subfolder for XML files
-  local pluginFolder = "TimeMAtricks"
-  local dir = base .. slash .. pluginFolder .. slash
+-- Create plugin-specific subfolder for XML files
+local pluginFolder = "TimeMAtricks"
+local dir = base .. slash .. pluginFolder .. slash
 
-  -- Create directory if it doesn't exist
-  local success = CreateDirectoryRecursive(dir)
-  if not success then
-    ErrEcho("Failed to create XML directory: %s", dir)
-    return nil
-  end
+-- Create directory if it doesn't exist
+local success = CreateDirectoryRecursive(dir)
+if not success then
+ErrEcho("Failed to create XML directory: %s", dir)
+return nil
+end
 
-  local filename, content
+local filename, content
 
-  if xmlType == "ui" then
-    filename = tostring(C.UI_MENU_NAME) .. ".xml"
-    content = XML.UI_MENU
-  elseif xmlType == "settings" then
-    filename = tostring(C.UI_SETTINGS_NAME) .. ".xml"
-    content = XML.UI_SETTINGS
-  elseif xmlType == "small" then
-    filename = "TimeMAtricks_Small.xml"
-    content = XML.UI_SMALL
-  else
-    ErrEcho("XML.import: Unknown xmlType '%s'", tostring(xmlType))
-    return
-  end
+if xmlType == "ui" then
+filename = tostring(C.UI_MENU_NAME) .. ".xml"
+content = XML.UI_MENU
+elseif xmlType == "settings" then
+filename = tostring(C.UI_SETTINGS_NAME) .. ".xml"
+content = XML.UI_SETTINGS
+elseif xmlType == "small" then
+filename = "TimeMAtricks_Small.xml"
+content = XML.UI_SMALL
+else
+ErrEcho("XML.import: Unknown xmlType '%s'", tostring(xmlType))
+return
+end
 
-  local fullPath = dir .. filename
+local fullPath = dir .. filename
 
-  -- Always try to create the file (overwrite if exists)
-  local file, err = io.open(fullPath, "w")
-  if file then
-    file:write(content)
-    file:close()
-    -- Echo("Created XML file: %s", fullPath)
-  else
-    ErrEcho("Failed to create XML file: %s (Error: %s)", fullPath, tostring(err))
-    return nil
-  end
+-- Always try to create the file (overwrite if exists)
+local file, err = io.open(fullPath, "w")
+if file then
+file:write(content)
+file:close()
+-- Echo("Created XML file: %s", fullPath)
+else
+ErrEcho("Failed to create XML file: %s (Error: %s)", fullPath, tostring(err))
+return nil
+end
 
-  return dir, filename
+return dir, filename
 end
 
 XML.UI_MENU = [[
@@ -180,7 +180,7 @@ XML.UI_MENU = [[
       <LineEdit Name="Matricks Prefix Name" Message="Prefix (e.g: tm_)" Anchors="1,0"
         Texture="corner10" KeyDown=":key_down" FocusGet=":LineEditSelectAll"
         FocusLost=":LineEditDeselect" OnWrongChar=":show_warning"
-        VKPluginName="TextInputAlphaNumOnly" MaxTextLength="13"
+        MaxTextLength="13"
         Filter="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZöäüÖÄÜß0123456789 -_/()@,.;:<>!?|" />
     </UILayoutGrid>
 

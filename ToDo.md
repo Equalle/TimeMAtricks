@@ -1,5 +1,6 @@
 # Main
 
+empty matricks and name already used go back and dont save global
 -complete cleanup
 
 ### Add
