@@ -57,8 +57,8 @@ local function import_modules()
 
   -- Possible development paths (Windows and macOS)
   local devModulePaths = {
-    'C:\\Users\\Juri\\Desktop\\GrandMA3 Plugins\\TimeMAtricks with modules\\modules\\',
-    '/Users/juriseiffert/Documents/GrandMA3Plugins/TimeMAtricks with modules/modules/'
+    'C:\\Users\\Juri\\Desktop\\GrandMA3 Plugins\\TimeMAtricks\\modules\\',
+    '/Users/juriseiffert/Documents/GrandMA3Plugins/TimeMAtricks/modules/'
   }
 
   -- Find which dev path exists

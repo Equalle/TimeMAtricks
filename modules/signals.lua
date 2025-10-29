@@ -307,6 +307,9 @@ SignalTable.matricks_toggle = function(caller)
       FindBestFocus(elements.Mx3Name)
     end
   end
+  if caller.State == 0 then
+    FindNextFocus(true)
+  end
 end
 
 SignalTable.prefix_toggle = function(caller)
@@ -480,21 +483,45 @@ SignalTable.LineEditDeselect = function(caller)
       end
     elseif caller == elements.MxPreName then
       -- Handle prefix name change
-      local oldPrefix = GMA.get_global(C.GVars.prefixname) or ""
       local newPrefix = caller.Content
-      if newPrefix ~= oldPrefix and tonumber(GMA.get_global(C.GVars.prefix) or 0) == 1 then
-        O.handle_prefix_change(caller, oldPrefix, newPrefix)
+      if newPrefix == "" then
+        -- If empty, show warning, find focus backwards and don't set global
+        SignalTable.show_warning(caller, "Name cannot be empty")
+        FindNextFocus(true)
+      else
+        local oldPrefix = GMA.get_global(C.GVars.prefixname) or ""
+        if newPrefix ~= oldPrefix and tonumber(GMA.get_global(C.GVars.prefix) or 0) == 1 then
+          O.handle_prefix_change(caller, oldPrefix, newPrefix)
+        end
+        GMA.set_global(C.GVars.prefixname, newPrefix)
       end
-      GMA.set_global(C.GVars.prefixname, newPrefix)
     elseif caller == elements.Mx1Name then
-      GMA.set_global(C.GVars.mx1name, caller.Content)
-      O.handle_matricks_value_change(caller, 1)
+      if caller.Content == "" then
+        -- If empty, show warning, find focus backwards and don't set global
+        SignalTable.show_warning(caller, "Name cannot be empty")
+        FindNextFocus(true)
+      else
+        GMA.set_global(C.GVars.mx1name, caller.Content)
+        O.handle_matricks_value_change(caller, 1)
+      end
     elseif caller == elements.Mx2Name then
-      GMA.set_global(C.GVars.mx2name, caller.Content)
-      O.handle_matricks_value_change(caller, 2)
+      if caller.Content == "" then
+        -- If empty, show warning, find focus backwards and don't set global
+        SignalTable.show_warning(caller, "Name cannot be empty")
+        FindNextFocus(true)
+      else
+        GMA.set_global(C.GVars.mx2name, caller.Content)
+        O.handle_matricks_value_change(caller, 2)
+      end
     elseif caller == elements.Mx3Name then
-      GMA.set_global(C.GVars.mx3name, caller.Content)
-      O.handle_matricks_value_change(caller, 3)
+      if caller.Content == "" then
+        -- If empty, show warning, find focus backwards and don't set global
+        SignalTable.show_warning(caller, "Name cannot be empty")
+        FindNextFocus(true)
+      else
+        GMA.set_global(C.GVars.mx3name, caller.Content)
+        O.handle_matricks_value_change(caller, 3)
+      end
     elseif caller == elements.Mx1Rate then
       if caller.Content ~= "" then
         GMA.set_global(C.GVars.mx1rate, caller.Content)
